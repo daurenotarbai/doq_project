@@ -1,0 +1,9 @@
+venv/
+.idea/
+__pycache__/
+migrations/
+media/
+.env
+config/local_settings.py
+config/prod_settings.py
+
