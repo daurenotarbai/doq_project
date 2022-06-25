@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from rest_framework import serializers
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, AppointmentDoctorTime, AppointmentTime
+from apps.patients.models import Comment, Patient
 
 
 class ProcedureSearchSerializer(serializers.ModelSerializer):
@@ -76,35 +79,61 @@ class AddressWithAppointmentTimesSerializer(serializers.ModelSerializer):
 
 class ClinicSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True)
-    description = serializers.SerializerMethodField()
+    short_description = serializers.SerializerMethodField()
+    avr_doctors_score = serializers.FloatField()
+    comment_number = serializers.IntegerField()
 
     class Meta:
         model = Clinic
-        fields = ['id','logo', 'name', 'addresses', 'description']
+        fields = ['id', 'logo', 'name', 'addresses', 'short_description', 'avr_doctors_score', 'comment_number']
 
-    def get_description(self, obj):
+    def get_short_description(self, obj):
         return obj.description[:160] + "..."
 
-
-class ClinicWithAppointmentsSerializer(serializers.ModelSerializer):
-    addresses = AddressWithAppointmentTimesSerializer(many=True)
-    description = serializers.SerializerMethodField()
-
+class PatientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Clinic
-        fields = ['id', 'name', 'addresses', 'description']
+        model = Patient
+        fields = ['first_name']
 
-    def get_description(self, obj):
-        return obj.description[:160] + "..."
+class DoctorCommentSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer()
+    class Meta:
+        model = Comment
+        fields = ['text','parent','patient','star']
 
 
 class DoctorSerializer(serializers.ModelSerializer):
     specialities = SpecialitySearchSerializer(many=True)
     clinic = serializers.CharField()
+    comments_number = serializers.SerializerMethodField()
+    addresses = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
-        exclude = ['gender', 'procedures', 'created_at', 'changed_at']
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years', 'consultation_fee',
+                  'clinic',
+                  'specialities', 'score', 'comments_number', 'addresses']
+
+    def get_comments_number(self, obj):
+        return obj.comments.all().count()
+
+    def get_addresses(self, obj):
+        data = []
+        for address in obj.clinic.addresses.all():
+            address = {
+                "id": address.id,
+                "address": address.address,
+            }
+            data.append(address)
+        return data
+
+class DoctorDetailSerializer(DoctorSerializer):
+    class Meta:
+        model = Doctor
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years', 'consultation_fee',
+                  'clinic','specialities', 'score', 'comments_number', 'addresses','description']
+
+
 
 
 class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
@@ -115,10 +144,7 @@ class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name', 'doctors']
 
 
-class ClinicDetailSerializer(serializers.HyperlinkedModelSerializer):
-    addresses = AddressSerializer(many=True)
-    doctors = DoctorSerializer(many=True)
-
+class ClinicDetailSerializer(ClinicSerializer):
     class Meta:
         model = Clinic
-        fields = ('url', 'id', 'name', 'logo', 'description', 'doctors', 'addresses')
+        fields = ['id', 'logo','image', 'name', 'addresses','phone', 'description', 'avr_doctors_score', 'comment_number']

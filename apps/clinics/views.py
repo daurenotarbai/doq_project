@@ -1,17 +1,20 @@
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.http import HttpResponse
 from elasticsearch_dsl import Q
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, ProcedureParametrsDocument, \
     SpecialityParametrsDocument
-from apps.clinics.models import Speciality, Procedure, Clinic, Doctor
+from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, SpecialitySearchSerializer, \
-    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer
+    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, AppointmentDoctorTimeSerializer, \
+    DoctorDetailSerializer, DoctorCommentSerializer
+from apps.patients.models import Comment
 
 
 class SpecialitiesViewSet(viewsets.ModelViewSet):
@@ -31,12 +34,61 @@ class ProceduresViewSet(viewsets.ModelViewSet):
     queryset = Procedure.objects.filter(parent=None)
     serializer_class = ProcedureSerializer
 
-class DoctorsViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all().annotate(avr_score=Avg('comments__id'))
+
+class ClinicDoctorsView(ListAPIView):
+    model = Doctor
     serializer_class = DoctorSerializer
 
+    def get_queryset(self):
+        clinic_id = self.kwargs.get('clinic_id')
+        queryset = self.model.objects.filter(clinic=clinic_id)
+        return queryset
+
+class ProcedureDoctorsView(ClinicDoctorsView):
+
+    def get_queryset(self):
+        procedure_id = self.kwargs.get('procedure_id')
+        procedure = Procedure.objects.get(id=procedure_id)
+        queryset = self.model.objects.filter(procedures__exact=procedure)
+        return queryset
+
+class SpecialityDoctorsView(ClinicDoctorsView):
+
+    def get_queryset(self):
+        speciality_id = self.kwargs.get('speciality_id')
+        speciality = Speciality.objects.get(id=speciality_id)
+        queryset = self.model.objects.filter(specialities__exact=speciality)
+        return queryset
+
+
+class DoctorsDetailView(RetrieveAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorDetailSerializer
+
+class DoctorCommentsView(ListAPIView):
+    model = Comment
+    serializer_class = DoctorCommentSerializer
+
+    def get_queryset(self):
+        doctor_id = self.kwargs.get('doctor_id')
+        queryset = self.model.objects.filter(doctor=doctor_id)
+        return queryset
+
+
+class DoctorAppointmentTimesView(ListAPIView):
+    queryset = AppointmentDoctorTime
+    serializer_class = AppointmentDoctorTimeSerializer
+
+    def get_queryset(self):
+        doctor_id = self.kwargs.get('doctor_id')
+        address_id = self.kwargs.get('address_id')
+        queryset = self.queryset.objects.filter(doctor=doctor_id, clinic_address=address_id)
+        return queryset
+
+
 class ClinicsViewSet(viewsets.ModelViewSet):
-    queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses')
+    queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
+        avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0), comment_number=Count('doctors__comments',distinct=True))
     serializer_class = ClinicSerializer
 
     def retrieve(self, request, *args, **kwargs):

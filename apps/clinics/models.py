@@ -66,6 +66,7 @@ class Clinic(TimestampMixin, ContactMixin):
     name = models.CharField('Название клиники', max_length=50, default='')
     description = models.TextField("Описание", blank=True, default='', help_text="Подробное описание")
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path)
+    image = models.ImageField("Файл с изображением", upload_to=clinic_photo_path, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь")
     is_active = models.BooleanField('Актив', default=True, blank=True)
 
@@ -89,15 +90,6 @@ class Address(models.Model):
 
     def __str__(self) -> str:
         return self.address
-
-
-class ClinicPhoto(models.Model):
-    class Meta:
-        verbose_name = 'Фото клиники'
-        verbose_name_plural = 'Фото клиники'
-
-    image = models.ImageField("Файл с изображением", upload_to=clinic_photo_path)
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="photos")
 
 
 # class DoctorDescriptionMixin(models.Model):
