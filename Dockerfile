@@ -20,7 +20,7 @@ RUN python -m venv /py && \
     apt-get install .tmp-deps \
         build-base postgresql-dev musl-dev linux-headers && \
     /py/bin/pip install -r /requirements.txt && \
-    apk del .tmp-deps && \
+    apt-get del .tmp-deps -y && \
     adduser --disabled-password --no-create-home dauren && \
     mkdir -p /vol/web/static && \
     mkdir -p /vol/web/media && \
