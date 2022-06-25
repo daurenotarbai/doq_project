@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.http import HttpResponse
 from elasticsearch_dsl import Q
 from rest_framework import viewsets
@@ -10,18 +11,29 @@ from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsD
 from apps.clinics.models import Speciality, Procedure, Clinic, Doctor
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, SpecialitySearchSerializer, \
-    ProcedureSearchSerializer
+    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer
 
 
 class SpecialitiesViewSet(viewsets.ModelViewSet):
     queryset = Speciality.objects.all()
     serializer_class = SpecialitySerializer
 
+    def retrieve(self, request, *args, **kwargs):
+        context = {
+            'request': request
+        }
+        instance = self.get_object()
+        serializer = SpecialityDetailSerializer(instance, context=context)
+        return Response(serializer.data)
+
 
 class ProceduresViewSet(viewsets.ModelViewSet):
     queryset = Procedure.objects.filter(parent=None)
     serializer_class = ProcedureSerializer
 
+class DoctorsViewSet(viewsets.ModelViewSet):
+    queryset = Doctor.objects.all().annotate(avr_score=Avg('comments__id'))
+    serializer_class = DoctorSerializer
 
 class ClinicsViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses')

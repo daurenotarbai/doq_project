@@ -1,6 +1,6 @@
 version: '3.8'
 
-services: 
+services:
 #  db:
 #    container_name: doq_project_db
 #    image: postgres:12
@@ -9,7 +9,7 @@ services:
 #    environment:
 #      POSTGRES_PASSWORD: admin123
 #      POSTGRES_USER: postgres
-#      POSTGRES_DB : doq_project_local_docker_db
+#      POSTGRES_DB: doq_project_local_docker_db
 #    ports:
 #      - "5432:5432"
 #  web:
@@ -18,24 +18,28 @@ services:
 #      context: ./
 #      dockerfile: Dockerfile
 #    command: bash -c "python /usr/src/doq_project/manage.py migrate --noinput &&
-#             python /usr/src/doq_project/manage.py runserver 0.0.0.0:8000"
+#      python /usr/src/doq_project/manage.py collectstatic --noinput &&
+#      python /usr/src/doq_project/manage.py runserver 0.0.0.0:8000"
 #    restart: always
 #    volumes:
 #      - .:/usr/src/doq_project
 #    ports:
 #      - 8000:8000
 #    environment:
-#      DB_HOST : db
-#      DB_NAME : doq_project_local_docker_db
+#      DB_HOST: db
+#      DB_NAME: doq_project_local_docker_db
+#      ELASTICSEARCH_DSL_HOSTS: esearch:9200
 #
 #    depends_on:
 #      - db
+#      - esearch
+
   esearch:
     container_name: esearch
     image: elasticsearch:7.14.2
     environment:
       - discovery.type=single-node
     ports:
-      - 9200:9200
-volumes: 
+      - "9200:9200"
+volumes:
   pg_data:

@@ -121,8 +121,9 @@ class Doctor(TimestampMixin):
     experience_years = models.PositiveSmallIntegerField('Опыт работы', null=True, default=1)
     consultation_fee = models.DecimalField('Цена за прием', max_digits=10, decimal_places=2, default=Decimal(0))
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="doctors", verbose_name="Клиника")
-    specialities = models.ManyToManyField(Speciality, verbose_name="Специальности")
+    specialities = models.ManyToManyField(Speciality, verbose_name="Специальности", related_name="doctors")
     procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors')
+    score = models.FloatField('Рейтинг', default=0.0)
 
     def image_tag(self):
         if self.photo:
@@ -141,6 +142,8 @@ class AppointmentDoctorTime(models.Model):
         verbose_name_plural = 'Времени на прием'
         unique_together = ('doctor', 'date')
 
+    clinic_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, verbose_name="Адрес клиники",
+                                       related_name="appoint_times")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, verbose_name="Доктор",
                                related_name="appoint_times")
     times = models.ManyToManyField(AppointmentTime, verbose_name="Времени на прием", blank=True)

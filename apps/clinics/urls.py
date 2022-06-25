@@ -2,12 +2,13 @@ from django.urls import path, include
 from rest_framework import routers
 
 from apps.clinics.views import SpecialitiesViewSet, ProceduresViewSet, ClinicsViewSet, MainSearchClinicView, \
-    main_for_test
+    main_for_test, DoctorsViewSet
 
 router = routers.DefaultRouter()
 router.register(r'specialities', SpecialitiesViewSet)
 router.register(r'procedures', ProceduresViewSet)
 router.register(r'clinics', ClinicsViewSet)
+router.register(r'doctors', DoctorsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

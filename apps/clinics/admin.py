@@ -19,9 +19,15 @@ class DoctorsInline(admin.TabularInline):
 
 class DoctorsAppoinmentTimeInline(admin.TabularInline):
     model = AppointmentDoctorTime
-    fields = ['date', 'times']
+    fields = ['date', 'times', 'clinic_address']
     readonly_fields = ('date',)
     extra = 0
+
+@admin.register(AppointmentDoctorTime)
+class DoctorsAppoinmentTimeAdmin(admin.ModelAdmin):
+    model = AppointmentDoctorTime
+    fields = ['date', 'times', 'clinic_address']
+
 
 
 @admin.register(Clinic)
@@ -71,6 +77,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
     inlines = [DoctorsAppoinmentTimeInline, ]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name',"last_name","clinic__name"]
+
     def create_appointmen_times(self, obj):
         doctor = Doctor.objects.get(id=obj.id)
         appointment_doctor_time = []
