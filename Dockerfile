@@ -17,7 +17,7 @@ RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     apt-get update -y && \
     apt-get install postgresql-client -y && \
-    apt-get install musl-dev && \
+    apt-get install musl-dev -y && \
     /py/bin/pip install -r /requirements.txt && \
     adduser --disabled-password --no-create-home dauren && \
     mkdir -p /vol/web/static && \
