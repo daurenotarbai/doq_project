@@ -18,7 +18,7 @@ RUN python -m venv /py && \
     apt-get update -y && \
     apt-get install postgresql-client -y && \
     apt-get install .tmp-deps -y \
-        build-base postgresql-dev musl-dev linux-headers && \
+        musl-dev && \
     /py/bin/pip install -r /requirements.txt && \
     apt-get del .tmp-deps -y && \
     adduser --disabled-password --no-create-home dauren && \
