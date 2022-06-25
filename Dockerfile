@@ -9,7 +9,7 @@ WORKDIR /doq_project
 
 COPY ./requirements.txt /requirements.txt
 COPY ./scripts /scripts
-RUN pip install -r /usr/src/requirements.txt
+RUN pip install -r /requirements.txt
 
 COPY . /doq_project
 
