@@ -22,7 +22,7 @@ RUN python -m venv /py && \
     adduser --disabled-password --no-create-home dauren && \
     mkdir -p /vol/web/static && \
     mkdir -p /vol/web/media && \
-    chown -R dauren:doq_project /vol && \
+    chown -R dauren /vol && \
     chmod -R 755 /vol && \
     chmod -R +x /scripts
 
