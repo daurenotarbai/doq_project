@@ -15,7 +15,7 @@ COPY . /doq_project
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    apt-get update && \
+    apt-get update -y && \
     apt-get install postgresql-client && \
     apt-get install .tmp-deps \
         build-base postgresql-dev musl-dev linux-headers && \
