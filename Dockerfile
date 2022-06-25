@@ -5,22 +5,30 @@ MAINTAINER Dauren
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /usr/src/doq_project
+WORKDIR /doq_project
 
-COPY ./requirements.txt /usr/src/requirements.txt
+COPY ./requirements.txt /requirements.txt
+COPY ./scripts /scripts
 RUN pip install -r /usr/src/requirements.txt
 
-COPY . /usr/src/doq_project
+COPY . /doq_project
 
-FROM nginx
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-deps \
+        build-base postgresql-dev musl-dev linux-headers && \
+    /py/bin/pip install -r /requirements.txt && \
+    apk del .tmp-deps && \
+    adduser --disabled-password --no-create-home dauren && \
+    mkdir -p /vol/web/static && \
+    mkdir -p /vol/web/media && \
+    chown -R dauren:doq_project /vol && \
+    chmod -R 755 /vol && \
+    chmod -R +x /scripts
 
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d
+ENV PATH="/scripts:/py/bin:$PATH"
 
-# 8000
+USER dauren
 
-# RUN python manage.py collectstatic --noinput
-# CMD ["python","manage.py","migrate"]
-# CMD ["python","manage.py","runserver","0.0.0.0:8000"]
-
-#CMD exec gunicorn djangoapp.wsgi:application --bind 0.0.0.0:8000 --workers 3
+CMD ["run.sh"]

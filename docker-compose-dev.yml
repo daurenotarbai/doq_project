@@ -7,29 +7,27 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_USER: postgres
-      POSTGRES_DB: doq_project_local_docker_db
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
     ports:
       - "5432:5432"
+
   web:
     container_name: doq_project_web
     build:
       context: ./
       dockerfile: Dockerfile
-    command: bash -c "python /usr/src/doq_project/manage.py migrate --noinput &&
-      python /usr/src/doq_project/manage.py collectstatic --noinput &&
-      python /usr/src/doq_project/manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
-      - .:/usr/src/doq_project
-    ports:
-      - 8000:8000
+      - static-data:/vol/web
     environment:
-      DB_HOST: db
-      DB_NAME: doq_project_local_docker_db
-      ELASTICSEARCH_DSL_HOSTS: esearch:9200
-
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     depends_on:
       - db
       - esearch
@@ -42,5 +40,16 @@ services:
     ports:
       - "9200:9200"
 
+  proxy:
+    build:
+      context: ./proxy
+    restart: always
+    depends_on:
+      - web
+    ports:
+      - 80:8000
+    volumes:
+      - static-data:/vol/static
 volumes:
   pg_data:
+  static-data:
