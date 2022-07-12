@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
@@ -27,3 +29,8 @@ urlpatterns = [
     path('doctors/<int:pk>/', DoctorsDetailView.as_view()),
     path('doctors/<int:doctor_id>/comments', DoctorCommentsView.as_view())
 ]
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
