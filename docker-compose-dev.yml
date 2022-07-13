@@ -30,15 +30,15 @@ services:
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     depends_on:
       - db
-#      - esearch
+      - esearch
 
-#  esearch:
-#    container_name: esearch
-#    image: elasticsearch:7.14.2
-#    environment:
-#      - discovery.type=single-node
-#    ports:
-#      - "9200:9200"
+  esearch:
+    container_name: esearch
+    image: elasticsearch:7.14.2
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
 
   proxy:
     build:

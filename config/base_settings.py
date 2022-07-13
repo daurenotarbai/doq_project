@@ -129,13 +129,13 @@ USE_TZ = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
-#     },
-# }
-#
-# INTERNAL_IPS = [
-#     '127.0.0.1',
-# ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'esearch')
+    },
+}
+
+INTERNAL_IPS = [
+    '127.0.0.1', '46.101.243.200',
+]
