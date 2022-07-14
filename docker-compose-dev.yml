@@ -28,7 +28,7 @@ services:
       - DB_PASS=${DB_PASS}
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - ELASTICSEARCH_DSL_HOSTS=${ESEARCH_HOSTS}
+      - ELASTICSEARCH_DSL_HOSTS=esearch
     depends_on:
       - db
       - esearch
