@@ -132,7 +132,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
+        'hosts': 'esearch'
     },
 }
 INTERNAL_IPS = [
