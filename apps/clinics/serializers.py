@@ -58,7 +58,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class AppointmentTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentTime
-        fields = ('start_time',)
+        fields = ('id', 'start_time',)
 
 
 class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
@@ -66,7 +66,7 @@ class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppointmentDoctorTime
-        fields = ('date', 'times')
+        fields = ('id', 'date', 'times')
 
 
 class AddressWithAppointmentTimesSerializer(serializers.ModelSerializer):

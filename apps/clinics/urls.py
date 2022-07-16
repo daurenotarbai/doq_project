@@ -28,7 +28,7 @@ urlpatterns = [
     path('procedures/<int:procedure_id>/doctors/', ProcedureDoctorsView.as_view()),
     path('specialities/<int:speciality_id>/doctors/', SpecialityDoctorsView.as_view()),
 
-    path('doctors/<int:doctor_id>/addresss/<int:address_id>/appointment/',
+    path('doctors/<int:doctor_id>/address/<int:address_id>/appointments/',
          DoctorAppointmentTimesView.as_view()),
     path('doctors/<int:pk>/', DoctorsDetailView.as_view()),
     path('doctors/<int:doctor_id>/comments', DoctorCommentsView.as_view()),

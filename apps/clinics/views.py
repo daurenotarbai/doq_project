@@ -11,14 +11,15 @@ from rest_framework.views import APIView
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
     ProcedureParametrsDocument, \
     SpecialityParametrsDocument
-from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime
+from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime, \
+    AppointmentTime
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, \
     SpecialitySearchSerializer, \
     ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
     DoctorDetailSerializer, DoctorCommentSerializer
-from apps.patients.models import Comment
+from apps.patients.models import Comment, Appointment
 
 
 class SpecialitiesViewSet(viewsets.ModelViewSet):
@@ -100,7 +101,13 @@ class DoctorAppointmentTimesView(ListAPIView):
     def get_queryset(self):
         doctor_id = self.kwargs.get('doctor_id')
         address_id = self.kwargs.get('address_id')
-        queryset = self.queryset.objects.filter(doctor=doctor_id, clinic_address=address_id)
+        appointments = Appointment.objects.filter(appointment_doctor_time__doctor__id=doctor_id)
+        times = [appointment.appointment_time.start_time for appointment in appointments]
+        print('FF', times)
+
+        queryset = self.queryset.objects.filter(doctor=doctor_id,
+                                                clinic_address=address_id,
+                                                )
         return queryset
 
 

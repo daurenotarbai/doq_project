@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.clinics.models import AppointmentTime, Doctor
+from apps.clinics.models import AppointmentTime, Doctor, AppointmentDoctorTime
 from apps.core.models import TimestampMixin
 
 
@@ -24,7 +24,7 @@ class Appointment(TimestampMixin):
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="appointments")
+    appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.appointment_time.start_time}'
