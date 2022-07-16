@@ -135,3 +135,6 @@ ELASTICSEARCH_DSL = {
         'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
     },
 }
+INTERNAL_IPS = [
+    '46.101.243.200',
+]
