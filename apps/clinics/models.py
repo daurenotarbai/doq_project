@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import TextChoices
@@ -51,7 +52,8 @@ class Procedure(models.Model):
         ordering = ("name",)
 
     name = models.CharField("Название процедуры", max_length=255, default='')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="subprocedures")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                               related_name="subprocedures")
     is_specialty = models.BooleanField('По специальности', default=True, blank=True)
 
     def __str__(self):
@@ -64,7 +66,8 @@ class Clinic(TimestampMixin, ContactMixin):
         verbose_name_plural = 'Клиники'
 
     name = models.CharField('Название клиники', max_length=50, default='')
-    description = models.TextField("Описание", blank=True, default='', help_text="Подробное описание")
+    description = models.TextField("Описание", blank=True, default='',
+                                   help_text="Подробное описание")
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path)
     image = models.ImageField("Файл с изображением", upload_to=clinic_photo_path, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь")
@@ -107,19 +110,25 @@ class Doctor(TimestampMixin):
     first_name = models.CharField("Имя", max_length=255, default='')
     last_name = models.CharField("Фамилия", max_length=255, default='')
     middle_name = models.CharField("Отчество", max_length=255, blank=True, default='')
-    description = models.TextField("Описание", blank=True, default='', help_text="Подробное описание")
-    photo = models.ImageField("Фото специалиста", upload_to=specialist_photo_path, null=True, blank=True)
+    description = models.TextField("Описание", blank=True, default='',
+                                   help_text="Подробное описание")
+    photo = models.ImageField("Фото специалиста", upload_to=specialist_photo_path, null=True,
+                              blank=True)
     gender = models.CharField('Пол', max_length=10, choices=Gender.choices, blank=True, null=True)
     experience_years = models.PositiveSmallIntegerField('Опыт работы', null=True, default=1)
-    consultation_fee = models.DecimalField('Цена за прием', max_digits=10, decimal_places=2, default=Decimal(0))
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="doctors", verbose_name="Клиника")
-    specialities = models.ManyToManyField(Speciality, verbose_name="Специальности", related_name="doctors")
+    consultation_fee = models.DecimalField('Цена за прием', max_digits=10, decimal_places=2,
+                                           default=Decimal(0))
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="doctors",
+                               verbose_name="Клиника")
+    specialities = models.ManyToManyField(Speciality, verbose_name="Специальности",
+                                          related_name="doctors")
     procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors')
     score = models.FloatField('Рейтинг', default=0.0)
 
     def image_tag(self):
         if self.photo:
-            return mark_safe('<img src="{}" style="border-radius:10%" width="120" />'.format(self.photo.url))
+            return mark_safe(
+                '<img src="{}" style="border-radius:10%" width="120" />'.format(self.photo.url))
         return "Фото не загрузил"
 
     image_tag.short_description = 'Фото'
@@ -134,7 +143,8 @@ class AppointmentDoctorTime(models.Model):
         verbose_name_plural = 'Времени на прием'
         unique_together = ('doctor', 'date')
 
-    clinic_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, verbose_name="Адрес клиники",
+    clinic_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True,
+                                       verbose_name="Адрес клиники",
                                        related_name="appoint_times")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, verbose_name="Доктор",
                                related_name="appoint_times")

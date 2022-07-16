@@ -2,8 +2,9 @@ from datetime import datetime, timedelta
 
 from django.contrib import admin
 
-from apps.clinics.models import AppointmentTime, Doctor, Clinic, Address, Speciality, Procedure, AppointmentDoctorTime
-from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, NoViewMixin
+from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
+    AppointmentDoctorTime
+from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
 
 
 class AddressClinicInline(admin.TabularInline):
@@ -23,11 +24,11 @@ class DoctorsAppoinmentTimeInline(admin.TabularInline):
     readonly_fields = ('date',)
     extra = 0
 
+
 @admin.register(AppointmentDoctorTime)
 class DoctorsAppoinmentTimeAdmin(admin.ModelAdmin):
     model = AppointmentDoctorTime
     fields = ['date', 'times', 'clinic_address']
-
 
 
 @admin.register(Clinic)
@@ -62,7 +63,8 @@ class ProcedureAdmin(admin.ModelAdmin):
 @admin.register(Doctor)
 class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
     list_display = (
-        "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures", "get_todays_times",
+        "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
+        "get_todays_times",
         "get_tomorrows_times")
     fieldsets = (
         ('', {'fields': (('image_tag', 'photo'),)}),
@@ -76,14 +78,15 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
     readonly_fields = ('image_tag', 'clinic')
     inlines = [DoctorsAppoinmentTimeInline, ]
     filter_horizontal = ('procedures', "specialities")
-    search_fields = ['first_name',"last_name","clinic__name"]
+    search_fields = ['first_name', "last_name", "clinic__name"]
 
     def create_appointmen_times(self, obj):
         doctor = Doctor.objects.get(id=obj.id)
         appointment_doctor_time = []
         for item in range(5):
             appointment_doctor_time.append(
-                AppointmentDoctorTime(date=datetime.now().date() + timedelta(days=item), doctor=doctor))
+                AppointmentDoctorTime(date=datetime.now().date() + timedelta(days=item),
+                                      doctor=doctor))
 
         AppointmentDoctorTime.objects.bulk_create(appointment_doctor_time, ignore_conflicts=True)
 
@@ -100,7 +103,8 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         return " | ".join(times)
 
     def get_tomorrows_times(self, obj):
-        doctor_appointment = obj.appoint_times.filter(date=datetime.now().date() + timedelta(days=1)).first()
+        doctor_appointment = obj.appoint_times.filter(
+            date=datetime.now().date() + timedelta(days=1)).first()
         times = [times.start_time.strftime('%H:%M') for times in doctor_appointment.times.all()]
         return " | ".join(times)
 

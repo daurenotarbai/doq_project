@@ -1,7 +1,7 @@
-from datetime import datetime
-
 from rest_framework import serializers
-from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, AppointmentDoctorTime, AppointmentTime
+
+from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
+    AppointmentDoctorTime, AppointmentTime
 from apps.patients.models import Comment, Patient
 
 
@@ -85,21 +85,25 @@ class ClinicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Clinic
-        fields = ['id', 'logo', 'name', 'addresses', 'short_description', 'avr_doctors_score', 'comment_number']
+        fields = ['id', 'logo', 'name', 'addresses', 'short_description', 'avr_doctors_score',
+                  'comment_number']
 
     def get_short_description(self, obj):
         return obj.description[:160] + "..."
+
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = ['first_name']
 
+
 class DoctorCommentSerializer(serializers.ModelSerializer):
     patient = PatientSerializer()
+
     class Meta:
         model = Comment
-        fields = ['text','parent','patient','star']
+        fields = ['text', 'parent', 'patient', 'star']
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -110,7 +114,8 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years', 'consultation_fee',
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
+                  'consultation_fee',
                   'clinic',
                   'specialities', 'score', 'comments_number', 'addresses']
 
@@ -127,13 +132,13 @@ class DoctorSerializer(serializers.ModelSerializer):
             data.append(address)
         return data
 
+
 class DoctorDetailSerializer(DoctorSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years', 'consultation_fee',
-                  'clinic','specialities', 'score', 'comments_number', 'addresses','description']
-
-
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
+                  'consultation_fee',
+                  'clinic', 'specialities', 'score', 'comments_number', 'addresses', 'description']
 
 
 class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
@@ -147,4 +152,5 @@ class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
 class ClinicDetailSerializer(ClinicSerializer):
     class Meta:
         model = Clinic
-        fields = ['id', 'logo','image', 'name', 'addresses','phone', 'description', 'avr_doctors_score', 'comment_number']
+        fields = ['id', 'logo', 'image', 'name', 'addresses', 'phone', 'description',
+                  'avr_doctors_score', 'comment_number']

@@ -12,6 +12,6 @@ class TimestampMixin(models.Model):
 class ContactMixin(models.Model):
     class Meta:
         abstract = True
+
     phone = models.CharField("Мобильный телефон", max_length=20, default='')
     work_phone = models.CharField("Рабочий телефон", max_length=20, default='')
-

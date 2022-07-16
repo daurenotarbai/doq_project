@@ -17,7 +17,9 @@ class PatientAdmin(admin.ModelAdmin):
 
 admin.site.register(Patient, PatientAdmin)
 
+
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "patient", "text", "doctor")
+
 
 admin.site.register(Comment, CommentAdmin)

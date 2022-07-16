@@ -7,12 +7,16 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, ProcedureParametrsDocument, \
+
+from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
+    ProcedureParametrsDocument, \
     SpecialityParametrsDocument
 from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
-    ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, SpecialitySearchSerializer, \
-    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, AppointmentDoctorTimeSerializer, \
+    ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, \
+    SpecialitySearchSerializer, \
+    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, \
+    AppointmentDoctorTimeSerializer, \
     DoctorDetailSerializer, DoctorCommentSerializer
 from apps.patients.models import Comment
 
@@ -44,6 +48,7 @@ class ClinicDoctorsView(ListAPIView):
         queryset = self.model.objects.filter(clinic=clinic_id)
         return queryset
 
+
 class ProcedureDoctorsView(ClinicDoctorsView):
 
     def get_queryset(self):
@@ -51,6 +56,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         procedure = Procedure.objects.get(id=procedure_id)
         queryset = self.model.objects.filter(procedures__exact=procedure)
         return queryset
+
 
 class SpecialityDoctorsView(ClinicDoctorsView):
 
@@ -64,6 +70,7 @@ class SpecialityDoctorsView(ClinicDoctorsView):
 class DoctorsDetailView(RetrieveAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorDetailSerializer
+
 
 class DoctorCommentsView(ListAPIView):
     model = Comment
@@ -88,7 +95,8 @@ class DoctorAppointmentTimesView(ListAPIView):
 
 class ClinicsViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
-        avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0), comment_number=Count('doctors__comments',distinct=True))
+        avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
+        comment_number=Count('doctors__comments', distinct=True))
     serializer_class = ClinicSerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -118,7 +126,8 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
             procedure_serializer = ProcedureSearchSerializer(procedure, many=True)
             speciality_serializer = SpecialitySearchSerializer(speciality, many=True)
             data = {'clinics': clinic_serializer.data, 'doctors': doctor_serializer.data,
-                    'specialities': speciality_serializer.data, 'procedures': procedure_serializer.data}
+                    'specialities': speciality_serializer.data,
+                    'procedures': procedure_serializer.data}
             return Response(data)
 
         except Exception as e:

@@ -33,7 +33,8 @@ class Appointment(TimestampMixin):
 class Comment(TimestampMixin):
     text = models.TextField()
     star = models.PositiveSmallIntegerField('Рейтинг', default=0)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="subcomments")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                               related_name="subcomments")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments')
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='comments')
 
