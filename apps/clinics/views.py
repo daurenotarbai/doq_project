@@ -82,6 +82,17 @@ class DoctorCommentsView(ListAPIView):
         return queryset
 
 
+class ClinicCommentsView(ListAPIView):
+    model = Comment
+    serializer_class = DoctorCommentSerializer
+
+    def get_queryset(self):
+        clinic_id = self.kwargs.get('clinic_id')
+        queryset = self.model.objects.filter(doctor__clinic__id=clinic_id)
+
+        return queryset
+
+
 class DoctorAppointmentTimesView(ListAPIView):
     queryset = AppointmentDoctorTime
     serializer_class = AppointmentDoctorTimeSerializer
