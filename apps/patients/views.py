@@ -3,8 +3,8 @@ from rest_framework import exceptions
 from rest_framework.generics import CreateAPIView
 
 from apps.clinics.models import AppointmentDoctorTime
-from apps.patients.models import Appointment, Patient
-from apps.patients.serializers import PatientAppointmentCreateSerializer
+from apps.patients.models import Appointment, Patient, Comment
+from apps.patients.serializers import PatientAppointmentCreateSerializer, CommentCreateSerializer
 
 
 class CreatePatientAppointmentView(CreateAPIView):
@@ -25,3 +25,23 @@ class CreatePatientAppointmentView(CreateAPIView):
         patient, _ = Patient.objects.get_or_create(phone=phone, first_name=first_name, iin=iin)
         request.data['patient'] = patient.id
         return super(CreatePatientAppointmentView, self).create(request, *args, **kwargs)
+
+
+class CreateCommentView(CreateAPIView):
+    queryset = Comment
+    serializer_class = CommentCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        phone = request.data.pop('patient_phone')
+        doctor_id = request.data.get('doctor')
+        appointment = Appointment.objects.filter(
+            patient__phone=phone,
+            appointment_doctor_time__doctor__id=doctor_id,
+        ).exists()
+
+        if not appointment:
+            raise exceptions.NotAcceptable(
+                f'There is no appointment with this phone number {phone}')
+        patient = Patient.objects.get(phone=phone)
+        request.data['patient'] = patient.id
+        return super(CreateCommentView, self).create(request, *args, **kwargs)
