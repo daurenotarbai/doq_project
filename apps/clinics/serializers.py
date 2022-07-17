@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
-    AppointmentDoctorTime, AppointmentTime
+    AppointmentDoctorTime, AppointmentTime, DoctorProcedures
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -84,7 +84,7 @@ class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
                 'is_free': True
             }
             if item.start_time in appointment_times_list:
-                test_dict['is_free']=False
+                test_dict['is_free'] = False
             times_list.append(test_dict)
         return times_list
 
@@ -135,9 +135,8 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
-                  'consultation_fee',
-                  'clinic',
-                  'specialities', 'score', 'comments_number', 'addresses']
+                  'consultation_fee', 'clinic', 'specialities', 'score', 'comments_number',
+                  'addresses']
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()
@@ -151,6 +150,23 @@ class DoctorSerializer(serializers.ModelSerializer):
             }
             data.append(address)
         return data
+
+
+class DoctorProceduresSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = DoctorProcedures
+        fields = ['procedure_id', 'price']
+
+
+class DoctorWithProceduresSerializer(DoctorSerializer):
+    doctor_procedures = DoctorProceduresSerializer(many=True)
+
+    class Meta:
+        model = Doctor
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
+                  'consultation_fee', 'clinic', 'specialities', 'score', 'comments_number',
+                  'addresses', 'doctor_procedures']
 
 
 class DoctorDetailSerializer(DoctorSerializer):
@@ -170,7 +186,7 @@ class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProcedureDetailSerializer(serializers.HyperlinkedModelSerializer):
-    doctors = DoctorSerializer(many=True)
+    doctors = DoctorWithProceduresSerializer(many=True)
 
     class Meta:
         model = Procedure

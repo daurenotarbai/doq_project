@@ -140,7 +140,7 @@ class Doctor(TimestampMixin):
 
 
 class DoctorProcedures(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor_procedures')
     procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2,
                                 default=Decimal(0))
