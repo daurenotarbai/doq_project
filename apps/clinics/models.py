@@ -102,6 +102,7 @@ class Address(models.Model):
 #     education = models.CharField("Образование", max_length=20, default='')
 #     courses = models.CharField("Курсы", max_length=20, default='')
 
+
 class Doctor(TimestampMixin):
     class Meta:
         verbose_name = 'Доктор'
@@ -122,7 +123,8 @@ class Doctor(TimestampMixin):
                                verbose_name="Клиника")
     specialities = models.ManyToManyField(Speciality, verbose_name="Специальности",
                                           related_name="doctors")
-    procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors')
+    procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors',
+                                        through='DoctorProcedures')
     score = models.FloatField('Рейтинг', default=0.0)
 
     def image_tag(self):
@@ -135,6 +137,13 @@ class Doctor(TimestampMixin):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+
+class DoctorProcedures(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2,
+                                default=Decimal(0))
 
 
 class AppointmentDoctorTime(models.Model):

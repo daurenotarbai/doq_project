@@ -60,8 +60,13 @@ class ProcedureAdmin(admin.ModelAdmin):
     list_display = ("id", "name",)
 
 
+class ProcedureInlineAdmin(admin.TabularInline):
+    model = Doctor.procedures.through
+
+
 @admin.register(Doctor)
 class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
+
     list_display = (
         "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
         "get_todays_times",
@@ -72,11 +77,11 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender'),
                        ('experience_years', 'consultation_fee'), 'clinic')
         }),
-        ('По специальности', {'fields': ('specialities', 'procedures',)}),
+        ('По специальности', {'fields': ('specialities',)}),
 
     )
     readonly_fields = ('image_tag', 'clinic')
-    inlines = [DoctorsAppoinmentTimeInline, ]
+    inlines = [DoctorsAppoinmentTimeInline, ProcedureInlineAdmin]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name', "last_name", "clinic__name"]
 
