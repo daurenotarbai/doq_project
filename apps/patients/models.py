@@ -21,6 +21,7 @@ class Appointment(TimestampMixin):
     class Meta:
         verbose_name = 'Запись на прием'
         verbose_name_plural = 'Записи на прием'
+        unique_together = ['appointment_time', 'appointment_doctor_time']
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime
-from apps.patients.models import Comment, Patient
+from apps.patients.models import Comment, Patient, Appointment
 
 
 class ProcedureSearchSerializer(serializers.ModelSerializer):
@@ -62,11 +62,31 @@ class AppointmentTimeSerializer(serializers.ModelSerializer):
 
 
 class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
-    times = AppointmentTimeSerializer(many=True)
+    times = serializers.SerializerMethodField()
 
     class Meta:
         model = AppointmentDoctorTime
-        fields = ('id', 'date', 'times')
+        fields = ('id', 'date', 'doctor', 'times')
+
+    def get_times(self, obj):
+        appointments = Appointment.objects.filter(appointment_doctor_time__doctor__id=obj.doctor.id)
+
+        appointment_times_list = [
+            appointment.appointment_time.start_time for appointment in appointments if
+            obj.date == appointment.appointment_doctor_time.date
+        ]
+        ttimes = obj.times.all()
+        times_list = []
+        for item in ttimes:
+            test_dict = {
+                'id': item.id,
+                'start_time': item.start_time,
+                'is_free': True
+            }
+            if item.start_time in appointment_times_list:
+                test_dict['is_free']=False
+            times_list.append(test_dict)
+        return times_list
 
 
 class AddressWithAppointmentTimesSerializer(serializers.ModelSerializer):
