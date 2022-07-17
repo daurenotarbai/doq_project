@@ -5,7 +5,7 @@ from rest_framework import routers
 
 from apps.clinics.views import SpecialitiesViewSet, ProceduresViewSet, ClinicsViewSet, \
     MainSearchClinicView, \
-    main_for_test, DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
+    DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
     DoctorCommentsView, \
     ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView
 
@@ -20,17 +20,15 @@ urlpatterns = [
 
     path('search/<str:query>/', MainSearchClinicView.as_view()),
 
-    path('test/', main_for_test),
-
-    path('clinics/<int:clinic_id>/doctors/', ClinicDoctorsView.as_view()),
+    path('clinics/<int:clinic_id>/doctors', ClinicDoctorsView.as_view()),
     path('clinics/<int:clinic_id>/comments', ClinicCommentsView.as_view()),
 
-    path('procedures/<int:procedure_id>/doctors/', ProcedureDoctorsView.as_view()),
-    path('specialities/<int:speciality_id>/doctors/', SpecialityDoctorsView.as_view()),
+    path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),
+    path('specialities/<int:speciality_id>/doctors', SpecialityDoctorsView.as_view()),
 
-    path('doctors/<int:doctor_id>/address/<int:address_id>/appointments/',
+    path('doctors/<int:doctor_id>/address/<int:address_id>/appointments',
          DoctorAppointmentTimesView.as_view()),
-    path('doctors/<int:pk>/', DoctorsDetailView.as_view()),
+    path('doctors/<int:pk>', DoctorsDetailView.as_view()),
     path('doctors/<int:doctor_id>/comments', DoctorCommentsView.as_view()),
 
 ]

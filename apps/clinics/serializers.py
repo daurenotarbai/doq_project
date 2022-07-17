@@ -190,7 +190,7 @@ class ProcedureDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Procedure
-        fields = ['url', 'name', 'doctors']
+        fields = ['id', 'url', 'name', 'doctors']
 
 
 class ClinicDetailSerializer(ClinicSerializer):

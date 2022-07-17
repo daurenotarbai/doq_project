@@ -120,7 +120,7 @@ class DoctorAppointmentTimesView(ListAPIView):
 class ClinicsViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
-        comment_number=Count('doctors__comments', distinct=True))
+        comment_number=Count('doctors__comments', distinct=True)).order_by('avr_doctors_score')
     serializer_class = ClinicSerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -156,14 +156,3 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
 
         except Exception as e:
             return HttpResponse(e, status=500)
-
-
-@api_view(('GET',))
-def main_for_test(request):
-    doctors = Doctor.objects.all().prefetch_related('procedures').select_related('clinic')
-    clinics = Clinic.objects.all().prefetch_related('doctors')
-    for i in doctors:
-        print(i.first_name, i.clinic.name)
-    for j in clinics:
-        print(j.name, [d for d in j.doctors.all()])
-    return Response({"data": 1})
