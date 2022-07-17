@@ -169,6 +169,14 @@ class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name', 'doctors']
 
 
+class ProcedureDetailSerializer(serializers.HyperlinkedModelSerializer):
+    doctors = DoctorSerializer(many=True)
+
+    class Meta:
+        model = Procedure
+        fields = ['url', 'name', 'doctors']
+
+
 class ClinicDetailSerializer(ClinicSerializer):
     class Meta:
         model = Clinic

@@ -17,7 +17,7 @@ from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, 
     SpecialitySearchSerializer, \
     ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
-    DoctorDetailSerializer, DoctorCommentSerializer
+    DoctorDetailSerializer, DoctorCommentSerializer, ProcedureDetailSerializer
 from apps.patients.models import Comment, Appointment
 
 
@@ -37,6 +37,14 @@ class SpecialitiesViewSet(viewsets.ModelViewSet):
 class ProceduresViewSet(viewsets.ModelViewSet):
     queryset = Procedure.objects.filter(parent=None)
     serializer_class = ProcedureSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        context = {
+            'request': request
+        }
+        instance = self.get_object()
+        serializer = ProcedureDetailSerializer(instance, context=context)
+        return Response(serializer.data)
 
 
 class ClinicDoctorsView(ListAPIView):
