@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.clinics.models import AppointmentTime, Doctor
+from apps.clinics.models import AppointmentTime, Doctor, AppointmentDoctorTime
 from apps.core.models import TimestampMixin
 
 
@@ -21,10 +21,11 @@ class Appointment(TimestampMixin):
     class Meta:
         verbose_name = 'Запись на прием'
         verbose_name_plural = 'Записи на прием'
+        unique_together = ['appointment_time', 'appointment_doctor_time']
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name="appointments")
+    appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.appointment_time.start_time}'
@@ -33,7 +34,8 @@ class Appointment(TimestampMixin):
 class Comment(TimestampMixin):
     text = models.TextField()
     star = models.PositiveSmallIntegerField('Рейтинг', default=0)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="subcomments")
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
+                               related_name="subcomments")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments')
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='comments')
 

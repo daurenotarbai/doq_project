@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
+
 from apps.clinics.models import Doctor, Clinic, Procedure, Speciality
 
 

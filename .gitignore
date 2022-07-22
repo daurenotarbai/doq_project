@@ -5,4 +5,6 @@ media/
 .env
 config/local_settings.py
 config/prod_settings.py
+config/base_settings.py
+manage.py
 

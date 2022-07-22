@@ -7,4 +7,4 @@ class ClinicsConfig(AppConfig):
     verbose_name = "Клиники"
 
     def ready(self):
-        import apps.clinics.signals
+        pass

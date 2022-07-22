@@ -1,5 +1,5 @@
-from django.db.models import Count, Avg
-from django.db.models.signals import pre_save, post_save
+from django.db.models import Avg
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from apps.clinics.models import Doctor
