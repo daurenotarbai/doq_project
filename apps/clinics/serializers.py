@@ -32,13 +32,13 @@ class DoctorSearchSerializer(serializers.HyperlinkedModelSerializer):
 class SpecialitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Speciality
-        fields = ['url', 'name']
+        fields = ['id', 'name']
 
 
 class SubProcedureSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Procedure
-        fields = ('url', 'id', 'name')
+        fields = ('id', 'name')
 
 
 class ProcedureSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,13 +46,13 @@ class ProcedureSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Procedure
-        fields = ('url', 'id', 'name', 'parent', 'is_specialty', 'subprocedures')
+        fields = ('id', 'name', 'parent', 'is_specialty', 'subprocedures')
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ('address',)
+        fields = ('id', 'address',)
 
 
 class AppointmentTimeSerializer(serializers.ModelSerializer):
@@ -94,7 +94,7 @@ class AddressWithAppointmentTimesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = ('address', 'appoint_times')
+        fields = ('id', 'address', 'appoint_times')
 
 
 class ClinicSerializer(serializers.ModelSerializer):
@@ -115,7 +115,7 @@ class ClinicSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['first_name']
+        fields = ['id', 'first_name']
 
 
 class DoctorCommentSerializer(serializers.ModelSerializer):
@@ -123,7 +123,7 @@ class DoctorCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['text', 'parent', 'patient', 'star']
+        fields = ['id', 'text', 'parent', 'patient', 'star']
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -156,7 +156,7 @@ class DoctorProceduresSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = DoctorProcedures
-        fields = ['procedure_id', 'price']
+        fields = ['id', 'procedure_id', 'price']
 
 
 class DoctorWithProceduresSerializer(DoctorSerializer):
@@ -182,7 +182,7 @@ class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Speciality
-        fields = ['url', 'name', 'doctors']
+        fields = ['id', 'name', 'doctors']
 
 
 class ProcedureDetailSerializer(serializers.HyperlinkedModelSerializer):
