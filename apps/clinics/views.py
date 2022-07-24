@@ -25,9 +25,8 @@ class SpecialitiesView(APIView):
 
     def get(self, obj):
         queryset = Speciality.objects.all()
-        count = queryset.count()
         serializer = SpecialitySerializer(queryset, many=True)
-        return Response({'count': count, 'results': serializer.data})
+        return Response(serializer.data)
 
 
 class ProceduresView(APIView):

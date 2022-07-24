@@ -70,7 +70,9 @@ class Clinic(TimestampMixin, ContactMixin):
                                    help_text="Подробное описание")
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path)
     image = models.ImageField("Файл с изображением", upload_to=clinic_photo_path, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь",
+                             related_name='clinic',
+                             )
     is_active = models.BooleanField('Актив', default=True, blank=True)
 
     def image_tag(self):

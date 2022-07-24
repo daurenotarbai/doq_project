@@ -18,7 +18,7 @@ class DoctorsInline(admin.TabularInline):
     extra = 1
 
 
-class DoctorsAppoinmentTimeInline(admin.TabularInline):
+class DoctorsAppointmentTimeInline(admin.TabularInline):
     model = AppointmentDoctorTime
     fields = ['date', 'times', 'clinic_address']
     readonly_fields = ('date',)
@@ -26,10 +26,22 @@ class DoctorsAppoinmentTimeInline(admin.TabularInline):
 
 
 @admin.register(AppointmentDoctorTime)
-class DoctorsAppoinmentTimeAdmin(admin.ModelAdmin):
-    model = AppointmentDoctorTime
-    fields = ['date', 'times', 'clinic_address']
+class DoctorsAppointmentTimeAdmin(admin.ModelAdmin):
 
+    model = AppointmentDoctorTime
+    fields = ['doctor', 'date', 'times', 'clinic_address']
+    list_display = ['doctor', 'date', 'clinic_address', 'get_times']
+    filter_horizontal = ('times',)
+    list_filter = ('doctor', 'clinic_address', 'clinic_address__clinic')
+    def get_times(self, obj):
+        times = [times.start_time.strftime('%H:%M') for times in obj.times.all()]
+        return " | ".join(times)
+    get_times.short_description = "Времени"
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['clinic_address'].queryset = Address.objects.filter(
+            clinic__name=request.user.clinic)
+        return super(DoctorsAppointmentTimeAdmin, self).render_change_form(request, context, *args, **kwargs)
 
 @admin.register(Clinic)
 class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
@@ -81,11 +93,11 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
 
     )
     readonly_fields = ('image_tag', 'clinic')
-    inlines = [DoctorsAppoinmentTimeInline, ProcedureInlineAdmin]
+    inlines = [DoctorsAppointmentTimeInline, ProcedureInlineAdmin]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name', "last_name", "clinic__name"]
 
-    def create_appointmen_times(self, obj):
+    def create_appointment_times(self, obj):
         doctor = Doctor.objects.get(id=obj.id)
         appointment_doctor_time = []
         for item in range(5):
@@ -96,7 +108,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         AppointmentDoctorTime.objects.bulk_create(appointment_doctor_time, ignore_conflicts=True)
 
     def get_specialities(self, obj):
-        self.create_appointmen_times(obj)
+        self.create_appointment_times(obj)
         return " | ".join([s.name for s in obj.specialities.all()])
 
     def get_procedures(self, obj):
