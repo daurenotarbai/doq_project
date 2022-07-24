@@ -1,11 +1,31 @@
 from django.contrib import admin
 
-from apps.core.admin import NoAddMixin
+from apps.clinics.admin import MyDateTimeFilter
+from apps.clinics.models import AppointmentDoctorTime
 from apps.patients.models import Appointment, Patient, Comment
 
 
-class AppointmentAdmin(NoAddMixin, admin.ModelAdmin):
-    list_display = ("id", "patient", "appointment_time")
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "id", "patient", "appointment_time", 'get_date', "get_doctor",
+    )
+    list_filter = [('appointment_doctor_time__date', MyDateTimeFilter)]
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields[
+            'appointment_doctor_time'].queryset = AppointmentDoctorTime.objects.filter(
+            doctor__clinic__user=request.user)
+        return super(AppointmentAdmin, self).render_change_form(request, context, *args,
+                                                                **kwargs)
+
+    def get_doctor(self, obj):
+        return obj.appointment_doctor_time.doctor
+
+    def get_date(self, obj):
+        return obj.appointment_doctor_time.date
+
+    get_doctor.short_description = 'Доктор'
+    get_date.short_description = 'День'
 
 
 admin.site.register(Appointment, AppointmentAdmin)

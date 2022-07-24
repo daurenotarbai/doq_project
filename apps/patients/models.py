@@ -11,7 +11,7 @@ class Patient(TimestampMixin):
 
     phone = models.CharField("Номер телефона", max_length=12)
     first_name = models.CharField("Имя", max_length=255, blank=True, default='')
-    iin = models.CharField("ЖСН", max_length=12, blank=True, default='')
+    iin = models.CharField("ЖСН", max_length=12, blank=True, default='', unique=True)
 
     def __str__(self):
         return f'{self.first_name}-{self.iin}'

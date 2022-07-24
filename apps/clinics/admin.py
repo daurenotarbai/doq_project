@@ -1,10 +1,32 @@
 from datetime import datetime, timedelta
 
 from django.contrib import admin
-
+from django.utils import timezone
+from rangefilter.filter import DateRangeFilter
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
+from django.utils.translation import gettext_lazy as _
+
+
+class MyDateTimeFilter(admin.DateFieldListFilter):
+    def __init__(self, *args, **kwargs):
+        super(MyDateTimeFilter, self).__init__(*args, **kwargs)
+
+        now = timezone.now()
+        # When time zone support is enabled, convert "now" to the user's time
+        # zone so Django's definition of "Today" matches what the user expects.
+        if timezone.is_aware(now):
+            now = timezone.localtime(now)
+
+        today = now.date()
+
+        self.links += ((
+            (_('Next 7 days'), {
+                self.lookup_kwarg_since: str(today),
+                self.lookup_kwarg_until: str(today + timedelta(days=7)),
+            }),
+        ))
 
 
 class AddressClinicInline(admin.TabularInline):
@@ -18,38 +40,45 @@ class DoctorsInline(admin.TabularInline):
     extra = 1
 
 
-class DoctorsAppointmentTimeInline(admin.TabularInline):
-    model = AppointmentDoctorTime
-    fields = ['date', 'times', 'clinic_address']
-    readonly_fields = ('date',)
-    extra = 0
-
-
 @admin.register(AppointmentDoctorTime)
 class DoctorsAppointmentTimeAdmin(admin.ModelAdmin):
-
     model = AppointmentDoctorTime
     fields = ['doctor', 'date', 'times', 'clinic_address']
     list_display = ['doctor', 'date', 'clinic_address', 'get_times']
     filter_horizontal = ('times',)
-    list_filter = ('doctor', 'clinic_address', 'clinic_address__clinic')
+    list_filter = [
+        'doctor', 'clinic_address', 'clinic_address__clinic', ('date', MyDateTimeFilter)]
+
     def get_times(self, obj):
         times = [times.start_time.strftime('%H:%M') for times in obj.times.all()]
         return " | ".join(times)
+
     get_times.short_description = "Времени"
+
+    def get_queryset(self, request):
+        qs = super(DoctorsAppointmentTimeAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        else:
+            self.list_filter = ['doctor', ('date', MyDateTimeFilter)]
+            return qs.filter(doctor__clinic__user=request.user)
 
     def render_change_form(self, request, context, *args, **kwargs):
         context['adminform'].form.fields['clinic_address'].queryset = Address.objects.filter(
-            clinic__name=request.user.clinic)
-        return super(DoctorsAppointmentTimeAdmin, self).render_change_form(request, context, *args, **kwargs)
+            clinic__user=request.user)
+        context['adminform'].form.fields['doctor'].queryset = Doctor.objects.filter(
+            clinic__user=request.user)
+        return super(DoctorsAppointmentTimeAdmin, self).render_change_form(request, context, *args,
+                                                                           **kwargs)
+
 
 @admin.register(Clinic)
 class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
-    list_display = ("image_tag", "name", "phone")
+    list_display = ("image_tag", "name", "phone", 'user',)
     fieldsets = (
         ('', {'fields': (('image_tag', 'logo'),)}),
         ('Основная информация', {
-            'fields': (('name', 'phone'), 'description')
+            'fields': (('name', 'phone', 'user'), 'description')
         }),
     )
     readonly_fields = ['image_tag']
@@ -78,7 +107,6 @@ class ProcedureInlineAdmin(admin.TabularInline):
 
 @admin.register(Doctor)
 class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
-
     list_display = (
         "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
         "get_todays_times",
@@ -93,22 +121,11 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
 
     )
     readonly_fields = ('image_tag', 'clinic')
-    inlines = [DoctorsAppointmentTimeInline, ProcedureInlineAdmin]
+    inlines = [ProcedureInlineAdmin]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name', "last_name", "clinic__name"]
 
-    def create_appointment_times(self, obj):
-        doctor = Doctor.objects.get(id=obj.id)
-        appointment_doctor_time = []
-        for item in range(5):
-            appointment_doctor_time.append(
-                AppointmentDoctorTime(date=datetime.now().date() + timedelta(days=item),
-                                      doctor=doctor))
-
-        AppointmentDoctorTime.objects.bulk_create(appointment_doctor_time, ignore_conflicts=True)
-
     def get_specialities(self, obj):
-        self.create_appointment_times(obj)
         return " | ".join([s.name for s in obj.specialities.all()])
 
     def get_procedures(self, obj):
@@ -116,13 +133,19 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
 
     def get_todays_times(self, obj):
         doctor_appointment = obj.appoint_times.filter(date=datetime.now().date()).first()
-        times = [times.start_time.strftime('%H:%M') for times in doctor_appointment.times.all()]
+        if doctor_appointment:
+            times = [times.start_time.strftime('%H:%M') for times in doctor_appointment.times.all()]
+        else:
+            times = ""
         return " | ".join(times)
 
     def get_tomorrows_times(self, obj):
         doctor_appointment = obj.appoint_times.filter(
             date=datetime.now().date() + timedelta(days=1)).first()
-        times = [times.start_time.strftime('%H:%M') for times in doctor_appointment.times.all()]
+        if doctor_appointment:
+            times = [times.start_time.strftime('%H:%M') for times in doctor_appointment.times.all()]
+        else:
+            times = ""
         return " | ".join(times)
 
     get_procedures.short_description = "Процедуры"

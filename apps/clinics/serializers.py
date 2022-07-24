@@ -30,12 +30,16 @@ class DoctorSearchSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SpecialitySerializer(serializers.HyperlinkedModelSerializer):
-    doctor_number =serializers.SerializerMethodField()
+    doctor_number = serializers.SerializerMethodField()
+
     class Meta:
         model = Speciality
         fields = ['id', 'name', 'doctor_number']
+
     def get_doctor_number(self, obj):
         return obj.doctors.all().count()
+
+
 class SubProcedureSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Procedure
@@ -154,7 +158,6 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class DoctorProceduresSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = DoctorProcedures
         fields = ['id', 'procedure_id', 'price']
