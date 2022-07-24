@@ -3,15 +3,13 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
-from apps.clinics.views import SpecialitiesViewSet, ProceduresViewSet, ClinicsViewSet, \
+from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsViewSet, \
     MainSearchClinicView, \
     DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
     DoctorCommentsView, \
     ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView
 
 router = routers.DefaultRouter()
-router.register(r'specialities', SpecialitiesViewSet)
-router.register(r'procedures', ProceduresViewSet)
 router.register(r'clinics', ClinicsViewSet)
 
 urlpatterns = [
@@ -23,8 +21,12 @@ urlpatterns = [
     path('clinics/<int:clinic_id>/doctors', ClinicDoctorsView.as_view()),
     path('clinics/<int:clinic_id>/comments', ClinicCommentsView.as_view()),
 
+
+    path('procedures/', ProceduresView.as_view()),
+    path('specialities/', SpecialitiesView.as_view()),
     path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),
     path('specialities/<int:speciality_id>/doctors', SpecialityDoctorsView.as_view()),
+
 
     path('doctors/<int:doctor_id>/address/<int:address_id>/appointments',
          DoctorAppointmentTimesView.as_view()),

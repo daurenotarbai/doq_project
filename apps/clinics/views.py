@@ -21,33 +21,22 @@ from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, 
 from apps.patients.models import Comment
 
 
-class SpecialitiesViewSet(viewsets.ModelViewSet):
-    queryset = Speciality.objects.all()
-    serializer_class = SpecialitySerializer
+class SpecialitiesView(APIView):
 
-    def retrieve(self, request, *args, **kwargs):
-        context = {
-            'request': request
-        }
-        instance = self.get_object()
-        serializer = SpecialityDetailSerializer(instance, context=context)
-        return Response(serializer.data)
+    def get(self, obj):
+        queryset = Speciality.objects.all()
+        count = queryset.count()
+        serializer = SpecialitySerializer(queryset, many=True)
+        return Response({'count': count, 'results': serializer.data})
 
 
-class ProceduresViewSet(viewsets.ModelViewSet):
-    queryset = Procedure.objects.all()
-    serializer_class = ProcedureSerializer
+class ProceduresView(APIView):
 
-    def get_queryset(self):
-        return self.queryset.filter(parent=None)
-
-    def retrieve(self, request, *args, **kwargs):
-        context = {
-            'request': request
-        }
-        instance = self.queryset.get(id=kwargs['pk'])
-        serializer = ProcedureDetailSerializer(instance, context=context)
-        return Response(serializer.data)
+    def get(self, obj):
+        queryset = Procedure.objects.all()
+        count = queryset.count()
+        serializer = SpecialitySerializer(queryset, many=True)
+        return Response({'count': count, 'results': serializer.data})
 
 
 class ClinicDoctorsView(ListAPIView):
