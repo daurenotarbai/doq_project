@@ -17,19 +17,19 @@ class ClinicSearchSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
-class SpecialitySearchSerializer(serializers.HyperlinkedModelSerializer):
+class SpecialitySearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speciality
         fields = ['name']
 
 
-class DoctorSearchSerializer(serializers.HyperlinkedModelSerializer):
+class DoctorSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = ['first_name', 'last_name']
 
 
-class SpecialitySerializer(serializers.HyperlinkedModelSerializer):
+class SpecialitySerializer(serializers.ModelSerializer):
     doctor_number = serializers.SerializerMethodField()
 
     class Meta:
@@ -40,19 +40,22 @@ class SpecialitySerializer(serializers.HyperlinkedModelSerializer):
         return obj.doctors.all().count()
 
 
-class SubProcedureSerializer(serializers.HyperlinkedModelSerializer):
+class SubProcedureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Procedure
         fields = ('id', 'name')
 
 
-class ProcedureSerializer(serializers.HyperlinkedModelSerializer):
+class ProcedureSerializer(serializers.ModelSerializer):
     subprocedures = SubProcedureSerializer(many=True)
+    doctor_number = serializers.SerializerMethodField()
 
     class Meta:
         model = Procedure
-        fields = ('id', 'name', 'parent', 'is_specialty', 'subprocedures')
+        fields = ('id', 'name', 'parent', 'is_specialty', 'subprocedures', 'doctor_number')
 
+    def get_doctor_number(self, obj):
+        return obj.doctors.all().count()
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:

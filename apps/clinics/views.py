@@ -22,7 +22,6 @@ from apps.patients.models import Comment
 
 
 class SpecialitiesView(APIView):
-
     def get(self, obj):
         queryset = Speciality.objects.all()
         serializer = SpecialitySerializer(queryset, many=True)
@@ -35,12 +34,15 @@ class SpecialitiesDetailView(RetrieveAPIView):
 
 
 class ProceduresView(APIView):
-
     def get(self, obj):
         queryset = Procedure.objects.all()
-        count = queryset.count()
-        serializer = SpecialitySerializer(queryset, many=True)
-        return Response({'count': count, 'results': serializer.data})
+        serializer = ProcedureSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ProceduresDetailView(RetrieveAPIView):
+    queryset = Procedure.objects.all()
+    serializer_class = ProcedureSerializer
 
 
 class ClinicDoctorsView(ListAPIView):

@@ -7,7 +7,8 @@ from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsViewSet,
     MainSearchClinicView, \
     DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
     DoctorCommentsView, \
-    ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView, SpecialitiesDetailView
+    ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView, SpecialitiesDetailView, \
+    ProceduresDetailView
 
 router = routers.DefaultRouter()
 router.register(r'clinics', ClinicsViewSet)
@@ -23,6 +24,7 @@ urlpatterns = [
 
 
     path('procedures/', ProceduresView.as_view()),
+    path('procedures/<int:pk>/', ProceduresDetailView.as_view()),
     path('specialities/', SpecialitiesView.as_view()),
     path('specialities/<int:pk>/', SpecialitiesDetailView.as_view()),
     path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),
