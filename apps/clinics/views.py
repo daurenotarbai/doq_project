@@ -29,6 +29,11 @@ class SpecialitiesView(APIView):
         return Response(serializer.data)
 
 
+class SpecialitiesDetailView(RetrieveAPIView):
+    queryset = Speciality.objects.all()
+    serializer_class = SpecialitySerializer
+
+
 class ProceduresView(APIView):
 
     def get(self, obj):
