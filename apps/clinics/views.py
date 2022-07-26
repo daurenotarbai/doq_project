@@ -133,20 +133,22 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
     def get(self, request, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                Q('multi_match', query=query, fields=['name'])).execute()
             doctor = DoctorParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['first_name', 'last_name'])).execute()
+                Q('multi_match', query=query, fields=['first_name', 'last_name'])).execute()
             procedure = ProcedureParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                Q('multi_match', query=query, fields=['name'])).execute()
             speciality = SpecialityParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                Q('multi_match', query=query, fields=['name'])).execute()
             clinic_serializer = ClinicSearchSerializer(clinic, many=True)
             doctor_serializer = DoctorSearchSerializer(doctor, many=True)
             procedure_serializer = ProcedureSearchSerializer(procedure, many=True)
             speciality_serializer = SpecialitySearchSerializer(speciality, many=True)
-            data = {'clinics': clinic_serializer.data, 'doctors': doctor_serializer.data,
+            data = {'clinics': clinic_serializer.data,
+                    'doctors': doctor_serializer.data,
                     'specialities': speciality_serializer.data,
-                    'procedures': procedure_serializer.data}
+                    'procedures': procedure_serializer.data,
+                    }
             return Response(data)
 
         except Exception as e:

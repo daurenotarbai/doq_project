@@ -11,20 +11,19 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: doq_project_local_docker_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
   web:
     container_name: doq_project_web
     build:
       context: ./
       dockerfile: Dockerfile
     command: bash -c "python /usr/src/doq_project/manage.py migrate --noinput &&
-      python /usr/src/doq_project/manage.py collectstatic --noinput &&
       python /usr/src/doq_project/manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
       - .:/usr/src/doq_project
     ports:
-      - 8000:8000
+      - 8001:8000
     environment:
       DB_HOST: db
       DB_NAME: doq_project_local_docker_db
