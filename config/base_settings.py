@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'rest_framework',
     'django_elasticsearch_dsl',
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,4 +138,10 @@ ELASTICSEARCH_DSL = {
 }
 INTERNAL_IPS = [
     '46.101.243.200',
+]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'https://medappointment.vercel.app',  # for network
+    'http://localhost:8000',  # for localhost (Developlemt)
+    'http://46.101.243.200',  # for network (Development)
 ]

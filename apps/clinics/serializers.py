@@ -57,6 +57,7 @@ class ProcedureSerializer(serializers.ModelSerializer):
     def get_doctor_number(self, obj):
         return obj.doctors.all().count()
 
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
