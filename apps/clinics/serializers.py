@@ -1,7 +1,9 @@
+from abc import ABC
+
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
-    AppointmentDoctorTime, AppointmentTime, DoctorProcedures
+    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -58,10 +60,23 @@ class ProcedureSerializer(serializers.ModelSerializer):
         return obj.doctors.all().count()
 
 
+class ScheduleSerializer(serializers.Serializer):
+    day = serializers.SerializerMethodField()
+    times = serializers.SerializerMethodField()
+
+    def get_day(self, obj):
+        return f'{obj.day_in_week}'
+
+    def get_times(self, obj):
+        return f'{obj.start_day} - {obj.end_day}'
+
+
 class AddressSerializer(serializers.ModelSerializer):
+    schedules = ScheduleSerializer(many=True)
+
     class Meta:
         model = Address
-        fields = ('id', 'address',)
+        fields = ('id', 'address', 'schedules')
 
 
 class AppointmentTimeSerializer(serializers.ModelSerializer):

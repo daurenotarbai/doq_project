@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib import admin
 from django.utils import timezone
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
-    AppointmentDoctorTime
+    AppointmentDoctorTime, Schedules
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
 from django.utils.translation import gettext_lazy as _
 
@@ -159,3 +159,8 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
             return qs
         self.list_filter = []
         return qs.filter(clinic__user=request.user)
+
+
+@admin.register(Schedules)
+class ScheduleAdmin(admin.ModelAdmin):
+    pass

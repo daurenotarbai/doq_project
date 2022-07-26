@@ -13,6 +13,16 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
+class WeekDays(TextChoices):
+    MONDAY = "MONDAY", "Понедельник"
+    TUESDAY = "TUESDAY", "Вторник"
+    WEDNESDAY = "WEDNESDAY", "Среда"
+    THURSDAY = "THURSDAY", "Четверг"
+    FRIDAY = "FRIDAY", "Пятница"
+    SATURDAY = "SATURDAY", "Суббота"
+    SUNDAY = "SUNDAY", "Воскресенье"
+
+
 def clinic_photo_path(instance, filename):
     return "photos/clinic/{0}/{1}".format(instance.id, filename)
 
@@ -93,9 +103,30 @@ class Address(models.Model):
     city = models.CharField('Город', max_length=255, null=True, blank=True)
     address = models.CharField('Адресс', max_length=255, null=True, blank=True)
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="addresses")
+    is_24_hours = models.BooleanField('Круглосуточно', default=False, blank=True)
 
     def __str__(self) -> str:
         return self.address
+
+
+class Schedules(models.Model):
+    class Meta:
+        verbose_name = "Расписание"
+        verbose_name_plural = "Расписании"
+        unique_together = ['day_in_week', 'address']
+
+    day_in_week = models.CharField('День недели', choices=WeekDays.choices, max_length=255,
+                                   null=True, blank=True)
+    start_day = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE,
+                                  related_name="_schedules",
+                                  )
+    end_day = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE,
+                                related_name="schedules",
+                                )
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="schedules")
+
+    def __str__(self) -> str:
+        return f'{self.day_in_week}'
 
 
 # class DoctorDescriptionMixin(models.Model):
