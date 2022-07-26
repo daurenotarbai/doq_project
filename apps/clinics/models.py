@@ -129,6 +129,7 @@ class Doctor(TimestampMixin):
     procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors',
                                         through='DoctorProcedures')
     score = models.FloatField('Рейтинг', default=0.0)
+    for_child = models.BooleanField('Детский', default=True, blank=True)
 
     def image_tag(self):
         if self.photo:
@@ -155,12 +156,23 @@ class AppointmentDoctorTime(models.Model):
         verbose_name_plural = 'Времени на прием'
         unique_together = ('doctor', 'date')
 
-    clinic_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True,
-                                       verbose_name="Адрес клиники",
-                                       related_name="appoint_times")
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, verbose_name="Доктор",
-                               related_name="appoint_times")
-    times = models.ManyToManyField(AppointmentTime, verbose_name="Времени на прием", blank=True)
+    clinic_address = models.ForeignKey(
+        Address, on_delete=models.CASCADE,
+        null=True,
+        verbose_name="Адрес клиники",
+        related_name="appoint_times")
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name="Доктор",
+        related_name="appoint_times",
+    )
+    times = models.ManyToManyField(
+        AppointmentTime,
+        verbose_name="Времени на прием",
+        blank=True,
+    )
     date = models.DateField(verbose_name="Дата")
 
     def __str__(self):

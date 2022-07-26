@@ -1,8 +1,9 @@
+import datetime
+
 from django.db.models import Avg, Count
 from django.http import HttpResponse
 from elasticsearch_dsl import Q
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -58,18 +59,51 @@ class ClinicDoctorsView(ListAPIView):
 class ProcedureDoctorsView(ClinicDoctorsView):
 
     def get_queryset(self):
+        req_get = self.request.GET
         procedure_id = self.kwargs.get('procedure_id')
+        sort_by_rating = req_get.get('by_rating')
+        sort_by_price = req_get.get('procedure_fee')
+        sort_by_for_child = req_get.get('for_child')
+        sort_by_experience_years = req_get.get('by_experience_years')
+        date = req_get.get('date')
         procedure = Procedure.objects.get(id=procedure_id)
         queryset = self.model.objects.filter(procedures__exact=procedure)
+        if sort_by_for_child:
+            queryset = queryset.filter(for_child=True)
+        if date:
+            queryset = queryset.filter(appoint_times__date=date)
+        if sort_by_rating:
+            queryset = queryset.order_by('-score')
+        elif sort_by_price:
+            queryset = queryset.order_by('doctor_procedures__price')
+        elif sort_by_experience_years:
+            queryset = queryset.order_by('-experience_years')
+
         return queryset
 
 
 class SpecialityDoctorsView(ClinicDoctorsView):
 
     def get_queryset(self):
+        req_get = self.request.GET
+        sort_by_rating = req_get.get('by_rating')
+        sort_by_price = req_get.get('consultation_fee')
+        sort_by_experience_years = req_get.get('by_experience_years')
         speciality_id = self.kwargs.get('speciality_id')
+        sort_by_for_child = req_get.get('for_child')
+        date = req_get.get('date')
         speciality = Speciality.objects.get(id=speciality_id)
         queryset = self.model.objects.filter(specialities__exact=speciality)
+        if sort_by_for_child:
+            queryset = queryset.filter(for_child=True)
+        if date:
+            queryset = queryset.filter(appoint_times__date=date)
+        if sort_by_rating:
+            queryset = queryset.order_by('-score')
+        elif sort_by_price:
+            queryset = queryset.order_by('consultation_fee')
+        elif sort_by_experience_years:
+            queryset = queryset.order_by('-experience_years')
         return queryset
 
 
@@ -106,9 +140,11 @@ class DoctorAppointmentTimesView(ListAPIView):
     def get_queryset(self):
         doctor_id = self.kwargs.get('doctor_id')
         address_id = self.kwargs.get('address_id')
-        queryset = self.queryset.objects.filter(doctor=doctor_id,
-                                                clinic_address=address_id,
-                                                )
+        queryset = self.queryset.objects.filter(
+            doctor=doctor_id,
+            clinic_address=address_id,
+            date__gte=datetime.datetime.today()
+        )
         return queryset
 
 
@@ -117,6 +153,14 @@ class ClinicsViewSet(viewsets.ModelViewSet):
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
         comment_number=Count('doctors__comments', distinct=True)).order_by('avr_doctors_score')
     serializer_class = ClinicSerializer
+
+    def get_queryset(self):
+        sort_by_rating = self.request.GET.get('by_rating')
+
+        if sort_by_rating:
+            queryset = self.queryset.order_by('-avr_doctors_score')
+            return queryset
+        return self.queryset
 
     def retrieve(self, request, *args, **kwargs):
         context = {

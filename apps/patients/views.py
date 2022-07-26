@@ -22,7 +22,10 @@ class CreatePatientAppointmentView(CreateAPIView):
         if appointment_time not in time_ids:
             raise exceptions.NotAcceptable(
                 "doctor has no 'appointment_time' with id {}".format(appointment_time))
-        patient, _ = Patient.objects.get_or_create(phone=phone, first_name=first_name, iin=iin)
+        patient, _ = Patient.objects.update_or_create(iin=iin, defaults={
+            'phone': phone,
+            'first_name': first_name,
+        })
         request.data['patient'] = patient.id
         return super(CreatePatientAppointmentView, self).create(request, *args, **kwargs)
 

@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from django.contrib import admin
 from django.utils import timezone
-from rangefilter.filter import DateRangeFilter
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
@@ -115,7 +114,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender'),
-                       ('experience_years', 'consultation_fee'), 'clinic')
+                       ('experience_years', 'consultation_fee', 'for_child'), 'clinic')
         }),
         ('По специальности', {'fields': ('specialities',)}),
 
