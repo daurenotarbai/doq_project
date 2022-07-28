@@ -1,7 +1,7 @@
 import datetime
-
 from django.db.models import Avg, Count
 from django.http import HttpResponse
+from django.utils import timezone
 from elasticsearch_dsl import Q
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -12,7 +12,8 @@ from rest_framework.views import APIView
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
     ProcedureParametrsDocument, \
     SpecialityParametrsDocument
-from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime
+from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime, \
+    WeekDaysNumber
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, \
     SpecialitySearchSerializer, \
@@ -156,7 +157,23 @@ class ClinicsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         sort_by_rating = self.request.GET.get('by_rating')
-
+        filter_by_24_hours = self.request.GET.get('24_hours')
+        filter_by_is_open = self.request.GET.get('is_open')
+        if filter_by_is_open:
+            ids = []
+            for clinic in self.queryset:
+                for address in clinic.addresses.all():
+                    for schedule in address.schedules.all():
+                        for key, value in WeekDaysNumber.items():
+                            now = timezone.now()
+                            if timezone.localtime(now).weekday() == value:
+                                if key == schedule.day_in_week:
+                                    time_now = timezone.localtime(now).time()
+                                    if schedule.end_day > time_now:
+                                        ids.append(clinic.id)
+            self.queryset = self.queryset.filter(id__in=ids)
+        if filter_by_24_hours:
+            self.queryset = self.queryset.filter(addresses__is_24_hours=True)
         if sort_by_rating:
             queryset = self.queryset.order_by('-avr_doctors_score')
             return queryset
