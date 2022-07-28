@@ -23,6 +23,17 @@ class WeekDays(TextChoices):
     SUNDAY = "SUNDAY", "Воскресенье"
 
 
+WeekDaysNumber = {
+    'MONDAY': 0,
+    'TUESDAY': 1,
+    'WEDNESDAY': 2,
+    'THURSDAY': 3,
+    'FRIDAY': 4,
+    'SATURDAY': 5,
+    'SUNDAY': 6,
+}
+
+
 def clinic_photo_path(instance, filename):
     return "photos/clinic/{0}/{1}".format(instance.id, filename)
 
@@ -117,8 +128,8 @@ class Schedules(models.Model):
 
     day_in_week = models.CharField('День недели', choices=WeekDays.choices, max_length=255,
                                    null=True, blank=True)
-    start_day = models.TimeField(null=True)
-    end_day = models.TimeField(null=True)
+    start_day = models.TimeField(null=True, blank=True)
+    end_day = models.TimeField(null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="schedules")
 
     def __str__(self) -> str:

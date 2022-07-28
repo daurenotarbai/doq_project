@@ -19,7 +19,16 @@ def update_score(sender, instance, *args, **kwargs):
 def create_schedules(sender, instance, *args, **kwargs):
     for day in WeekDays.values:
         try:
+            print("GsdGG", instance.is_24_hours)
             with transaction.atomic():
-                Schedules.objects.create(day_in_week=day, address=instance)
+                if instance.is_24_hours:
+                    Schedules.objects.update_or_create(day_in_week=day,
+                                                       address=instance,
+                                                       defaults={
+                                                           'start_day': "00:00:00",
+                                                           'end_day': "23:59:59",
+                                                       })
+                else:
+                    Schedules.objects.create(day_in_week=day, address=instance)
         except IntegrityError:
             pass

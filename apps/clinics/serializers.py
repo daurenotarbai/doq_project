@@ -1,9 +1,10 @@
+import datetime
 from abc import ABC
 
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
-    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules
+    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules, WeekDaysNumber
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -75,10 +76,21 @@ class ScheduleSerializer(serializers.Serializer):
 
 class AddressSerializer(serializers.ModelSerializer):
     schedules = ScheduleSerializer(many=True)
+    title = serializers.SerializerMethodField()
 
     class Meta:
         model = Address
-        fields = ('id', 'address', 'schedules')
+        fields = ('id', 'address', 'title', 'schedules')
+
+    def get_title(self, obj):
+        if obj.is_24_hours:
+            return "Круглосуточно"
+        for key, value in WeekDaysNumber.items():
+            if datetime.datetime.today().weekday() == value:
+                for day in obj.schedules.all():
+                    if key == day.day_in_week:
+                        title = f'Открыто до {day.end_day}'
+                        return title
 
 
 class AppointmentTimeSerializer(serializers.ModelSerializer):

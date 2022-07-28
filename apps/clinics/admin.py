@@ -169,7 +169,7 @@ class ScheduleInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Address)
-class AddressAdmin(admin.ModelAdmin):
+class AddressAdmin(NoAddMixin, admin.ModelAdmin):
     list_display = ['city', 'address', 'is_24_hours', 'get_schedules']
     inlines = (ScheduleInlineAdmin,)
 
