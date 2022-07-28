@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.html import format_html
+
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime, Schedules
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
@@ -161,6 +163,26 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         return qs.filter(clinic__user=request.user)
 
 
-@admin.register(Schedules)
-class ScheduleAdmin(admin.ModelAdmin):
-    pass
+class ScheduleInlineAdmin(admin.TabularInline):
+    model = Schedules
+    extra = 0
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['city', 'address', 'is_24_hours', 'get_schedules']
+    inlines = (ScheduleInlineAdmin,)
+
+    def get_schedules(self, obj):
+        return format_html("".join(
+            ['{} : {} - {}<br>'.format(s.day_in_week, s.start_day, s.end_day) for s in
+             obj.schedules.all()]))
+
+    def get_queryset(self, request):
+        qs = super(AddressAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            self.list_filter = ['clinic', ]
+            return qs
+        else:
+            self.list_filter = []
+        return qs.filter(clinic__user=request.user)

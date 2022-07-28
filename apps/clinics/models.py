@@ -117,24 +117,12 @@ class Schedules(models.Model):
 
     day_in_week = models.CharField('День недели', choices=WeekDays.choices, max_length=255,
                                    null=True, blank=True)
-    start_day = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE,
-                                  related_name="_schedules",
-                                  )
-    end_day = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE,
-                                related_name="schedules",
-                                )
+    start_day = models.TimeField(null=True)
+    end_day = models.TimeField(null=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name="schedules")
 
     def __str__(self) -> str:
         return f'{self.day_in_week}'
-
-
-# class DoctorDescriptionMixin(models.Model):
-#     class Meta:
-#         abstract = True
-#     description = models.TextField("Описание", blank=True, default='', help_text="Подробное описание")
-#     education = models.CharField("Образование", max_length=20, default='')
-#     courses = models.CharField("Курсы", max_length=20, default='')
 
 
 class Doctor(TimestampMixin):

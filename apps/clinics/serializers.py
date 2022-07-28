@@ -68,7 +68,9 @@ class ScheduleSerializer(serializers.Serializer):
         return f'{obj.day_in_week}'
 
     def get_times(self, obj):
-        return f'{obj.start_day} - {obj.end_day}'
+        if obj.start_day or obj.end_day:
+            return f'{obj.start_day} - {obj.end_day}'
+        return '-'
 
 
 class AddressSerializer(serializers.ModelSerializer):
