@@ -200,13 +200,13 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
     def get(self, request, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
-                Q('multi_match', query=query, fields=['name'])).execute()
+                Q('query_string', query=query, fields=['name'])).execute()
             doctor = DoctorParametrsDocument.search().query(
-                Q('multi_match', query=query, fields=['first_name', 'last_name'])).execute()
+                Q('query_string', query=query, fields=['first_name', 'last_name'])).execute()
             procedure = ProcedureParametrsDocument.search().query(
-                Q('multi_match', query=query, fields=['name'])).execute()
+                Q('query_string', query=query, fields=['name'])).execute()
             speciality = SpecialityParametrsDocument.search().query(
-                Q('multi_match', query=query, fields=['name'])).execute()
+                Q('query_string', query=query, fields=['name'])).execute()
             clinic_serializer = ClinicSearchSerializer(clinic, many=True)
             doctor_serializer = DoctorSearchSerializer(doctor, many=True)
             procedure_serializer = ProcedureSearchSerializer(procedure, many=True)
