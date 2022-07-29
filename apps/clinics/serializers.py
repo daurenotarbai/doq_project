@@ -4,7 +4,8 @@ from abc import ABC
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
-    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules, WeekDaysNumber
+    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules, WeekDaysNumber, \
+    ClinicApplication
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -235,3 +236,9 @@ class ClinicDetailSerializer(ClinicSerializer):
         model = Clinic
         fields = ['id', 'logo', 'image', 'name', 'addresses', 'phone', 'description',
                   'avr_doctors_score', 'comment_number']
+
+
+class ClinicApplicationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClinicApplication
+        fields = '__all__'

@@ -146,18 +146,40 @@ class Doctor(TimestampMixin):
     middle_name = models.CharField("Отчество", max_length=255, blank=True, default='')
     description = models.TextField("Описание", blank=True, default='',
                                    help_text="Подробное описание")
-    photo = models.ImageField("Фото специалиста", upload_to=specialist_photo_path, null=True,
-                              blank=True)
+    photo = models.ImageField(
+        "Фото специалиста",
+        upload_to=specialist_photo_path,
+        null=True,
+        blank=True,
+    )
     gender = models.CharField('Пол', max_length=10, choices=Gender.choices, blank=True, null=True)
-    experience_years = models.PositiveSmallIntegerField('Опыт работы', null=True, default=1)
-    consultation_fee = models.DecimalField('Цена за прием', max_digits=10, decimal_places=2,
-                                           default=Decimal(0))
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="doctors",
-                               verbose_name="Клиника")
-    specialities = models.ManyToManyField(Speciality, verbose_name="Специальности",
-                                          related_name="doctors")
-    procedures = models.ManyToManyField(Procedure, verbose_name="Процедуры", related_name='doctors',
-                                        through='DoctorProcedures')
+    experience_years = models.PositiveSmallIntegerField(
+        'Опыт работы',
+        null=True,
+        default=1,
+    )
+    consultation_fee = models.DecimalField(
+        'Цена за прием',
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
+    clinic = models.ForeignKey(
+        Clinic,
+        on_delete=models.CASCADE,
+        related_name="doctors",
+        verbose_name="Клиника",
+    )
+    specialities = models.ManyToManyField(
+        Speciality, verbose_name="Специальности",
+        related_name="doctors",
+    )
+    procedures = models.ManyToManyField(
+        Procedure,
+        verbose_name="Процедуры",
+        related_name='doctors',
+        through='DoctorProcedures',
+    )
     score = models.FloatField('Рейтинг', default=0.0)
     for_child = models.BooleanField('Детский', default=True, blank=True)
 
@@ -217,3 +239,37 @@ class AppointmentDoctorTime(models.Model):
 
     def __str__(self):
         return f'{self.doctor} - {self.date}'
+
+
+class ClinicApplication(TimestampMixin):
+    class Meta:
+        verbose_name = 'Заявка'
+        verbose_name_plural = 'Заявки'
+
+    name_clinic = models.CharField(
+        'Название клиники',
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    name = models.CharField(
+        'Имя клиента',
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    city = models.CharField(
+        'Город',
+        max_length=30,
+        null=True,
+        blank=True,
+    )
+    phone = models.CharField(
+        'Номер телефона',
+        max_length=15,
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f'{self.name_clinic} - {self.created_at}'

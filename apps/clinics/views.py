@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from elasticsearch_dsl import Q
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,14 +13,20 @@ from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsD
     ProcedureParametrsDocument, \
     SpecialityParametrsDocument
 from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, AppointmentDoctorTime, \
-    WeekDaysNumber
+    WeekDaysNumber, ClinicApplication
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, \
     SpecialitySearchSerializer, \
     ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
-    DoctorDetailSerializer, DoctorCommentSerializer, ProcedureDetailSerializer
+    DoctorDetailSerializer, DoctorCommentSerializer, ProcedureDetailSerializer, \
+    ClinicApplicationCreateSerializer
 from apps.patients.models import Comment
+
+
+class ClinicApplicationCreateView(CreateAPIView):
+    queryset = ClinicApplication
+    serializer_class = ClinicApplicationCreateSerializer
 
 
 class SpecialitiesView(APIView):

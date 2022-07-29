@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
-    AppointmentDoctorTime, Schedules
+    AppointmentDoctorTime, Schedules, ClinicApplication
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
 from django.utils.translation import gettext_lazy as _
 
@@ -186,3 +186,8 @@ class AddressAdmin(NoAddMixin, admin.ModelAdmin):
         else:
             self.list_filter = []
         return qs.filter(clinic__user=request.user)
+
+
+@admin.register(ClinicApplication)
+class ClinicApplicationAdmin(NoAddMixin, admin.ModelAdmin):
+    list_display = ('name_clinic', 'name', 'created_at')
