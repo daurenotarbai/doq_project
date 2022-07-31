@@ -2,8 +2,8 @@ server {
     listen ${LISTEN_PORT} ssl;
 
     ssl                         on;
-    ssl_certificate             certificate/certificate.crt;
-    ssl_certificate_key         certificate/private.key;
+    ssl_certificate             /doq_project/certificate/certificate.crt;
+    ssl_certificate_key         /doq_project/certificate/private.key;
 
     server_name                 onmenu.site;
     access_log                  /var/log/nginx/nginx.vhost.access.log;
