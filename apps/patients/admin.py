@@ -12,9 +12,10 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_filter = [('appointment_doctor_time__date', MyDateTimeFilter)]
 
     def render_change_form(self, request, context, *args, **kwargs):
-        context['adminform'].form.fields[
-            'appointment_doctor_time'].queryset = AppointmentDoctorTime.objects.filter(
-            doctor__clinic__user=request.user)
+        if not request.user.is_superuser:
+            context['adminform'].form.fields[
+                'appointment_doctor_time'].queryset = AppointmentDoctorTime.objects.filter(
+                doctor__clinic__user=request.user)
         return super(AppointmentAdmin, self).render_change_form(request, context, *args,
                                                                 **kwargs)
 

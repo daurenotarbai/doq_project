@@ -65,10 +65,11 @@ class DoctorsAppointmentTimeAdmin(admin.ModelAdmin):
             return qs.filter(doctor__clinic__user=request.user)
 
     def render_change_form(self, request, context, *args, **kwargs):
-        context['adminform'].form.fields['clinic_address'].queryset = Address.objects.filter(
-            clinic__user=request.user)
-        context['adminform'].form.fields['doctor'].queryset = Doctor.objects.filter(
-            clinic__user=request.user)
+        if not request.user.is_superuser:
+            context['adminform'].form.fields['clinic_address'].queryset = Address.objects.filter(
+                clinic__user=request.user)
+            context['adminform'].form.fields['doctor'].queryset = Doctor.objects.filter(
+                clinic__user=request.user)
         return super(DoctorsAppointmentTimeAdmin, self).render_change_form(request, context, *args,
                                                                            **kwargs)
 
