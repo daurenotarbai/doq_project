@@ -1,6 +1,6 @@
 server {
-    listen 80;
-    listen [::]:80;
+    listen 8000;
+    listen [::]:8000;
     server_name onmenu.site;
     location ~ /.well-known/acme-challenge {
         allow all;
@@ -14,9 +14,17 @@ server {
 }
 
 server {
-    listen 80;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name onmenu.site;
+
+    ssl_certificate /etc/letsencrypt/live/onmenu.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/onmenu.site/privkey.pem;
+
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location /static {
         alias /vol/static;
