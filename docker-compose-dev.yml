@@ -46,6 +46,8 @@ services:
     restart: always
     depends_on:
       - web
+    command:
+      - chmod -R 755 /etc/letsencrypt/live/
     ports:
       - 80:8000
     volumes:
