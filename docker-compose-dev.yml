@@ -59,9 +59,11 @@ services:
       - proxy
     container_name: certbot
     volumes:
-      - etc-letsencrypt: /etc/letsencrypt
+      - etc-letsencrypt:/etc/letsencrypt
       - www-html:/var/www/html
     command: certonly --webroot --webroot-path=/var/www/html --email daurenotarbai.00@gmail.com --agree-tos --no-eff-email -d onmenu.site
 volumes:
   pg_data:
   static-data:
+  etc-letsencrypt:
+  www-html:
