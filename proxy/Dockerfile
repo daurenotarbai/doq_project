@@ -12,12 +12,12 @@ ENV APP_PORT=9000
 USER root
 
 RUN mkdir -p /vol/static && \
-    mkdir -p /etc/letsencrypt/live && \
+    mkdir -p /etc/letsencrypt/live/onmenu.site && \
     chmod 755 /vol/static && \
     touch /etc/nginx/conf.d/default.conf && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     chmod +x /run.sh && \
-    chmod 755 /etc/letsencrypt/live
+    chmod 755 /etc/letsencrypt/live/onmenu.site/
 
 VOLUME /vol/static
 
