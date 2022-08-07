@@ -14,8 +14,7 @@ server {
 }
 
 server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
+    listen 80;
 
     server_name onmenu.site;
 
