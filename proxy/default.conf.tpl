@@ -4,6 +4,13 @@ server {
     location /static {
         alias /vol/static;
     }
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        root /var/www/html;
+    }
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
 
     location / {
         uwsgi_pass              ${APP_HOST}:${APP_PORT};
