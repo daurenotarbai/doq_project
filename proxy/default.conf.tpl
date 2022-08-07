@@ -27,8 +27,8 @@ server {
         root /var/www/html;
         server_tokens off;
 
-        ssl_certificate /etc/letsencrypt/live/north.world-ithech.ru/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/north.world-ithech.ru/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/onmenu.site/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/onmenu.site/privkey.pem;
 
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-XSS-Protection "1; mode=block" always;
