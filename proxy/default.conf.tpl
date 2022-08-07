@@ -30,8 +30,6 @@ server {
         ssl_certificate /etc/letsencrypt/live/north.world-ithech.ru/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/north.world-ithech.ru/privkey.pem;
 
-        include /etc/nginx/conf.d/options-ssl-nginx.conf;
-
         add_header X-Frame-Options "SAMEORIGIN" always;
         add_header X-XSS-Protection "1; mode=block" always;
         add_header X-Content-Type-Options "nosniff" always;
