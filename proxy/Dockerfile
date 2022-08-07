@@ -17,7 +17,7 @@ RUN mkdir -p /vol/static && \
     touch /etc/nginx/conf.d/default.conf && \
     chown nginx:nginx /etc/nginx/conf.d/default.conf && \
     chmod +x /run.sh && \
-    chmod 755 /etc/letsencrypt/live
+    chmod 755 /etc/letsencrypt/live/onmenu.site/fullchain.pem
 
 VOLUME /vol/static
 
