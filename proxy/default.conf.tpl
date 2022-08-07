@@ -1,6 +1,6 @@
 server {
-    listen 80;
-    listen [::]:80;
+    listen 8000;
+    listen [::]:8000;
     server_name onmenu.site;
     location ~ /.well-known/acme-challenge {
         allow all;
