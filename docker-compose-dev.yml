@@ -51,7 +51,6 @@ services:
     volumes:
       - static-data:/vol/static
       - www-html:/var/www/html
-      - etc-letsencrypt:/etc/letsencrypt
 
   certbot:
     image: certbot/certbot
@@ -64,7 +63,7 @@ services:
     command: certonly --webroot --webroot-path=/var/www/html --email daurenotarbai.00@gmail.com --agree-tos --no-eff-email --staging -d onmenu.site
 
 volumes:
+  www-html:
   pg_data:
   static-data:
   etc-letsencrypt:
-  www-html:
