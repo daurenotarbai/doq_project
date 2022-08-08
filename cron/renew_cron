@@ -1,0 +1,1 @@
+0 0 * * * /home/dauren/cron/sert_renew.sh >> /var/log/cron.log 2>&1
