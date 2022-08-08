@@ -35,7 +35,7 @@ INSTALLED_APPS = [
 
     'corsheaders',
     'rest_framework',
-    'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl',
 
     'apps.core',
     'apps.clinics',
@@ -128,7 +128,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-CSRF_TRUSTED_ORIGINS = ['https://28b3-77-240-44-47.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://a670-77-240-44-47.ngrok.io']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
