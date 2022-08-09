@@ -2,31 +2,6 @@ server {
     listen 8000;
     listen [::]:8000;
     server_name onmenu.site;
-    location ~ /.well-known/acme-challenge {
-        allow all;
-        root /var/www/html;
-    }
-
-    location / {
-        rewrite https://$host$request_uri? permanent;
-    }
-
-}
-
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name onmenu.site;
-
-    root /var/www/html;
-
-    server_tokens off;
-
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src * data: 'unsafe-eval' 'unsafe-inline'" always;
 
     location /static {
         alias /vol/static;
