@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
-    AppointmentDoctorTime, Schedules, ClinicApplication
+    AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
 from django.utils.translation import gettext_lazy as _
 
@@ -37,7 +37,7 @@ class AddressClinicInline(admin.TabularInline):
 
 class DoctorsInline(admin.TabularInline):
     model = Doctor
-    fields = ['first_name', 'last_name', 'experience_years', 'consultation_fee']
+    fields = ['first_name', 'last_name', 'operates_from', 'consultation_fee']
     extra = 1
 
 
@@ -117,7 +117,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender'),
-                       ('experience_years', 'consultation_fee', 'for_child'), 'clinic')
+                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description')
         }),
         ('По специальности', {'fields': ('specialities',)}),
 
@@ -192,3 +192,8 @@ class AddressAdmin(NoAddMixin, admin.ModelAdmin):
 @admin.register(ClinicApplication)
 class ClinicApplicationAdmin(NoAddMixin, admin.ModelAdmin):
     list_display = ('name_clinic', 'name', 'created_at')
+
+
+@admin.register(ClinicImage)
+class ClinicImageAdmin(admin.ModelAdmin):
+    list_display = ('image', 'clinic', 'is_main')

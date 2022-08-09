@@ -1,11 +1,10 @@
 import datetime
-from abc import ABC
 
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules, WeekDaysNumber, \
-    ClinicApplication
+    ClinicApplication, ClinicImage
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -170,12 +169,17 @@ class DoctorSerializer(serializers.ModelSerializer):
     clinic = serializers.CharField()
     comments_number = serializers.SerializerMethodField()
     addresses = serializers.SerializerMethodField()
+    experience_years = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee', 'clinic', 'specialities', 'score', 'comments_number',
                   'addresses']
+
+    def get_experience_years(self, obj) -> int:
+        experience = datetime.datetime.now().date().year - obj.operates_from.year
+        return experience
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()
@@ -231,11 +235,19 @@ class ProcedureDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'url', 'name', 'doctors']
 
 
+class ClinicImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClinicImage
+        fields = ['id', 'image', 'is_main']
+
+
 class ClinicDetailSerializer(ClinicSerializer):
+    images = ClinicImageSerializer(many=True)
+
     class Meta:
         model = Clinic
-        fields = ['id', 'logo', 'image', 'name', 'addresses', 'phone', 'description',
-                  'avr_doctors_score', 'comment_number']
+        fields = ['id', 'logo', 'name', 'addresses', 'phone', 'description',
+                  'avr_doctors_score', 'comment_number', 'images']
 
 
 class ClinicApplicationCreateSerializer(serializers.ModelSerializer):

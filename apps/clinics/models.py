@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.models import User
+from django.core import exceptions
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.safestring import mark_safe
@@ -90,8 +91,6 @@ class Clinic(TimestampMixin, ContactMixin):
     description = models.TextField("Описание", blank=True, default='',
                                    help_text="Подробное описание")
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path, blank=True)
-    image = models.ImageField("Файл с изображением", upload_to=clinic_photo_path, null=True,
-                              blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь",
                              related_name='clinic',
                              )
@@ -104,6 +103,31 @@ class Clinic(TimestampMixin, ContactMixin):
 
     def __str__(self):
         return self.name
+
+
+class ClinicImage(models.Model):
+
+    class Meta:
+        verbose_name = "Фото клиники"
+        verbose_name_plural = "Фотографии клиники"
+
+    image = models.ImageField(
+        "Файл с изображением",
+        upload_to=clinic_photo_path,
+        null=True,
+    )
+    clinic = models.ForeignKey(
+        Clinic,
+        on_delete=models.CASCADE,
+        related_name="images",
+    )
+    is_main = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        for image_model in self.clinic.images.all():
+            if image_model.is_main and self.is_main:
+                raise exceptions.BadRequest('main image already exist ')
+        super().save(*args, **kwargs)
 
 
 class Address(models.Model):
@@ -141,22 +165,43 @@ class Doctor(TimestampMixin):
         verbose_name = 'Доктор'
         verbose_name_plural = 'Докторы'
 
-    first_name = models.CharField("Имя", max_length=255, default='')
-    last_name = models.CharField("Фамилия", max_length=255, default='')
-    middle_name = models.CharField("Отчество", max_length=255, blank=True, default='')
-    description = models.TextField("Описание", blank=True, default='',
-                                   help_text="Подробное описание")
+    first_name = models.CharField(
+        "Имя",
+        max_length=255,
+        default='',
+    )
+    last_name = models.CharField(
+        "Фамилия",
+        max_length=255,
+        default='',
+    )
+    middle_name = models.CharField(
+        "Отчество",
+        max_length=255,
+        blank=True,
+        default='',
+    )
+    description = models.TextField(
+        "Описание",
+        blank=True,
+        default='',
+        help_text="Подробное описание",
+    )
     photo = models.ImageField(
         "Фото специалиста",
         upload_to=specialist_photo_path,
         null=True,
         blank=True,
     )
-    gender = models.CharField('Пол', max_length=10, choices=Gender.choices, blank=True, null=True)
-    experience_years = models.PositiveSmallIntegerField(
-        'Опыт работы',
+    gender = models.CharField(
+        'Пол',
+        max_length=10,
+        choices=Gender.choices,
+        blank=True,
         null=True,
-        default=1,
+    )
+    operates_from = models.DateField(
+        "Работает с",
     )
     consultation_fee = models.DecimalField(
         'Цена за прием',
@@ -180,8 +225,15 @@ class Doctor(TimestampMixin):
         related_name='doctors',
         through='DoctorProcedures',
     )
-    score = models.FloatField('Рейтинг', default=0.0)
-    for_child = models.BooleanField('Детский', default=True, blank=True)
+    score = models.FloatField(
+        'Рейтинг',
+        default=0.0,
+    )
+    for_child = models.BooleanField(
+        'Детский',
+        default=True,
+        blank=True,
+    )
 
     def image_tag(self):
         if self.photo:
