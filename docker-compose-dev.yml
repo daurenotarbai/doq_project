@@ -32,7 +32,7 @@ services:
       - STATIC_ROOT=${STATIC_ROOT}
       - MEDIA_URL=${MEDIA_URL}
       - MEDIA_ROOT=${MEDIA_ROOT}
-      - INTERNAL_IPS='46.101.243.200'
+      - INTERNAL_IPS=46.101.243.200
     depends_on:
       - db
       - esearch
