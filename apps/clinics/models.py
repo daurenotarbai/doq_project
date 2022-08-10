@@ -97,7 +97,9 @@ class Clinic(TimestampMixin, ContactMixin):
     is_active = models.BooleanField('Актив', default=True, blank=True)
 
     def image_tag(self):
-        return mark_safe('<img src="{}" width="100" />'.format(self.logo.url))
+        if self.logo:
+            return mark_safe('<img src="{}" width="100" />'.format(self.logo.url))
+        return 'Фото еще не загрузили'
 
     image_tag.short_description = 'Image'
 

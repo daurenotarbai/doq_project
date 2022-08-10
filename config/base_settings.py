@@ -127,10 +127,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATIC_URL = os.getenv("STATIC_URL", '/static/')
+STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
+MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-CSRF_TRUSTED_ORIGINS = ['https://28b3-77-240-44-47.ngrok.io']
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+CSRF_TRUSTED_ORIGINS = ['https://a670-77-240-44-47.ngrok.io']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ELASTICSEARCH_DSL = {
@@ -139,7 +141,7 @@ ELASTICSEARCH_DSL = {
     },
 }
 INTERNAL_IPS = [
-    '46.101.243.200',
+    os.getenv("INTERNAL_IPS", '127.0.0.1'),
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
