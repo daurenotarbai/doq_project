@@ -28,6 +28,11 @@ services:
       - DB_PASS=${DB_PASS}
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - STATIC_URL='/static/static/'
+      - STATIC_ROOT='/vol/web/static'
+      - MEDIA_URL='/static/media/'
+      - MEDIA_ROOT='/vol/web/media'
+      - INTERNAL_IPS='46.101.243.200'
     depends_on:
       - db
       - esearch

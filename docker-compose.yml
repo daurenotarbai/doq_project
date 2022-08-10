@@ -17,17 +17,22 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    command: bash -c "python /usr/src/doq_project/manage.py migrate --noinput &&
-      python /usr/src/doq_project/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python /doq_project/manage.py migrate --noinput &&
+      python /doq_project/manage.py search_index --rebuild -f &&
+      python /doq_project/manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
-      - .:/usr/src/doq_project
+      - .:/doq_project
     ports:
       - 8001:8000
     environment:
       DB_HOST: db
       DB_NAME: doq_project_local_docker_db
       ELASTICSEARCH_DSL_HOSTS: esearch:9200
+      STATIC_URL: '/static/static/'
+      STATIC_ROOT: '/vol/web/static'
+      MEDIA_URL: '/static/media/'
+      MEDIA_ROOT: '/vol/web/media'
 
     depends_on:
       - db
