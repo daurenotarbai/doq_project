@@ -11,25 +11,30 @@ from apps.patients.models import Comment, Patient, Appointment
 class ProcedureSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Procedure
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class ClinicSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clinic
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class SpecialitySearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speciality
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class DoctorSearchSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = Doctor
-        fields = ['first_name', 'last_name']
+        fields = ['id', 'name']
+
+    def get_name(self, obj):
+        return ("%s %s %s" % (obj.first_name, obj.last_name, obj.middle_name)).strip()
 
 
 class SpecialitySerializer(serializers.ModelSerializer):

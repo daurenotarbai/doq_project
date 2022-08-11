@@ -8,6 +8,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
     ProcedureParametrsDocument, \
@@ -42,8 +43,10 @@ class SpecialitiesDetailView(RetrieveAPIView):
 
 
 class ProceduresView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, obj):
-        queryset = Procedure.objects.all()
+        queryset = Procedure.objects.filter(parent=None)
         serializer = ProcedureSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -202,7 +205,7 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
             clinic = ClinicParametrsDocument.search().query(
                 Q('query_string', query=query, fields=['name'])).execute()
             doctor = DoctorParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['first_name', 'last_name'])).execute()
+                Q('query_string', query=query, fields=['first_name', 'last_name', 'middle_name'])).execute()
             procedure = ProcedureParametrsDocument.search().query(
                 Q('query_string', query=query, fields=['name'])).execute()
             speciality = SpecialityParametrsDocument.search().query(
