@@ -1,8 +1,8 @@
 import datetime
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Min, Q
 from django.http import HttpResponse
 from django.utils import timezone
-from elasticsearch_dsl import Q
+from elasticsearch_dsl import Q as EQ
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
@@ -18,9 +18,9 @@ from apps.clinics.models import Speciality, Procedure, Clinic, Doctor, Appointme
 from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, ClinicSerializer, \
     ClinicDetailSerializer, ClinicSearchSerializer, DoctorSearchSerializer, \
     SpecialitySearchSerializer, \
-    ProcedureSearchSerializer, SpecialityDetailSerializer, DoctorSerializer, \
+    ProcedureSearchSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
-    DoctorDetailSerializer, DoctorCommentSerializer, ProcedureDetailSerializer, \
+    DoctorDetailSerializer, DoctorCommentSerializer, \
     ClinicApplicationCreateSerializer
 from apps.patients.models import Comment
 
@@ -203,13 +203,13 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
     def get(self, request, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                EQ('query_string', query=query, fields=['name'])).execute()
             doctor = DoctorParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['first_name', 'last_name', 'middle_name'])).execute()
+                EQ('query_string', query=query, fields=['first_name', 'last_name', 'middle_name'])).execute()
             procedure = ProcedureParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                EQ('query_string', query=query, fields=['name'])).execute()
             speciality = SpecialityParametrsDocument.search().query(
-                Q('query_string', query=query, fields=['name'])).execute()
+                EQ('query_string', query=query, fields=['name'])).execute()
             clinic_serializer = ClinicSearchSerializer(clinic, many=True)
             doctor_serializer = DoctorSearchSerializer(doctor, many=True)
             procedure_serializer = ProcedureSearchSerializer(procedure, many=True)

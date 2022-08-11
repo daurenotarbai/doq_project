@@ -2,11 +2,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 
-from apps.admin.views import ClientClinicDoctorsView
+from apps.admin.views import ClientClinicDoctorsView, ClientClinicFeedbacksView
 
 urlpatterns = [
     path('doctors', ClientClinicDoctorsView.as_view()),
-    # path('feedbacks', ClientClinicFeedbacksView.as_view()),
+    path('feedbacks', ClientClinicFeedbacksView.as_view()),
     # path('appointments', ClientClinicAppointmentsView.as_view()),
     # path('doctor-appointment-times', ClientClinicDoctorsAppointmentTimesView.as_view()),
 

@@ -1,5 +1,7 @@
 import datetime
+from abc import ABC
 
+from django.db.models import Avg, Min, Q
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
@@ -48,10 +50,23 @@ class SpecialitySerializer(serializers.ModelSerializer):
         return obj.doctors.all().count()
 
 
+class FilterHasDoctorListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.exclude(doctor_procedures=None)
+        return super(FilterHasDoctorListSerializer, self).to_representation(data)
+
+
 class SubProcedureSerializer(serializers.ModelSerializer):
+    min_price = serializers.SerializerMethodField()
+
     class Meta:
         model = Procedure
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'min_price')
+        list_serializer_class = FilterHasDoctorListSerializer
+
+    def get_min_price(self, obj):
+        min_price = obj.doctor_procedures.all().aggregate(min_price=Min('price'))
+        return min_price.get('min_price')
 
 
 class ProcedureSerializer(serializers.ModelSerializer):

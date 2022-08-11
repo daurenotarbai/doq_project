@@ -253,6 +253,11 @@ class Doctor(TimestampMixin):
         default=True,
         blank=True,
     )
+    is_active = models.BooleanField(
+        'Активный',
+        default=True,
+        blank=True,
+    )
 
     def image_tag(self):
         if self.photo:
@@ -275,6 +280,7 @@ class DoctorProcedures(models.Model):
     procedure = models.ForeignKey(
         Procedure,
         on_delete=models.CASCADE,
+        related_name='doctor_procedures'
     )
     price = models.DecimalField(
         max_digits=10,
