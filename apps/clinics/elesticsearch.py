@@ -11,7 +11,7 @@ class ClinicParametrsDocument(Document):
 
     class Django:
         model = Clinic
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 @registry.register_document
@@ -21,7 +21,7 @@ class DoctorParametrsDocument(Document):
 
     class Django:
         model = Doctor
-        fields = ['first_name', 'last_name']
+        fields = ['id', 'first_name', 'last_name', 'middle_name']
 
 
 @registry.register_document
@@ -31,7 +31,7 @@ class ProcedureParametrsDocument(Document):
 
     class Django:
         model = Procedure
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 @registry.register_document
@@ -41,4 +41,4 @@ class SpecialityParametrsDocument(Document):
 
     class Django:
         model = Speciality
-        fields = ['name']
+        fields = ['id', 'name']

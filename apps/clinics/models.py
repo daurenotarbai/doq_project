@@ -108,7 +108,6 @@ class Clinic(TimestampMixin, ContactMixin):
 
 
 class ClinicImage(models.Model):
-
     class Meta:
         verbose_name = "Фото клиники"
         verbose_name_plural = "Фотографии клиники"
@@ -137,10 +136,28 @@ class Address(models.Model):
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
 
-    city = models.CharField('Город', max_length=255, null=True, blank=True)
-    address = models.CharField('Адресс', max_length=255, null=True, blank=True)
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="addresses")
-    is_24_hours = models.BooleanField('Круглосуточно', default=False, blank=True)
+    city = models.CharField(
+        'Город',
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    address = models.CharField(
+        'Адресс',
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    clinic = models.ForeignKey(
+        Clinic,
+        on_delete=models.CASCADE,
+        related_name="addresses",
+    )
+    is_24_hours = models.BooleanField(
+        'Круглосуточно',
+        default=False,
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return self.address
