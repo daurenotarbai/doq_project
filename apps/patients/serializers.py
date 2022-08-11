@@ -10,7 +10,7 @@ class PatientAppointmentCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'patient', 'appointment_time', 'appointment_doctor_time')
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment

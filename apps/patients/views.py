@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView
 
 from apps.clinics.models import AppointmentDoctorTime
 from apps.patients.models import Appointment, Patient, Comment
-from apps.patients.serializers import PatientAppointmentCreateSerializer, CommentCreateSerializer
+from apps.patients.serializers import PatientAppointmentCreateSerializer, CommentSerializer
 
 
 class CreatePatientAppointmentView(CreateAPIView):
@@ -33,7 +33,7 @@ class CreatePatientAppointmentView(CreateAPIView):
 
 class CreateCommentView(CreateAPIView):
     queryset = Comment
-    serializer_class = CommentCreateSerializer
+    serializer_class = CommentSerializer
 
     def create(self, request, *args, **kwargs):
         phone = request.data.pop('patient_phone')
