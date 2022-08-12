@@ -1,13 +1,15 @@
 from rest_framework import serializers
 
-from apps.clinics.models import Doctor
+from apps.clinics.models import Doctor, AppointmentDoctorTime
+from apps.clinics.serializers import SpecialitySearchSerializer
 from apps.patients.models import Appointment, Comment, Patient
 
 
 class DoctorBaseSerializer(serializers.ModelSerializer):
+    specialities = SpecialitySearchSerializer(many=True)
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo']
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'specialities']
 
 
 class PatientBaseSerializer(serializers.ModelSerializer):
@@ -49,3 +51,19 @@ class ClientClinicFeedbacksSerializer(serializers.ModelSerializer):
         ).first()
         time = f'{time.appointment_doctor_time.date}, {time.appointment_time.start_time}'[:17]
         return time
+
+
+class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
+    doctor = DoctorBaseSerializer()
+    class Meta:
+        model = AppointmentDoctorTime
+        fields = ('id', 'doctor', 'date')
+
+
+class ClientClinicAppointmentSerializer(serializers.ModelSerializer):
+    patient = PatientBaseSerializer()
+    appointment_doctor_time = AppointmentDoctorTimeSerializer()
+    appointment_time = serializers.CharField()
+    class Meta:
+        model = Appointment
+        fields = ('id', 'patient', 'appointment_time', 'appointment_doctor_time')
