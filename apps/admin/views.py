@@ -1,4 +1,6 @@
-from django.db.models import Count
+import datetime
+
+from django.db.models import Count, Q
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 
@@ -14,8 +16,23 @@ class ClientClinicDoctorsView(ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
+
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
         queryset = self.model.objects.filter(clinic=clinic_id)
+        query = self.request.GET.get('query')
+        filter_by_is_active = self.request.GET.get('is_active')
+        if query:
+            queryset = queryset.filter(
+                Q(first_name__icontains=query) | Q(
+                    last_name__icontains=query) | Q(
+                    last_name__icontains=query) | Q(
+                    middle_name__icontains=query) | Q(
+                    specialities__name__icontains=query) | Q(
+                    procedures__name__icontains=query)).distinct()
+        if filter_by_is_active == 'true':
+            queryset = queryset.filter(is_active=True)
+        elif filter_by_is_active == 'false':
+            queryset = queryset.filter(is_active=False)
         return queryset
 
 
@@ -26,6 +43,29 @@ class ClientClinicFeedbacksView(ListAPIView):
 
     def get_queryset(self):
         queryset = Comment.objects.filter(doctor__clinic__user=self.request.user, parent=None)
+        query = self.request.GET.get('query')
+        filter_by_is_responded = self.request.GET.get('is_responded')
+        star = self.request.GET.get('star')
+        created_date = self.request.GET.get('created_date')
+        if query:
+            queryset = queryset.filter(
+                Q(doctor__first_name__icontains=query) | Q(
+                    doctor__last_name__icontains=query) | Q(
+                    doctor__last_name__icontains=query) | Q(
+                    doctor__middle_name__icontains=query) | Q(
+                    doctor__specialities__name__icontains=query) | Q(
+                    doctor__procedures__name__icontains=query)).distinct()
+        if created_date:
+            queryset = queryset.filter(created_at__year=created_date[:4],
+                                       created_at__month=created_date[5:7],
+                                       created_at__day=created_date[8:10],
+                                       )
+        if star:
+            queryset = queryset.filter(star=star)
+        if filter_by_is_responded == 'true':
+            queryset = queryset.filter(is_responded=True)
+        elif filter_by_is_responded == 'false':
+            queryset = queryset.filter(is_responded=False)
         return queryset
 
 
@@ -47,8 +87,12 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
 
     def get_queryset(self):
         doctor_id = self.kwargs['doctor_id']
+        address_id = self.kwargs['address_id']
         queryset = AppointmentDoctorTime.objects.filter(
+            date__gte=datetime.datetime.now().date(),
+            clinic_address__id=address_id,
             doctor_id=doctor_id,
             doctor__clinic__user=self.request.user).annotate(
             all_times=Count('times', distinct=True))
+
         return queryset
