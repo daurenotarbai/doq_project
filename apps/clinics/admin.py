@@ -192,7 +192,7 @@ class AddressAdmin(NoAddMixin, GeOModelAdmin):
     geomap_field_latitude = "id_latitude"
     geomap_default_longitude = "76.8512"
     geomap_default_latitude = "43.223"
-    geomap_default_zoom = "5"
+    geomap_default_zoom = "10"
 
 
 admin.site.register(Address, AddressAdmin)
