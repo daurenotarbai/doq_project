@@ -1,3 +1,4 @@
+from django.core import exceptions
 from django.db import models
 
 from apps.clinics.models import AppointmentTime, Doctor, AppointmentDoctorTime
@@ -42,3 +43,12 @@ class Comment(TimestampMixin):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def save(self, *args, **kwargs):
+        visited = False
+        for appointment in self.patient.appointments.all():
+            if appointment.appointment_doctor_time.doctor==self.doctor:
+                visited = True
+        if not visited:
+            raise exceptions.BadRequest("You can't comment to this doctor")
+        super().save(*args, **kwargs)
