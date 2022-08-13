@@ -3,13 +3,13 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from apps.admin.views import ClientClinicDoctorsView, ClientClinicFeedbacksView, \
-    ClientClinicAppointmentsView
+    ClientClinicAppointmentsView, ClientClinicDoctorsAppointmentTimesView
 
 urlpatterns = [
     path('doctors', ClientClinicDoctorsView.as_view()),
     path('feedbacks', ClientClinicFeedbacksView.as_view()),
     path('appointments', ClientClinicAppointmentsView.as_view()),
-    # path('doctor-appointment-times', ClientClinicDoctorsAppointmentTimesView.as_view()),
+    path('doctor-appointment-times/<int:doctor_id>', ClientClinicDoctorsAppointmentTimesView.as_view()),
 
 ]
 if settings.DEBUG:
