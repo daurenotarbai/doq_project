@@ -77,6 +77,18 @@ class ClientClinicAppointmentsView(ListAPIView):
     def get_queryset(self):
         queryset = Appointment.objects.filter(
             appointment_doctor_time__doctor__clinic__user=self.request.user)
+        query = self.request.GET.get('query')
+        visit_date = self.request.GET.get('visit_date')
+        if query:
+            queryset = queryset.filter(
+                Q(appointment_doctor_time__doctor__first_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__middle_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__specialities__name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__procedures__name__icontains=query)).distinct()
+        if visit_date:
+            queryset = queryset.filter(appointment_doctor_time__date=visit_date)
         return queryset
 
 
