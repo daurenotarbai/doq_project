@@ -170,7 +170,7 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-CSRF_TRUSTED_ORIGINS = ['https://a670-77-240-44-47.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://0071-77-240-44-47.ngrok.io']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ELASTICSEARCH_DSL = {

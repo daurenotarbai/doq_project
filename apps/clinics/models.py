@@ -158,6 +158,8 @@ class Address(models.Model):
         default=False,
         blank=True,
     )
+    latitude = models.CharField(max_length=25)
+    longitude = models.CharField(max_length=25)
 
     def __str__(self) -> str:
         return self.address

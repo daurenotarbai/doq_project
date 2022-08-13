@@ -6,7 +6,14 @@ from apps.patients.models import Appointment, Comment, Patient
 
 
 class DoctorBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo']
+
+
+class DoctorBaseWithSpecialitySerializer(serializers.ModelSerializer):
     specialities = SpecialitySearchSerializer(many=True)
+
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'specialities']
@@ -55,6 +62,7 @@ class ClientClinicFeedbacksSerializer(serializers.ModelSerializer):
 
 class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
     doctor = DoctorBaseSerializer()
+
     class Meta:
         model = AppointmentDoctorTime
         fields = ('id', 'doctor', 'date')
@@ -64,6 +72,29 @@ class ClientClinicAppointmentSerializer(serializers.ModelSerializer):
     patient = PatientBaseSerializer()
     appointment_doctor_time = AppointmentDoctorTimeSerializer()
     appointment_time = serializers.CharField()
+
     class Meta:
         model = Appointment
         fields = ('id', 'patient', 'appointment_time', 'appointment_doctor_time')
+
+
+class ClientClinicAppointmentDoctorTimeSerializer(serializers.ModelSerializer):
+    all_times = serializers.IntegerField(default=0)
+    busy_times = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AppointmentDoctorTime
+        fields = ('id', 'date', 'all_times', 'busy_times')
+
+    def get_busy_times(self, obj):
+        count_busy_times = 0
+        appointments = Appointment.objects.filter(appointment_doctor_time__doctor__id=obj.doctor.id)
+        appointment_times_list = [
+            appointment.appointment_time.start_time for appointment in appointments if
+            obj.date == appointment.appointment_doctor_time.date
+        ]
+        ttimes = obj.times.all()
+        for item in ttimes:
+            if item.start_time in appointment_times_list:
+                count_busy_times += 1
+        return count_busy_times
