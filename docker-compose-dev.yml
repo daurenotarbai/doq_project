@@ -33,6 +33,7 @@ services:
       - MEDIA_URL=${MEDIA_URL}
       - MEDIA_ROOT=${MEDIA_ROOT}
       - INTERNAL_IPS=46.101.243.200
+      - TEMPLATES_DIRS=${TEMPLATES_DIRS}
     depends_on:
       - db
       - esearch
