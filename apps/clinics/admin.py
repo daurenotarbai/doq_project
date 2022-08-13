@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
+from django_admin_geomap import ModelAdmin as GeOModelAdmin
 
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage
@@ -169,8 +170,7 @@ class ScheduleInlineAdmin(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Address)
-class AddressAdmin(NoAddMixin, admin.ModelAdmin):
+class AddressAdmin(NoAddMixin, GeOModelAdmin):
     list_display = ['city', 'address', 'is_24_hours', 'get_schedules']
     inlines = (ScheduleInlineAdmin,)
 
@@ -187,6 +187,15 @@ class AddressAdmin(NoAddMixin, admin.ModelAdmin):
         else:
             self.list_filter = []
         return qs.filter(clinic__user=request.user)
+
+    geomap_field_longitude = "id_longitude"
+    geomap_field_latitude = "id_latitude"
+    geomap_default_longitude = "76.8512"
+    geomap_default_latitude = "43.223"
+    geomap_default_zoom = "5"
+
+
+admin.site.register(Address, AddressAdmin)
 
 
 @admin.register(ClinicApplication)

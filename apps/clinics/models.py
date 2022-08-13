@@ -5,6 +5,7 @@ from django.core import exceptions
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.safestring import mark_safe
+from django_admin_geomap import GeoItem
 
 from apps.core.models import TimestampMixin, ContactMixin
 
@@ -131,7 +132,7 @@ class ClinicImage(models.Model):
         super().save(*args, **kwargs)
 
 
-class Address(models.Model):
+class Address(models.Model, GeoItem):
     class Meta:
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
@@ -158,8 +159,28 @@ class Address(models.Model):
         default=False,
         blank=True,
     )
-    latitude = models.CharField(max_length=25)
-    longitude = models.CharField(max_length=25)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    @property
+    def geomap_popup_view(self):
+        return "<strong>{}</strong>".format(str(self))
+
+    @property
+    def geomap_popup_edit(self):
+        return self.geomap_popup_view
+
+    @property
+    def geomap_longitude(self):
+        return str(self.longitude)
+
+    @property
+    def geomap_icon(self):
+        return self.default_icon
+
+    @property
+    def geomap_latitude(self):
+        return str(self.latitude)
 
     def __str__(self) -> str:
         return self.address

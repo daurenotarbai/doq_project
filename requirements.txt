@@ -7,6 +7,7 @@ Pillow==9.1.1
 django-elasticsearch-dsl==7.2.2
 django-admin-rangefilter==0.7.0
 django-cors-headers==3.13.0
+django-admin-geomap==1.2
 
 
 ############ To Deploy
