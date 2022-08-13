@@ -39,6 +39,11 @@ class Comment(TimestampMixin):
                                related_name="subcomments")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments')
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='comments')
+    is_responded = models.BooleanField(
+        'Ответил',
+        default=False,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Комментарий'

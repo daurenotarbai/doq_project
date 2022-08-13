@@ -9,8 +9,8 @@ urlpatterns = [
     path('doctors', ClientClinicDoctorsView.as_view()),
     path('feedbacks', ClientClinicFeedbacksView.as_view()),
     path('appointments', ClientClinicAppointmentsView.as_view()),
-    path('doctor-appointment-times/<int:doctor_id>', ClientClinicDoctorsAppointmentTimesView.as_view()),
-
+    path('doctor-appointment-times/doctor/<int:doctor_id>/address/<int:address_id>',
+         ClientClinicDoctorsAppointmentTimesView.as_view()),
 ]
 if settings.DEBUG:
     urlpatterns += static(
