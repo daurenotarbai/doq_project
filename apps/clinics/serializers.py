@@ -100,7 +100,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = ('id', 'address', 'title', 'schedules')
+        fields = ('id', 'address', 'title', 'schedules', 'latitude', 'longitude')
 
     def get_title(self, obj):
         if obj.is_24_hours:
