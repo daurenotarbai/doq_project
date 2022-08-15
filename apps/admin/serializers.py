@@ -98,7 +98,7 @@ class ClientClinicAppointmentDoctorTimeSerializer(serializers.ModelSerializer):
         count_busy_times = 0
         appointments = Appointment.objects.filter(
             appointment_doctor_time__doctor__id=obj.doctor.id,
-            )
+        )
         appointment_times_list = [
             appointment.appointment_time.start_time for appointment in appointments if
             obj.date == appointment.appointment_doctor_time.date
@@ -107,12 +107,25 @@ class ClientClinicAppointmentDoctorTimeSerializer(serializers.ModelSerializer):
         for item in ttimes:
             if item.start_time in appointment_times_list:
                 count_busy_times += 1
-        return {'all_times':obj.times.count(), 'busy_time':count_busy_times}
+        return {'all_times': obj.times.count(), 'busy_time': count_busy_times}
 
 
 class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
-    appoint_times = ClientClinicAppointmentDoctorTimeSerializer(many=True)
+    appoint_times = serializers.SerializerMethodField()
+    address_id = serializers.IntegerField()
 
     class Meta:
         model = Doctor
-        fields = ('id', 'first_name', 'last_name', 'middle_name', 'photo', 'appoint_times')
+        fields = (
+            'id', 'first_name',
+            'last_name', 'middle_name',
+            'photo', 'appoint_times',
+            'address_id',
+        )
+
+    def get_appoint_times(self, obj):
+        serializer = ClientClinicAppointmentDoctorTimeSerializer(
+            data=obj.appoint_times.filter(clinic_address=obj.address_id),
+            many=True, )
+        serializer.is_valid()
+        return serializer.data
