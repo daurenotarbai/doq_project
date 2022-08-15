@@ -12,7 +12,6 @@ class CreatePatientAppointmentView(CreateAPIView):
     serializer_class = PatientAppointmentCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        print("REQUEST_DATA", request.data)
         first_name = request.data.pop('name')
         iin = request.data.pop('iin')
         phone = request.data.pop('phone')

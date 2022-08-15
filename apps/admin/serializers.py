@@ -2,9 +2,15 @@ import datetime
 
 from rest_framework import serializers
 
-from apps.clinics.models import Doctor, AppointmentDoctorTime
-from apps.clinics.serializers import SpecialitySearchSerializer
+from apps.clinics.models import Doctor, AppointmentDoctorTime, AppointmentTime
+from apps.clinics.serializers import SpecialitySearchSerializer, AppointmentTimeSerializer
 from apps.patients.models import Appointment, Comment, Patient
+
+
+class ClientClinicAppointmentTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppointmentTime
+        fields = ['id', 'start_time']
 
 
 class DoctorBaseSerializer(serializers.ModelSerializer):
@@ -129,3 +135,10 @@ class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
             many=True, )
         serializer.is_valid()
         return serializer.data
+
+
+class AppointmentDoctorTimeCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AppointmentDoctorTime
+        fields = ('id', 'date', 'doctor', 'clinic_address', 'times')
