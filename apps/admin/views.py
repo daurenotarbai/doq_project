@@ -5,7 +5,8 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 
 from apps.admin.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
-    ClientClinicAppointmentSerializer, ClientClinicAppointmentDoctorTimeSerializer
+    ClientClinicAppointmentSerializer, \
+    ClientClinicDoctorAppointmentTimeSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime
 from apps.patients.models import Comment, Appointment
 
@@ -93,18 +94,11 @@ class ClientClinicAppointmentsView(ListAPIView):
 
 
 class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
-    model = AppointmentDoctorTime
-    serializer_class = ClientClinicAppointmentDoctorTimeSerializer
+    model = Doctor
+    serializer_class = ClientClinicDoctorAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        doctor_id = self.kwargs['doctor_id']
-        address_id = self.kwargs['address_id']
-        queryset = AppointmentDoctorTime.objects.filter(
-            date__gte=datetime.datetime.now().date(),
-            clinic_address__id=address_id,
-            doctor_id=doctor_id,
-            doctor__clinic__user=self.request.user).annotate(
-            all_times=Count('times', distinct=True))
+        queryset = Doctor.objects.filter(clinic__user=self.request.user)
 
         return queryset
