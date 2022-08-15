@@ -1,6 +1,7 @@
 import datetime
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, IntegerField
+from django.db.models.functions import Cast
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 
@@ -99,6 +100,8 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = Doctor.objects.filter(clinic__user=self.request.user)
+        address_id = self.kwargs.get('address_id')
+        queryset = Doctor.objects.filter(clinic__user=self.request.user).annotate(
+            address_id=Cast(address_id, IntegerField()))
 
         return queryset

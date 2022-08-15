@@ -184,7 +184,7 @@ INTERNAL_IPS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'https://medappointment.vercel.app',  # for network
-    'https://medicne-admin-fbb73plyh-tolegen777.vercel.app',  # for network
+    'https://medicne-admin.vercel.app',  # for network
     'http://localhost:8000',  # for localhost (Developlemt)
     'http://46.101.243.200',  # for network (Development)
 ]
