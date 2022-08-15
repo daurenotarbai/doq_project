@@ -3,13 +3,21 @@ import datetime
 from django.db.models import Count, Q, IntegerField
 from django.db.models.functions import Cast
 from rest_framework import permissions
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.response import Response
 
 from apps.admin.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
     ClientClinicAppointmentSerializer, \
-    ClientClinicDoctorAppointmentTimeSerializer
-from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime
+    ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
+    ClientClinicAppointmentTimeSerializer
+from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime
 from apps.patients.models import Comment, Appointment
+
+
+class ClientClinicAppointmentTimesView(ListAPIView):
+    queryset = AppointmentTime.objects.all()
+    serializer_class = ClientClinicAppointmentTimeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class ClientClinicDoctorsView(ListAPIView):
@@ -101,7 +109,23 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
-        queryset = Doctor.objects.filter(clinic__user=self.request.user).annotate(
+        queryset = self.model.objects.filter(clinic__user=self.request.user).annotate(
             address_id=Cast(address_id, IntegerField()))
 
         return queryset
+
+
+class ClientClinicDoctorsAppointmentTimesCreateView(CreateAPIView):
+    model = AppointmentDoctorTime
+    serializer_class = AppointmentDoctorTimeCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        doctor_id = kwargs['doctor_id']
+        date = request.GET.get('date')
+        objects = self.model.objects.filter(doctor=doctor_id, date=date)
+        objects.delete()
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(status=201)
