@@ -1,9 +1,9 @@
 import datetime
 
-from django.db.models import Count, Q, IntegerField
+from django.db.models import Q, IntegerField
 from django.db.models.functions import Cast
 from rest_framework import permissions
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from apps.admin.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
@@ -129,3 +129,46 @@ class ClientClinicDoctorsAppointmentTimesCreateView(CreateAPIView):
         serializer.is_valid()
         serializer.save()
         return Response(status=201)
+
+
+class ClientClinicReconciliationsView(ListAPIView):
+    model = Appointment
+    serializer_class = ClientClinicAppointmentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = Appointment.objects.filter(
+            appointment_doctor_time__doctor__clinic__user=self.request.user)
+        query = self.request.GET.get('query')
+        visit_date = self.request.GET.get('visit_date')
+        if query:
+            queryset = queryset.filter(
+                Q(appointment_doctor_time__doctor__first_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__middle_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__specialities__name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__procedures__name__icontains=query)).distinct()
+        if visit_date:
+            queryset = queryset.filter(appointment_doctor_time__date=visit_date)
+        else:
+            queryset = queryset.filter(appointment_doctor_time__date=datetime.datetime.now().date())
+        return queryset
+
+
+class ClientClinicAppointmentsUpdateView(UpdateAPIView):
+    model = Appointment
+    serializer_class = AppointmentDoctorTimeCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        appointment_id = kwargs['appointment_id']
+        appointment = self.model.objects.get(id=appointment_id)
+        visited = request.data.get('visited')
+        if visited:
+            appointment.is_visited=True
+        else:
+            appointment.is_visited = False
+        appointment.save()
+
+        return Response(status=204)

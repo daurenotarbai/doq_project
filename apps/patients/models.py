@@ -27,6 +27,7 @@ class Appointment(TimestampMixin):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
     appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
+    is_visited = models.BooleanField('Посетил', blank=True, null=True)
 
     def __str__(self):
         return f'{self.appointment_time.start_time}'
