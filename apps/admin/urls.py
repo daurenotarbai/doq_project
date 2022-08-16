@@ -4,16 +4,23 @@ from django.urls import path
 
 from apps.admin.views import ClientClinicDoctorsView, ClientClinicFeedbacksView, \
     ClientClinicAppointmentsView, ClientClinicDoctorsAppointmentTimesView, \
-    ClientClinicDoctorsAppointmentTimesCreateView, ClientClinicAppointmentTimesView
+    ClientClinicDoctorsAppointmentTimesCreateView, ClientClinicAppointmentTimesView, \
+    ClientClinicReconciliationsView, ClientClinicAppointmentsUpdateView
 
 urlpatterns = [
     path('appointment-times', ClientClinicAppointmentTimesView.as_view()),
-    path('doctors', ClientClinicDoctorsView.as_view()),
-    path('feedbacks', ClientClinicFeedbacksView.as_view()),
-    path('appointments', ClientClinicAppointmentsView.as_view()),
+
     path('doctor-appointment-times/address/<int:address_id>',
          ClientClinicDoctorsAppointmentTimesView.as_view()),
-    path('doctor-appointment-times/doctors/<int:doctor_id>', ClientClinicDoctorsAppointmentTimesCreateView.as_view()),
+    path('doctor-appointment-times/doctors/<int:doctor_id>',
+         ClientClinicDoctorsAppointmentTimesCreateView.as_view()),
+
+    path('appointments', ClientClinicAppointmentsView.as_view()),
+    path('appointments/<int:appointment_id>/update', ClientClinicAppointmentsUpdateView.as_view()),
+    path('reconciliations', ClientClinicReconciliationsView.as_view()),
+    path('feedbacks', ClientClinicFeedbacksView.as_view()),
+    path('doctors', ClientClinicDoctorsView.as_view()),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(
