@@ -108,6 +108,10 @@ class ProcedureInlineAdmin(admin.TabularInline):
     model = Doctor.procedures.through
 
 
+class SpecialityInlineAdmin(admin.TabularInline):
+    model = Doctor.specialities.through
+
+
 @admin.register(Doctor)
 class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
     list_display = (
@@ -120,11 +124,10 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
                        ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description')
         }),
-        ('По специальности', {'fields': ('specialities',)}),
 
     )
     readonly_fields = ('image_tag', 'clinic')
-    inlines = [ProcedureInlineAdmin]
+    inlines = [ProcedureInlineAdmin, SpecialityInlineAdmin]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name', "last_name", "clinic__name"]
 

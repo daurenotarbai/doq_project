@@ -260,6 +260,7 @@ class Doctor(TimestampMixin):
     specialities = models.ManyToManyField(
         Speciality, verbose_name="Специальности",
         related_name="doctors",
+        through='DoctorSpecialities',
     )
     procedures = models.ManyToManyField(
         Procedure,
@@ -304,6 +305,24 @@ class DoctorProcedures(models.Model):
         Procedure,
         on_delete=models.CASCADE,
         related_name='doctor_procedures'
+    )
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
+
+
+class DoctorSpecialities(models.Model):
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.CASCADE,
+        related_name='doctor_specialities',
+    )
+    speciality = models.ForeignKey(
+        Speciality,
+        on_delete=models.CASCADE,
+        related_name='doctor_specialities'
     )
     price = models.DecimalField(
         max_digits=10,

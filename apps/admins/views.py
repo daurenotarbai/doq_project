@@ -3,7 +3,7 @@ import datetime
 from django.db.models import Q, IntegerField
 from django.db.models.functions import Cast
 from rest_framework import permissions
-from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,8 +11,10 @@ from apps.admins.models import MonthReport
 from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
     ClientClinicAppointmentSerializer, \
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
-    ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer
+    ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
+    ClientClinicDoctorDetailSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime
+from apps.clinics.serializers import DoctorSerializer
 from apps.patients.models import Comment, Appointment
 
 
@@ -28,7 +30,6 @@ class ClientClinicDoctorsView(ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
         queryset = self.model.objects.filter(clinic=clinic_id)
         query = self.request.GET.get('query')
@@ -46,6 +47,13 @@ class ClientClinicDoctorsView(ListAPIView):
         elif filter_by_is_active == 'false':
             queryset = queryset.filter(is_active=False)
         return queryset
+
+
+class ClientClinicDoctorsDetailView(RetrieveAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = ClientClinicDoctorDetailSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = 'id'
 
 
 class ClientClinicFeedbacksView(ListAPIView):
