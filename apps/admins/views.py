@@ -5,11 +5,13 @@ from django.db.models.functions import Cast
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.admin.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
+from apps.admins.models import MonthReport
+from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
     ClientClinicAppointmentSerializer, \
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
-    ClientClinicAppointmentTimeSerializer
+    ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime
 from apps.patients.models import Comment, Appointment
 
@@ -166,9 +168,22 @@ class ClientClinicAppointmentsUpdateView(UpdateAPIView):
         appointment = self.model.objects.get(id=appointment_id)
         visited = request.data.get('visited')
         if visited:
-            appointment.is_visited=True
+            appointment.is_visited = True
         else:
             appointment.is_visited = False
         appointment.save()
 
         return Response(status=204)
+
+
+class ClientClinicTotalReconciliationsView(ListAPIView):
+    model = MonthReport
+    serializer_class = ClientClinicTotalReconciliationsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        address_id = self.kwargs.get('address_id')
+        queryset = self.model.objects.filter(
+            address__clinic__user=self.request.user,
+            address_id=address_id)
+        return queryset
