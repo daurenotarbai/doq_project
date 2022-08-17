@@ -12,8 +12,8 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicAppointmentSerializer, \
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
-    ClientClinicDoctorDetailSerializer
-from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime
+    ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer
+from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address
 from apps.clinics.serializers import DoctorSerializer
 from apps.patients.models import Comment, Appointment
 
@@ -22,6 +22,17 @@ class ClientClinicAppointmentTimesView(ListAPIView):
     queryset = AppointmentTime.objects.all()
     serializer_class = ClientClinicAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class ClientClinicAddressView(ListAPIView):
+    model = Address
+    serializer_class = ClientClinicAddressSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.model.objects.filter(
+            clinic__user=self.request.user)
+        return queryset
 
 
 class ClientClinicDoctorsView(ListAPIView):
