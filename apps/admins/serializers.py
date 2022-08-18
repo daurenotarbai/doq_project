@@ -103,26 +103,47 @@ class FilterAppointmentDoctorTimeListSerializer(serializers.ListSerializer):
 
 class ClientClinicAppointmentDoctorTimeSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
+    info = serializers.SerializerMethodField()
 
     class Meta:
         model = AppointmentDoctorTime
-        fields = ('id', 'date', 'times')
+        fields = ('id', 'date', 'times', 'info')
         list_serializer_class = FilterAppointmentDoctorTimeListSerializer
 
+    all_times = None
+    busy_times = None
+
+    def get_info(self, obj):
+
+        return {
+            'all_times': self.all_times,
+            'busy_times': self.busy_times
+        }
+
     def get_times(self, obj):
-        count_busy_times = 0
-        appointments = Appointment.objects.filter(
-            appointment_doctor_time__doctor__id=obj.doctor.id,
-        )
+        appointments = Appointment.objects.filter(appointment_doctor_time__doctor__id=obj.doctor.id)
+
         appointment_times_list = [
             appointment.appointment_time.start_time for appointment in appointments if
             obj.date == appointment.appointment_doctor_time.date
         ]
+        self.all_times = obj.times.all().count()
         ttimes = obj.times.all()
+        times_list = []
+        count = 0
         for item in ttimes:
+            test_dict = {
+                'id': item.id,
+                'start_time': item.start_time,
+                'is_free': True
+            }
             if item.start_time in appointment_times_list:
-                count_busy_times += 1
-        return {'all_times': obj.times.count(), 'busy_time': count_busy_times}
+                test_dict['is_free'] = False
+                count += 1
+
+            times_list.append(test_dict)
+        self.busy_times = count
+        return times_list
 
 
 class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
@@ -147,6 +168,8 @@ class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
 
 
 class AppointmentDoctorTimeCreateSerializer(serializers.ModelSerializer):
+    times = serializers.SerializerMethodField()
+
     class Meta:
         model = AppointmentDoctorTime
         fields = ('id', 'date', 'doctor', 'clinic_address', 'times')
