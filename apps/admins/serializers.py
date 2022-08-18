@@ -3,10 +3,17 @@ import datetime
 from rest_framework import serializers
 
 from apps.admins.models import MonthReport
-from apps.clinics.models import Doctor, AppointmentDoctorTime, AppointmentTime, DoctorProcedures
+from apps.clinics.models import Doctor, AppointmentDoctorTime, AppointmentTime, DoctorProcedures, \
+    Address
 from apps.clinics.serializers import SpecialitySearchSerializer, AppointmentTimeSerializer, \
     DoctorSerializer, ProcedureSerializer
 from apps.patients.models import Appointment, Comment, Patient
+
+
+class ClientClinicAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('id', 'address')
 
 
 class ClientClinicAppointmentTimeSerializer(serializers.ModelSerializer):
@@ -166,4 +173,3 @@ class ClientClinicDoctorDetailSerializer(DoctorSerializer):
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee', 'clinic', 'specialities', 'doctor_procedures']
-
