@@ -189,17 +189,13 @@ class DoctorSerializer(serializers.ModelSerializer):
     clinic = serializers.CharField()
     comments_number = serializers.SerializerMethodField()
     addresses = serializers.SerializerMethodField()
-    experience_years = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee', 'clinic', 'specialities', 'score', 'comments_number',
                   'addresses']
-
-    def get_experience_years(self, obj) -> int:
-        experience = datetime.datetime.now().date().year - obj.operates_from.year
-        return experience
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()

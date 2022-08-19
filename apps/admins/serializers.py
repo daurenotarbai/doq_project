@@ -25,7 +25,7 @@ class ClientClinicAppointmentTimeSerializer(serializers.ModelSerializer):
 class DoctorBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo']
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years']
 
 
 class DoctorBaseWithSpecialitySerializer(serializers.ModelSerializer):

@@ -124,6 +124,7 @@ class ClientClinicFeedbacksView(ListAPIView):
     model = Comment
     serializer_class = ClientClinicFeedbacksSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = 'id'
 
     def get_queryset(self):
         queryset = Comment.objects.filter(doctor__clinic__user=self.request.user, parent=None)
@@ -150,6 +151,16 @@ class ClientClinicFeedbacksView(ListAPIView):
             queryset = queryset.filter(is_responded=True)
         elif filter_by_is_responded == 'false':
             queryset = queryset.filter(is_responded=False)
+        return queryset
+
+
+class ClientClinicFeedbacksDetailView(RetrieveAPIView):
+    serializer_class = ClientClinicFeedbacksSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        queryset = Comment.objects.filter(doctor__clinic__user=self.request.user, parent=None)
         return queryset
 
 
