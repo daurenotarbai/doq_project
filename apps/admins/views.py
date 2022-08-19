@@ -12,7 +12,8 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
     ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer, \
-    ClientClinicDoctorSpecialitiesSerializer, ClientClinicDoctorProceduresSerializer
+    ClientClinicDoctorSpecialitiesSerializer, ClientClinicDoctorProceduresSerializer, \
+    ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
     DoctorSpecialities, DoctorProcedures
 from apps.patients.models import Comment, Appointment
@@ -79,6 +80,34 @@ class ClientClinicDoctorsSpecialityView(CreateAPIView):
         return Response(serializer.data, status=201)
 
 
+class ClientClinicDoctorsSpecialitiesUpdateView(UpdateAPIView):
+    queryset = DoctorSpecialities.objects.all()
+    serializer_class = ClientClinicDoctorSpecialitiesUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+
+class ClientClinicDoctorsProceduresUpdateView(UpdateAPIView):
+    queryset = DoctorProcedures.objects.all()
+    serializer_class = ClientClinicDoctorProceduresUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status=201)
+
+
 class ClientClinicDoctorsProcedureView(CreateAPIView):
     model = DoctorProcedures
     serializer_class = ClientClinicDoctorProceduresSerializer
@@ -89,6 +118,7 @@ class ClientClinicDoctorsProcedureView(CreateAPIView):
         serializer.is_valid()
         serializer.save()
         return Response(serializer.data, status=201)
+
 
 class ClientClinicFeedbacksView(ListAPIView):
     model = Comment

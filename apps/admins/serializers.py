@@ -188,6 +188,12 @@ class ClientClinicDoctorProceduresSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ClientClinicDoctorProceduresUpdateSerializer(ClientClinicDoctorProceduresSerializer):
+    class Meta:
+        model = DoctorProcedures
+        exclude = ['doctor']
+
+
 class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
     speciality = SpecialitySearchSerializer(read_only=True)
     speciality_id = serializers.IntegerField(write_only=True)
@@ -195,6 +201,12 @@ class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorSpecialities
         fields = '__all__'
+
+
+class ClientClinicDoctorSpecialitiesUpdateSerializer(ClientClinicDoctorSpecialitiesSerializer):
+    class Meta:
+        model = DoctorSpecialities
+        exclude = ['doctor']
 
 
 class ClientClinicDoctorDetailSerializer(DoctorSerializer):
