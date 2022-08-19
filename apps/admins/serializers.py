@@ -185,7 +185,7 @@ class ClientClinicDoctorProceduresSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorProcedures
-        fields = ['id', 'procedure_id', 'procedure', 'doctor', 'price']
+        fields = '__all__'
 
 
 class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
@@ -194,7 +194,7 @@ class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorSpecialities
-        fields = ['id', 'speciality_id', 'speciality', 'doctor', 'price']
+        fields = '__all__'
 
 
 class ClientClinicDoctorDetailSerializer(DoctorSerializer):
