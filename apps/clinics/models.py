@@ -311,6 +311,23 @@ class DoctorProcedures(models.Model):
         decimal_places=2,
         default=Decimal(0),
     )
+    discount = models.PositiveIntegerField(
+        default=0,
+    )
+    for_child = models.BooleanField(
+        'Детский',
+        default=True,
+        blank=True,
+        null=True
+    )
+    child_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
+    child_discount = models.PositiveIntegerField(
+        default=0,
+    )
 
 
 class DoctorSpecialities(models.Model):
@@ -329,6 +346,23 @@ class DoctorSpecialities(models.Model):
         decimal_places=2,
         default=Decimal(0),
     )
+    discount = models.PositiveIntegerField(
+        default=0,
+    )
+    for_child = models.BooleanField(
+        'Детский',
+        default=True,
+        blank=True,
+        null=True
+    )
+    child_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
+    child_discount = models.PositiveIntegerField(
+        default=0,
+    )
 
 
 class AppointmentDoctorTime(models.Model):
@@ -341,7 +375,8 @@ class AppointmentDoctorTime(models.Model):
         Address, on_delete=models.CASCADE,
         null=True,
         verbose_name="Адрес клиники",
-        related_name="appoint_times")
+        related_name="appoint_times",
+    )
     doctor = models.ForeignKey(
         Doctor,
         on_delete=models.CASCADE,
