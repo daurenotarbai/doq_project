@@ -12,8 +12,10 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicAppointmentSerializer, \
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
-    ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer
-from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address
+    ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer, \
+    ClientClinicDoctorSpecialitiesBaseSerializer, ClientClinicDoctorSpecialitiesSerializer
+from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
+    DoctorSpecialities
 from apps.patients.models import Comment, Appointment
 
 
@@ -64,6 +66,18 @@ class ClientClinicDoctorsDetailView(RetrieveAPIView):
     serializer_class = ClientClinicDoctorDetailSerializer
     permission_classes = (permissions.IsAuthenticated,)
     lookup_field = 'id'
+
+
+class ClientClinicDoctorsSpecialityView(CreateAPIView):
+    model = DoctorSpecialities
+    serializer_class = ClientClinicDoctorSpecialitiesSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status=201)
 
 
 class ClientClinicFeedbacksView(ListAPIView):

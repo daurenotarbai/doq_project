@@ -168,7 +168,6 @@ class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
 
 
 class AppointmentDoctorTimeCreateSerializer(serializers.ModelSerializer):
-    times = serializers.SerializerMethodField()
 
     class Meta:
         model = AppointmentDoctorTime
@@ -189,12 +188,14 @@ class ClientClinicDoctorProceduresSerializer(serializers.ModelSerializer):
         fields = ['id', 'procedure', 'price']
 
 
-class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
-    speciality = serializers.CharField(max_length=20)
-
+class ClientClinicDoctorSpecialitiesBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorSpecialities
-        fields = ['id', 'speciality', 'price']
+        fields = ['id', 'speciality', 'doctor', 'price']
+
+
+class ClientClinicDoctorSpecialitiesSerializer(ClientClinicDoctorSpecialitiesBaseSerializer):
+    speciality = SpecialitySearchSerializer(read_only=True)
 
 
 class ClientClinicDoctorDetailSerializer(DoctorSerializer):
