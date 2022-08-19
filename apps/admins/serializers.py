@@ -25,7 +25,7 @@ class ClientClinicAppointmentTimeSerializer(serializers.ModelSerializer):
 class DoctorBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo']
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years']
 
 
 class DoctorBaseWithSpecialitySerializer(serializers.ModelSerializer):
@@ -60,14 +60,22 @@ class ClientClinicDoctorsSerializer(serializers.ModelSerializer):
         return procedures
 
 
+class ClientClinicFeedbacksAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text')
+
+
 class ClientClinicFeedbacksSerializer(serializers.ModelSerializer):
     doctor = DoctorBaseSerializer()
     patient = PatientBaseSerializer()
     visit_date = serializers.SerializerMethodField()
+    subcomments = ClientClinicFeedbacksAnswerSerializer(many=True)
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'star', 'parent', 'doctor', 'patient', 'visit_date')
+        fields = (
+            'id', 'text', 'star', 'parent', 'doctor', 'patient', 'visit_date', 'subcomments')
 
     def get_visit_date(self, obj):
         time = obj.patient.appointments.filter(

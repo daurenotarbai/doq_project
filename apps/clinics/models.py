@@ -1,3 +1,4 @@
+import datetime
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -288,6 +289,11 @@ class Doctor(TimestampMixin):
             return mark_safe(
                 '<img src="{}" style="border-radius:10%" width="120" />'.format(self.photo.url))
         return "Фото не загрузил"
+
+    @property
+    def experience_years(self):
+        experience = datetime.datetime.now().date().year - self.operates_from.year
+        return experience
 
     image_tag.short_description = 'Фото'
 
