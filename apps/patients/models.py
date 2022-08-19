@@ -24,7 +24,8 @@ class Appointment(TimestampMixin):
         verbose_name_plural = 'Записи на прием'
         unique_together = ['appointment_time', 'appointment_doctor_time']
 
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments",
+                                null=True, blank=True)
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
     appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
     is_visited = models.BooleanField('Посетил', blank=True, null=True)
@@ -38,8 +39,10 @@ class Comment(TimestampMixin):
     star = models.PositiveSmallIntegerField('Рейтинг', default=0)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,
                                related_name="subcomments")
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments')
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='comments')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='comments',
+                               null=True, blank=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='comments',
+                                null=True, blank=True)
     is_responded = models.BooleanField(
         'Ответил',
         default=False,
@@ -52,9 +55,10 @@ class Comment(TimestampMixin):
 
     def save(self, *args, **kwargs):
         visited = False
-        for appointment in self.patient.appointments.all():
-            if appointment.appointment_doctor_time.doctor==self.doctor:
-                visited = True
-        if not visited:
-            raise exceptions.BadRequest("You can't comment to this doctor")
+        if not self.parent:
+            for appointment in self.patient.appointments.all():
+                if appointment.appointment_doctor_time.doctor == self.doctor:
+                    visited = True
+            if not visited:
+                raise exceptions.BadRequest("You can't comment to this doctor")
         super().save(*args, **kwargs)
