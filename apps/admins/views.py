@@ -5,7 +5,6 @@ from django.db.models.functions import Cast
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from apps.admins.models import MonthReport
 from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
@@ -13,9 +12,9 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorAppointmentTimeSerializer, AppointmentDoctorTimeCreateSerializer, \
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
     ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer, \
-    ClientClinicDoctorSpecialitiesBaseSerializer, ClientClinicDoctorSpecialitiesSerializer
+    ClientClinicDoctorSpecialitiesSerializer, ClientClinicDoctorProceduresSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
-    DoctorSpecialities
+    DoctorSpecialities, DoctorProcedures
 from apps.patients.models import Comment, Appointment
 
 
@@ -79,6 +78,17 @@ class ClientClinicDoctorsSpecialityView(CreateAPIView):
         serializer.save()
         return Response(serializer.data, status=201)
 
+
+class ClientClinicDoctorsProcedureView(CreateAPIView):
+    model = DoctorProcedures
+    serializer_class = ClientClinicDoctorProceduresSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status=201)
 
 class ClientClinicFeedbacksView(ListAPIView):
     model = Comment

@@ -5,8 +5,8 @@ from rest_framework import serializers
 from apps.admins.models import MonthReport
 from apps.clinics.models import Doctor, AppointmentDoctorTime, AppointmentTime, DoctorProcedures, \
     Address, DoctorSpecialities
-from apps.clinics.serializers import SpecialitySearchSerializer, AppointmentTimeSerializer, \
-    DoctorSerializer, ProcedureSerializer
+from apps.clinics.serializers import SpecialitySearchSerializer, DoctorSerializer, \
+    ProcedureSearchSerializer
 from apps.patients.models import Appointment, Comment, Patient
 
 
@@ -168,7 +168,6 @@ class ClientClinicDoctorAppointmentTimeSerializer(serializers.ModelSerializer):
 
 
 class AppointmentDoctorTimeCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AppointmentDoctorTime
         fields = ('id', 'date', 'doctor', 'clinic_address', 'times')
@@ -181,21 +180,21 @@ class ClientClinicTotalReconciliationsSerializer(serializers.ModelSerializer):
 
 
 class ClientClinicDoctorProceduresSerializer(serializers.ModelSerializer):
-    procedure = serializers.CharField(max_length=20)
+    procedure = ProcedureSearchSerializer(read_only=True)
+    procedure_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = DoctorProcedures
-        fields = ['id', 'procedure', 'price']
+        fields = ['id', 'procedure_id', 'procedure', 'doctor', 'price']
 
 
-class ClientClinicDoctorSpecialitiesBaseSerializer(serializers.ModelSerializer):
+class ClientClinicDoctorSpecialitiesSerializer(serializers.ModelSerializer):
+    speciality = SpecialitySearchSerializer(read_only=True)
+    speciality_id = serializers.IntegerField(write_only=True)
+
     class Meta:
         model = DoctorSpecialities
-        fields = ['id', 'speciality', 'doctor', 'price']
-
-
-class ClientClinicDoctorSpecialitiesSerializer(ClientClinicDoctorSpecialitiesBaseSerializer):
-    speciality = SpecialitySearchSerializer(read_only=True)
+        fields = ['id', 'speciality_id', 'speciality', 'doctor', 'price']
 
 
 class ClientClinicDoctorDetailSerializer(DoctorSerializer):
