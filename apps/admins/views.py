@@ -14,7 +14,6 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
     ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address
-from apps.clinics.serializers import DoctorSerializer
 from apps.patients.models import Comment, Appointment
 
 
