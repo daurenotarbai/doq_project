@@ -430,6 +430,18 @@ class ClinicApplication(TimestampMixin):
         null=True,
         blank=True,
     )
+    doctor_name = models.CharField(
+        'Номер телефона',
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+    from_doctor = models.BooleanField(
+        'От Доктора',
+        default=False,
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f'{self.name_clinic} - {self.created_at}'
