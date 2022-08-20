@@ -1,4 +1,6 @@
 import datetime
+from math import cos, asin, sqrt
+
 from django.db.models import Avg, Count, Min, Q, IntegerField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
@@ -159,6 +161,26 @@ class DoctorAppointmentTimesView(ListAPIView):
         return queryset
 
 
+def distance(lat1, lon1, lat2, lon2):
+    p = 0.017453292519943295
+    hav = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (
+            1 - cos((lon2 - lon1) * p)) / 2
+    return 12742 * asin(sqrt(hav))
+
+
+def closest(data, v):
+    return sorted(data, key=lambda p: distance(v['lat'], v['lon'], p['lat'], p['lon']))
+
+
+tempDataList = [
+    {'lat': 39.7612992, 'lon': -86.1519681},
+    {'lat': 39.762241, 'lon': -86.158436},
+    {'lat': 39.7622292, 'lon': -86.1578917}
+]
+
+
+
+
 class ClinicsViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
@@ -166,6 +188,8 @@ class ClinicsViewSet(viewsets.ModelViewSet):
     serializer_class = ClinicSerializer
 
     def get_queryset(self):
+        v = {'lat': 39.7622290, 'lon': -86.1519750}
+        print("SSS",closest(tempDataList, v))
         sort_by_rating = self.request.GET.get('by_rating')
         filter_by_24_hours = self.request.GET.get('24_hours')
         filter_by_is_open = self.request.GET.get('is_open')
@@ -206,7 +230,8 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
             clinic = ClinicParametrsDocument.search().query(
                 EQ('query_string', query=query, fields=['name'])).execute()
             doctor = DoctorParametrsDocument.search().query(
-                EQ('query_string', query=query, fields=['first_name', 'last_name', 'middle_name'])).execute()
+                EQ('query_string', query=query,
+                   fields=['first_name', 'last_name', 'middle_name'])).execute()
             procedure = ProcedureParametrsDocument.search().query(
                 EQ('query_string', query=query, fields=['name'])).execute()
             speciality = SpecialityParametrsDocument.search().query(
