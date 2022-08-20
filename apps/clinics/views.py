@@ -88,7 +88,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         elif sort_by_price:
             queryset = queryset.order_by('doctor_procedures__price')
         elif sort_by_experience_years:
-            queryset = queryset.order_by('-experience_years')
+            queryset = queryset.order_by('operates_from')
 
         return queryset.annotate(procedure_id=Cast(procedure_id, IntegerField()))
 
@@ -114,7 +114,7 @@ class SpecialityDoctorsView(ClinicDoctorsView):
         elif sort_by_price:
             queryset = queryset.order_by('consultation_fee')
         elif sort_by_experience_years:
-            queryset = queryset.order_by('-experience_years')
+            queryset = queryset.order_by('operates_from')
         return queryset.annotate(speciality_id=Cast(speciality_id, IntegerField()))
 
 
