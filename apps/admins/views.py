@@ -279,4 +279,4 @@ class ClientClinicTotalReconciliationsView(ListAPIView):
         queryset = self.model.objects.filter(
             address__clinic__user=self.request.user,
             address_id=address_id)
-        return queryset
+        return queryset.order_by('-month')
