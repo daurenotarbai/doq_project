@@ -164,7 +164,7 @@ class DoctorAppointmentTimesView(ListAPIView):
 def distance(lat1, lon1, lat2, lon2):
     p = 0.017453292519943295
     hav = 0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (
-            1 - cos((lon2 - lon1) * p)) / 2
+        1 - cos((lon2 - lon1) * p)) / 2
     return 12742 * asin(sqrt(hav))
 
 
@@ -179,8 +179,6 @@ tempDataList = [
 ]
 
 
-
-
 class ClinicsViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
@@ -188,8 +186,14 @@ class ClinicsViewSet(viewsets.ModelViewSet):
     serializer_class = ClinicSerializer
 
     def get_queryset(self):
+        points = []
+        for clinic in self.queryset:
+            for address in clinic.addresses.all():
+                point = {"lat": address.latitude, "lon": address.longitude}
+                points.append(point)
         v = {'lat': 39.7622290, 'lon': -86.1519750}
-        print("SSS",closest(tempDataList, v))
+        sorted_points = closest(tempDataList, v)
+        print("SSS", closest(tempDataList, v))
         sort_by_rating = self.request.GET.get('by_rating')
         filter_by_24_hours = self.request.GET.get('24_hours')
         filter_by_is_open = self.request.GET.get('is_open')
