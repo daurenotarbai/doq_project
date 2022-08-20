@@ -1,5 +1,6 @@
 import datetime
-from django.db.models import Avg, Count, Min, Q
+from django.db.models import Avg, Count, Min, Q, IntegerField
+from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
 from elasticsearch_dsl import Q as EQ
@@ -89,7 +90,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         elif sort_by_experience_years:
             queryset = queryset.order_by('-experience_years')
 
-        return queryset
+        return queryset.annotate(procedure_id=Cast(procedure_id, IntegerField()))
 
 
 class SpecialityDoctorsView(ClinicDoctorsView):
@@ -114,7 +115,7 @@ class SpecialityDoctorsView(ClinicDoctorsView):
             queryset = queryset.order_by('consultation_fee')
         elif sort_by_experience_years:
             queryset = queryset.order_by('-experience_years')
-        return queryset
+        return queryset.annotate(speciality_id=Cast(speciality_id, IntegerField()))
 
 
 class DoctorsDetailView(RetrieveAPIView):

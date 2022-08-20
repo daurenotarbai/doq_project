@@ -1,6 +1,4 @@
 import datetime
-from abc import ABC
-
 from django.db.models import Avg, Min, Q
 from rest_framework import serializers
 
@@ -189,16 +187,33 @@ class DoctorSerializer(serializers.ModelSerializer):
     clinic = serializers.CharField()
     comments_number = serializers.SerializerMethodField()
     addresses = serializers.SerializerMethodField()
-
+    consultation_fee = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
-                  'consultation_fee', 'clinic', 'specialities', 'score', 'comments_number',
+                  'consultation_fee', 'clinic', 'specialities', 'score',
+                  'comments_number',
                   'addresses']
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()
+
+    def get_consultation_fee(self, obj):
+        try:
+            specialty_price = obj.doctor_specialities.filter(
+                speciality_id=obj.speciality_id).first()
+            return specialty_price.price
+        except AttributeError:
+            pass
+        try:
+            procedure_price = obj.doctor_procedures.filter(
+                procedure_id=obj.procedure_id).first()
+            return procedure_price.price
+        except AttributeError:
+            pass
+        return obj.consultation_fee
+
 
     def get_addresses(self, obj):
         data = []
