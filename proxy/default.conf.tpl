@@ -1,6 +1,6 @@
 server {
-    listen 81;
-    listen [::]:81;
+    listen 8000;
+    listen [::]:8000;
 
     location /static {
         alias /vol/static;
