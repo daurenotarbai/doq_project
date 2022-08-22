@@ -9,8 +9,8 @@ server {
         alias /vol/static;
     }
 
-    location /api/admin {
-        uwsgi_pass              ${APP_HOST}:${APP_PORT};
+    location / {
+        uwsgi_pass              ${APP_HOST}:${APP_PORT}/api/admin;
         include                 /etc/nginx/uwsgi_params;
         client_max_body_size    10M;
     }
