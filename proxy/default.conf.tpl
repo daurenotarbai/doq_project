@@ -12,4 +12,11 @@ server {
         client_max_body_size    10M;
     }
 
+    location /superadmin {
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://localhost:8000/api/admin;
+    }
+
 }
