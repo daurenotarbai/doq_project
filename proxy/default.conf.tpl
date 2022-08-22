@@ -16,9 +16,9 @@ server {
         }
 
     location /adminn {
-        proxy_pass https://doq.kz;
+        proxy_pass https://doq.kz
         proxy_set_header   Host             medicne-admin.vercel.app;
         proxy_set_header   X-Real-IP        \$remote_addr;
         proxy_set_header   X-Forwarded-For  \$proxy_add_x_forwarded_for;
-        }
     }
+}
