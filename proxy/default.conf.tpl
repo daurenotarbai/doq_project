@@ -10,7 +10,7 @@ server {
 
     location / {
         proxy_pass http://docfinder.kz;
-        proxy_set_header Host $host:$server_port;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host \$host:$server_port;
+        proxy_set_header X-Real-IP \$remote_addr;
     }
 }
