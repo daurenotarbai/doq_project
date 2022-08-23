@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from django_admin_geomap import ModelAdmin as GeOModelAdmin
+from django_summernote.models import Attachment
 
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage
@@ -211,3 +212,5 @@ class ClinicApplicationAdmin(NoAddMixin, admin.ModelAdmin):
 @admin.register(ClinicImage)
 class ClinicImageAdmin(admin.ModelAdmin):
     list_display = ('image', 'clinic', 'is_main')
+
+admin.site.unregister(Attachment)
