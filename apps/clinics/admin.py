@@ -75,7 +75,7 @@ class DoctorsAppointmentTimeAdmin(admin.ModelAdmin):
 
 
 @admin.register(Clinic)
-class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
+class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
     list_display = ("image_tag", "name", "phone", 'user',)
     fieldsets = (
         ('', {'fields': (('image_tag', 'logo'),)}),
@@ -85,6 +85,7 @@ class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
     )
     readonly_fields = ['image_tag']
     inlines = [AddressClinicInline, DoctorsInline]
+    summernote_fields = ('description', )
 
     def get_queryset(self, request):
         qs = super(ClinicAdmin, self).get_queryset(request)
