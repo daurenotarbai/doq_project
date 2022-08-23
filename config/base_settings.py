@@ -190,6 +190,12 @@ CORS_ALLOWED_ORIGINS = [
     'https://medappointment.vercel.app',  # for network
     'https://medicne-admin.vercel.app',  # for network
     'http://localhost:8000',  # for localhost (Developlemt)
-    'http://46.101.243.200',  # for network (Development)
+    'http://185.146.1.69',  # for network (Development)
+    'http://185.146.1.69:80',  # for network (Development)
+    'http://185.146.1.69:81',  # for network (Development)
+    'http://185.146.1.69:82',  # for network (Development)
+    'http://docfinder.kz',  # for network (Development)
+    'http://docfinder.kz:81',  # for network (Development)
+    'http://docfinder.kz:82',  # for network (Development)
     'https://docfinderkz.vercel.app',  # for network (Development)
 ]
