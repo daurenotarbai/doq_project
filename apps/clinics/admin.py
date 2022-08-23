@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-
+from django_summernote.admin import SummernoteModelAdmin
 from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
@@ -9,7 +9,6 @@ from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, 
     AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
 from django.utils.translation import gettext_lazy as _
-
 
 class MyDateTimeFilter(admin.DateFieldListFilter):
     def __init__(self, *args, **kwargs):
@@ -113,7 +112,7 @@ class SpecialityInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Doctor)
-class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmin):
+class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
     list_display = (
         "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
         "get_todays_times",
@@ -122,7 +121,8 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
-                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description')
+                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'achievements',
+                       'category', 'description')
         }),
 
     )
@@ -130,6 +130,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, admin.ModelAdmi
     inlines = [ProcedureInlineAdmin, SpecialityInlineAdmin]
     filter_horizontal = ('procedures', "specialities")
     search_fields = ['first_name', "last_name", "clinic__name"]
+    summernote_fields = ('description',)
 
     def get_specialities(self, obj):
         return " | ".join([s.name for s in obj.specialities.all()])

@@ -16,6 +16,12 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
+class DoctorCategory(TextChoices):
+    FIRST = "FIRST", "Первая категория"
+    SECOND = "SECOND", "Вторая категория"
+    HIGHER = "HIGHER", "Высшая категория"
+
+
 class WeekDays(TextChoices):
     MONDAY = "MONDAY", "Понедельник"
     TUESDAY = "TUESDAY", "Вторник"
@@ -281,6 +287,19 @@ class Doctor(TimestampMixin):
     is_active = models.BooleanField(
         'Активный',
         default=True,
+        blank=True,
+    )
+    category = models.CharField(
+        'Категория',
+        max_length=20,
+        choices=DoctorCategory.choices,
+        blank=True,
+        null=True,
+    )
+    achievements = models.CharField(
+        "Достижении",
+        max_length=255,
+        default='',
         blank=True,
     )
 

@@ -22,6 +22,7 @@ from django.urls import path, include
 urlpatterns = [
     path('api/admin/', admin.site.urls),
     path("api/", include("apps.urls")),
+    path("summernote/", include("django_summernote.urls")),
     # path("__debug__/", include(debug_toolbar.urls)),
 ]
 if settings.DEBUG:

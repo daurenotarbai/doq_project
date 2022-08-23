@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.admins',
 
 ]
+INSTALLED_APPS += ('django_summernote', )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -170,6 +171,8 @@ STATIC_URL = os.getenv("STATIC_URL", '/static/')
 STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+
+
 
 CSRF_TRUSTED_ORIGINS = ['https://34aa-46-101-243-200.eu.ngrok.io']
 
