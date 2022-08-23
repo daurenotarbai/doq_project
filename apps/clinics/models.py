@@ -395,7 +395,7 @@ class AppointmentDoctorTime(models.Model):
     class Meta:
         verbose_name = 'Времени на прием'
         verbose_name_plural = 'Времени на прием'
-        unique_together = ('doctor', 'date')
+        unique_together = ('doctor', 'date', 'clinic_address', )
 
     clinic_address = models.ForeignKey(
         Address, on_delete=models.CASCADE,
