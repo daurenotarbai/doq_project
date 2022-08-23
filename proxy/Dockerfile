@@ -11,7 +11,7 @@ ENV APP_PORT=9000
 
 USER root
 
-COPY /home/ubuntu/ssl/private /etc/ssl/certs
+COPY ./ssl/private /etc/ssl/certs
 
 RUN mkdir -p /vol/static && \
     chmod 755 /vol/static && \
