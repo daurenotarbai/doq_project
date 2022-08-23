@@ -155,7 +155,6 @@ class AddressWithAppointmentTimesSerializer(serializers.ModelSerializer):
 
 class ClinicSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True)
-    short_description = serializers.SerializerMethodField()
     avr_doctors_score = serializers.FloatField()
     comment_number = serializers.IntegerField()
 
@@ -163,9 +162,6 @@ class ClinicSerializer(serializers.ModelSerializer):
         model = Clinic
         fields = ['id', 'logo', 'name', 'addresses', 'short_description', 'avr_doctors_score',
                   'comment_number']
-
-    def get_short_description(self, obj):
-        return obj.description[:160] + "..."
 
 
 class PatientSerializer(serializers.ModelSerializer):

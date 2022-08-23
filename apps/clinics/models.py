@@ -98,6 +98,7 @@ class Clinic(TimestampMixin, ContactMixin):
     name = models.CharField('Название клиники', max_length=50, default='')
     description = models.TextField("Описание", blank=True, default='',
                                    help_text="Подробное описание")
+    short_description = models.CharField('Краткое описание', max_length=120, default='')
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь",
                              related_name='clinic',

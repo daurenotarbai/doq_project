@@ -80,7 +80,7 @@ class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
     fieldsets = (
         ('', {'fields': (('image_tag', 'logo'),)}),
         ('Основная информация', {
-            'fields': (('name', 'phone', 'user'), 'description')
+            'fields': (('name', 'phone', 'user'), 'short_description', 'description')
         }),
     )
     readonly_fields = ['image_tag']
