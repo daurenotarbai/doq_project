@@ -32,8 +32,6 @@ server {
       proxy_set_header X-Real-IP \$remote_addr;
       proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
       proxy_set_header Host \$http_host;
-      proxy_set_header X-NginX-Proxy true;
-      proxy_set_header X-Ssl on;
 
       proxy_pass https://admin_upstream;
       proxy_redirect off;
@@ -48,9 +46,7 @@ server {
 
       proxy_set_header X-Real-IP \$remote_addr;
       proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-      proxy_set_header Host $http_host;
-      proxy_set_header X-NginX-Proxy true;
-      proxy_set_header X-Ssl on;
+      proxy_set_header Host \$http_host;
 
       proxy_pass https://app_back;
       proxy_redirect off;
