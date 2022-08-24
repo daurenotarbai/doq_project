@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.admins',
 
 ]
+INSTALLED_APPS += ('django_summernote', )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -171,6 +172,8 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
+
+
 CSRF_TRUSTED_ORIGINS = ['https://34aa-46-101-243-200.eu.ngrok.io']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -187,6 +190,12 @@ CORS_ALLOWED_ORIGINS = [
     'https://medappointment.vercel.app',  # for network
     'https://medicne-admin.vercel.app',  # for network
     'http://localhost:8000',  # for localhost (Developlemt)
-    'http://46.101.243.200',  # for network (Development)
+    'http://185.146.1.69',  # for network (Development)
+    'http://185.146.1.69:80',  # for network (Development)
+    'http://185.146.1.69:81',  # for network (Development)
+    'http://185.146.1.69:82',  # for network (Development)
+    'http://docfinder.kz',  # for network (Development)
+    'http://docfinder.kz:81',  # for network (Development)
+    'http://docfinder.kz:82',  # for network (Development)
     'https://docfinderkz.vercel.app',  # for network (Development)
 ]

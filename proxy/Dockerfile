@@ -11,6 +11,8 @@ ENV APP_PORT=9000
 
 USER root
 
+COPY ./ssl/private /etc/ssl/certs
+
 RUN mkdir -p /vol/static && \
     chmod 755 /vol/static && \
     touch /etc/nginx/conf.d/default.conf && \

@@ -218,7 +218,9 @@ class ClientClinicDoctorsAppointmentTimesCreateView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         doctor_id = kwargs['doctor_id']
         date = request.data.get('date')
-        objects = self.model.objects.filter(doctor=doctor_id, date=date)
+        clinic_address = request.data.get('clinic_address')
+        objects = self.model.objects.filter(doctor=doctor_id, date=date,
+                                            clinic_address=clinic_address)
         objects.delete()
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()

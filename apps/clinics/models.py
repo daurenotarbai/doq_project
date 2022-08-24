@@ -16,6 +16,12 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
+class DoctorCategory(TextChoices):
+    FIRST = "FIRST", "Первая категория"
+    SECOND = "SECOND", "Вторая категория"
+    HIGHER = "HIGHER", "Высшая категория"
+
+
 class WeekDays(TextChoices):
     MONDAY = "MONDAY", "Понедельник"
     TUESDAY = "TUESDAY", "Вторник"
@@ -92,6 +98,7 @@ class Clinic(TimestampMixin, ContactMixin):
     name = models.CharField('Название клиники', max_length=50, default='')
     description = models.TextField("Описание", blank=True, default='',
                                    help_text="Подробное описание")
+    short_description = models.CharField('Краткое описание', max_length=120, default='')
     logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь",
                              related_name='clinic',
@@ -283,6 +290,19 @@ class Doctor(TimestampMixin):
         default=True,
         blank=True,
     )
+    category = models.CharField(
+        'Категория',
+        max_length=20,
+        choices=DoctorCategory.choices,
+        blank=True,
+        null=True,
+    )
+    achievements = models.CharField(
+        "Достижении",
+        max_length=255,
+        default='',
+        blank=True,
+    )
 
     def image_tag(self):
         if self.photo:
@@ -375,7 +395,7 @@ class AppointmentDoctorTime(models.Model):
     class Meta:
         verbose_name = 'Времени на прием'
         verbose_name_plural = 'Времени на прием'
-        unique_together = ('doctor', 'date')
+        unique_together = ('doctor', 'date', 'clinic_address', )
 
     clinic_address = models.ForeignKey(
         Address, on_delete=models.CASCADE,
