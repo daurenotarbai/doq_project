@@ -52,8 +52,6 @@ services:
     restart: always
     depends_on:
       - web
-    ports:
-      - "81:81"
     volumes:
       - static-data:/vol/static
 volumes:
