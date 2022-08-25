@@ -18,7 +18,7 @@ server {
 # the secure nginx server instance
 server {
     listen 443 ssl;
-    server_name  docfinder.kz;
+    server_name docfinder.kz;
     ssl_certificate /etc/ssl/certs/ssl-bundle.crt;
     ssl_certificate_key /etc/ssl/certs/docfinder_kz.key;
     ssl_prefer_server_ciphers on;
@@ -27,6 +27,7 @@ server {
     location /favicon.ico { alias /home/ubuntu/img/favicon_rc.ico; }
 
     location / {
+      include /etc/nginx/uwsgi_params;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header Host $http_host;
@@ -41,10 +42,10 @@ server {
     location /superadmin/ {
       rewrite /superadmin/(.*)$ /$1 break;
 
-      proxy_set_header X-Real-IP \$remote_addr;
-      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-      proxy_set_header Host \$http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
 
-      proxy_pass https://\$app_back;
+      proxy_pass https://$app_back;
     }
  }
