@@ -54,6 +54,8 @@ services:
       - web
     volumes:
       - static-data:/vol/static
+    ports:
+      - "81:81"
 volumes:
   pg_data:
   static-data:
