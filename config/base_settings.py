@@ -173,8 +173,7 @@ MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
 
-
-CSRF_TRUSTED_ORIGINS = ['https://34aa-46-101-243-200.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://docfinder.kz/superadmin']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ELASTICSEARCH_DSL = {
