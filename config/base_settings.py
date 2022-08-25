@@ -195,8 +195,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://185.146.1.69:80',  # for network (Development)
     'http://185.146.1.69:81',  # for network (Development)
     'http://185.146.1.69:82',  # for network (Development)
+    'http://185.146.1.69:83',  # for network (Development)
     'http://docfinder.kz',  # for network (Development)
     'http://docfinder.kz:81',  # for network (Development)
     'http://docfinder.kz:82',  # for network (Development)
+    'http://docfinder.kz:83',  # for network (Development)
     'https://docfinderkz.vercel.app',  # for network (Development)
 ]
