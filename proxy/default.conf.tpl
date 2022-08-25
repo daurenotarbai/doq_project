@@ -1,10 +1,10 @@
 # the IP(s) on which your node server is running. I chose port 3000.
 upstream admin_upstream {
-    server 127.0.0.1:3001;
+    server 0.0.0.0:3001;
 }
 
 upstream app_back {
-    server 127.0.0.1:9000;
+    server 0.0.0.0:8000;
 }
 
 #Point http requests to https
@@ -33,7 +33,7 @@ server {
       proxy_set_header X-NginX-Proxy true;
       proxy_set_header X-Ssl on;
 
-      proxy_pass https://admin_upstream;
+      proxy_pass https://0.0.0.0:3001;
       proxy_redirect off;
     }
 
@@ -50,7 +50,7 @@ server {
       proxy_set_header X-NginX-Proxy true;
       proxy_set_header X-Ssl on;
 
-      proxy_pass https://app_back;
+      proxy_pass https://0.0.0.0:8000;
       proxy_redirect off;
     }
  }
