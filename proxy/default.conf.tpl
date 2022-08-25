@@ -34,7 +34,6 @@ server {
       proxy_set_header Host \$http_host;
 
       proxy_pass https://\$admin_upstream;
-      proxy_redirect off;
     }
 
     location /static {
@@ -49,6 +48,5 @@ server {
       proxy_set_header Host \$http_host;
 
       proxy_pass https://\$app_back;
-      proxy_redirect off;
     }
  }
