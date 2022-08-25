@@ -1,9 +1,9 @@
 # the IP(s) on which your node server is running. I chose port 3000.
-upstream admin_upstream{
+upstream admin_upstream {
     server 127.0.0.1:3001;
 }
 
-upstream app_back{
+upstream app_back {
     server 127.0.0.1:9000;
 }
 
@@ -27,8 +27,6 @@ server {
     location /favicon.ico { alias /home/ubuntu/img/favicon_rc.ico; }
 
     location / {
-      # auth_basic "Restricted";
-      # auth_basic_user_file /home/ubuntu/app/.htpasswd;
       proxy_set_header X-Real-IP \$remote_addr;
       proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
       proxy_set_header Host \$http_host;
