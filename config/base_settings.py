@@ -173,7 +173,7 @@ MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
 
-CSRF_TRUSTED_ORIGINS = ['https://docfinder.kz/superadmin']
+CSRF_TRUSTED_ORIGINS = ['https://api.docfinder.kz']
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -187,18 +187,11 @@ INTERNAL_IPS = [
     os.getenv("INTERNAL_IPS", '127.0.0.1'),
 ]
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'https://medappointment.vercel.app',  # for network
-    'https://medicne-admin.vercel.app',  # for network
-    'http://localhost:8000',  # for localhost (Developlemt)
-    'http://185.146.1.69',  # for network (Development)
-    'http://185.146.1.69:80',  # for network (Development)
-    'http://185.146.1.69:81',  # for network (Development)
-    'http://185.146.1.69:82',  # for network (Development)
-    'http://185.146.1.69:83',  # for network (Development)
-    'http://docfinder.kz',  # for network (Development)
-    'http://docfinder.kz:81',  # for network (Development)
-    'http://docfinder.kz:82',  # for network (Development)
-    'http://docfinder.kz:83',  # for network (Development)
-    'https://docfinderkz.vercel.app',  # for network (Development)
+    'http://docfinder.kz',
+    'http://docfinder.kz:81',
+    'http://docfinder.kz:82',
+    'http://docfinder.kz:83',
+    'https://docfinder.kz',
+    'https://api.docfinder.kz',
+    'https://admin.docfinder.kz',
 ]
