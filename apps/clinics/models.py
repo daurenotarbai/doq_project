@@ -485,10 +485,18 @@ class ClinicApplication(TimestampMixin):
         blank=True,
     )
     image = models.ImageField(
-        "Лого клиники",
+        "Фото доктора",
         upload_to=doctor_application_photo_path,
         blank=True,
     )
+
+    def image_tag(self):
+        if self.image:
+            return mark_safe(
+                '<img src="{}" style="border-radius:10%" width="120" />'.format(self.image.url))
+        return "Фото не загрузил"
+
+    image_tag.short_description = 'Фото'
 
     def __str__(self):
         return f'{self.name_clinic} - {self.created_at}'

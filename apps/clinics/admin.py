@@ -206,7 +206,7 @@ admin.site.register(Address, AddressAdmin)
 
 @admin.register(ClinicApplication)
 class ClinicApplicationAdmin(NoAddMixin, admin.ModelAdmin):
-    list_display = ('name_clinic', 'name', 'created_at')
+    list_display = ('image_tag', 'name_clinic', 'name', 'from_doctor', 'created_at')
 
 
 @admin.register(ClinicImage)
