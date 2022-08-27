@@ -358,6 +358,11 @@ class DoctorProcedures(models.Model):
     child_discount = models.PositiveIntegerField(
         default=0,
     )
+    new_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
 
 
 class DoctorSpecialities(models.Model):
@@ -392,6 +397,11 @@ class DoctorSpecialities(models.Model):
     )
     child_discount = models.PositiveIntegerField(
         default=0,
+    )
+    new_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
     )
 
 

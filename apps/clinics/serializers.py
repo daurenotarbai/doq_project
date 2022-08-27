@@ -187,10 +187,20 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
-                  'consultation_fee', 'clinic', 'specialities', 'score',
+        fields = ['id', 'first_name',
+                  'last_name',
+                  'middle_name',
+                  'photo',
+                  'experience_years',
+                  'consultation_fee',
+                  'clinic',
+                  'specialities',
+                  'score',
                   'comments_number',
-                  'addresses', 'achievements', 'category']
+                  'addresses',
+                  'achievements',
+                  'category'
+                  ]
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()
@@ -225,7 +235,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 class DoctorProceduresSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DoctorProcedures
-        fields = ['id', 'procedure_id', 'price']
+        fields = ['id', 'procedure_id', 'price', 'new_price']
 
 
 class DoctorWithProceduresSerializer(DoctorSerializer):
