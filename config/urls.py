@@ -28,6 +28,6 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.index_title = "DOQ Project"
-admin.site.site_header = "DOQ Project Администрация"
+admin.site.index_title = "DOQ Finder"
+admin.site.site_header = "DOQ Finder Администрация"
 admin.site.site_title = "Администрация"
