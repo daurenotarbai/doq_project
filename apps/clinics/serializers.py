@@ -190,7 +190,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee', 'clinic', 'specialities', 'score',
                   'comments_number',
-                  'addresses']
+                  'addresses', 'achievements', 'category']
 
     def get_comments_number(self, obj):
         return obj.comments.all().count()
