@@ -184,6 +184,7 @@ class DoctorSerializer(serializers.ModelSerializer):
     comments_number = serializers.SerializerMethodField()
     addresses = serializers.SerializerMethodField()
     consultation_fee = serializers.SerializerMethodField()
+    new_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
@@ -193,6 +194,7 @@ class DoctorSerializer(serializers.ModelSerializer):
                   'photo',
                   'experience_years',
                   'consultation_fee',
+                  'new_price',
                   'clinic',
                   'specialities',
                   'score',
@@ -205,21 +207,29 @@ class DoctorSerializer(serializers.ModelSerializer):
     def get_comments_number(self, obj):
         return obj.comments.all().count()
 
-    def get_consultation_fee(self, obj):
+    def get_consultation_fee(self, obj, price=True):
         try:
             specialty_price = obj.doctor_specialities.filter(
                 speciality_id=obj.speciality_id).first()
-            return specialty_price.price
+            if price:
+                return specialty_price.price
+            else:
+                return specialty_price.new_price
         except AttributeError:
             pass
         try:
             procedure_price = obj.doctor_procedures.filter(
                 procedure_id=obj.procedure_id).first()
-            return procedure_price.price
+            if price:
+                return procedure_price.price
+            else:
+                return procedure_price.new_price
         except AttributeError:
             pass
         return obj.consultation_fee
 
+    def get_new_price(self, obj):
+        return self.get_consultation_fee(obj, price=False)
 
     def get_addresses(self, obj):
         data = []
