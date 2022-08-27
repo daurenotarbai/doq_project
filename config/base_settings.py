@@ -187,7 +187,7 @@ INTERNAL_IPS = [
     os.getenv("INTERNAL_IPS", '127.0.0.1'),
 ]
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
+    'http://localhost:3000',
     'http://docfinder.kz',
     'http://docfinder.kz:81',
     'http://docfinder.kz:82',
