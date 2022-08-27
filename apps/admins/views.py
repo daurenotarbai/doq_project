@@ -40,6 +40,7 @@ class ClientClinicDoctorsView(ListAPIView):
     model = Doctor
     serializer_class = ClientClinicDoctorsSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = None
 
     def get_queryset(self):
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
