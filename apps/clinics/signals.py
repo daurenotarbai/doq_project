@@ -39,6 +39,5 @@ def create_schedules(sender, instance, *args, **kwargs):
 
 @receiver(post_save, sender=DoctorSpecialities)
 def update_new_price(sender, instance, *args, **kwargs):
-    print("DD")
-    # instance.new_price = (Decimal(instance.discount / 100) * instance.price)
-    # instance.save()
+    new_price = instance.price - (Decimal(instance.discount / 100) * instance.price)
+    DoctorSpecialities.objects.filter(id=instance.id).update(new_price=new_price)
