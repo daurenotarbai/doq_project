@@ -16,6 +16,7 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
     DoctorSpecialities, DoctorProcedures
+from apps.core.paginations import CustomPagination
 from apps.patients.models import Comment, Appointment
 
 
@@ -40,7 +41,7 @@ class ClientClinicDoctorsView(ListAPIView):
     model = Doctor
     serializer_class = ClientClinicDoctorsSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = None
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
