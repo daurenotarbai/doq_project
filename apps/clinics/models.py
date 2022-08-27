@@ -47,6 +47,10 @@ def clinic_photo_path(instance, filename):
     return "photos/clinic/{0}/{1}".format(instance.id, filename)
 
 
+def doctor_application_photo_path(instance, filename):
+    return "photos/doctor/application/photos".format(instance.id, filename)
+
+
 def specialist_photo_path(instance, filename):
     return "photos/clinic/{}/specialist/{}/{}".format(instance.clinic.id, instance.id, filename)
 
@@ -395,7 +399,7 @@ class AppointmentDoctorTime(models.Model):
     class Meta:
         verbose_name = 'Времени на прием'
         verbose_name_plural = 'Времени на прием'
-        unique_together = ('doctor', 'date', 'clinic_address', )
+        unique_together = ('doctor', 'date', 'clinic_address',)
 
     clinic_address = models.ForeignKey(
         Address, on_delete=models.CASCADE,
@@ -461,6 +465,29 @@ class ClinicApplication(TimestampMixin):
         default=False,
         blank=True,
         null=True
+    )
+    speciality = models.CharField(
+        'Специальность',
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    experience_years = models.CharField(
+        'Опыт работы',
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    institution = models.CharField(
+        'Учебное заведение',
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    image = models.ImageField(
+        "Лого клиники",
+        upload_to=doctor_application_photo_path,
+        blank=True,
     )
 
     def __str__(self):
