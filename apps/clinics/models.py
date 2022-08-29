@@ -238,7 +238,6 @@ class DoctorCategory(models.Model):
 
 
 class Doctor(TimestampMixin):
-
     class Meta:
         verbose_name = 'Доктор'
         verbose_name_plural = 'Докторы'
@@ -379,6 +378,12 @@ class DoctorProcedures(models.Model):
         decimal_places=2,
         default=Decimal(0),
     )
+    child_age_from = models.PositiveIntegerField(
+        default=0,
+    )
+    child_age_to = models.PositiveIntegerField(
+        default=0,
+    )
 
 
 class DoctorSpecialities(models.Model):
@@ -418,6 +423,12 @@ class DoctorSpecialities(models.Model):
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
+    )
+    child_age_from = models.PositiveIntegerField(
+        default=0,
+    )
+    child_age_to = models.PositiveIntegerField(
+        default=0,
     )
 
 
