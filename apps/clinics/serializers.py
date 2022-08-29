@@ -1,9 +1,10 @@
 import datetime
-from django.db.models import Avg, Min, Q
+
+from django.db.models import Min
 from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
-    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, Schedules, WeekDaysNumber, \
+    AppointmentDoctorTime, AppointmentTime, DoctorProcedures, WeekDaysNumber, \
     ClinicApplication, ClinicImage
 from apps.patients.models import Comment, Patient, Appointment
 
@@ -263,7 +264,10 @@ class DoctorDetailSerializer(DoctorSerializer):
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee',
-                  'clinic', 'specialities', 'score', 'comments_number', 'addresses', 'description']
+                  'clinic', 'specialities', 'score', 'comments_number', 'addresses', 'description',
+                  'achievements',
+                  'category',
+                  ]
 
 
 class SpecialityDetailSerializer(serializers.HyperlinkedModelSerializer):
