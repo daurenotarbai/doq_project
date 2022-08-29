@@ -16,10 +16,21 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
-class DoctorCategory(TextChoices):
-    FIRST = "FIRST", "Первая категория"
-    SECOND = "SECOND", "Вторая категория"
-    HIGHER = "HIGHER", "Высшая категория"
+# class DoctorCategory(TextChoices):
+#     DOCTOR = "Врач"
+#     ACADEMIC = "Академик"
+#     PROFESSOR = "Провессор"
+#     MASTER = "Магистр"
+#     MASTER_DOC = "Магистр здравоохранения"
+#     RESIDENT = "Резидент"
+#     NURSE = "Медсестра (Медбрат)"
+#     CANDIDATE = "Кандидат медицинских наук"
+#     DOC_CANDIDATE = "Доктор медицинских наук"
+#     SPECIALIST = "Специалист"
+#     PHD = "PhD"
+#     FIRST = "Врач первый категории"
+#     SECOND = "Врач второй категории"
+#     HIGHER = "Врач высшей категории"
 
 
 class WeekDays(TextChoices):
@@ -214,7 +225,20 @@ class Schedules(models.Model):
         return f'{self.day_in_week}'
 
 
+class DoctorCategory(models.Model):
+    name = models.CharField(
+        "Названия категории",
+        max_length=255,
+        default='',
+    )
+
+    class Meta:
+        verbose_name = 'Категория доктора'
+        verbose_name_plural = 'Категории доктора'
+
+
 class Doctor(TimestampMixin):
+
     class Meta:
         verbose_name = 'Доктор'
         verbose_name_plural = 'Докторы'
@@ -294,17 +318,9 @@ class Doctor(TimestampMixin):
         default=True,
         blank=True,
     )
-    category = models.CharField(
-        'Категория',
-        max_length=20,
-        choices=DoctorCategory.choices,
-        blank=True,
-        null=True,
-    )
-    achievements = models.CharField(
-        "Достижении",
-        max_length=255,
-        default='',
+    categories = models.ManyToManyField(
+        DoctorCategory,
+        verbose_name="Категории доктора",
         blank=True,
     )
 

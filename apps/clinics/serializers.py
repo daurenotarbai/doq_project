@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime, DoctorProcedures, WeekDaysNumber, \
-    ClinicApplication, ClinicImage
+    ClinicApplication, ClinicImage, DoctorCategory
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -179,8 +179,15 @@ class DoctorCommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'text', 'parent', 'patient', 'star']
 
 
+class DoctorCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorCategory
+        fields = ['name']
+
+
 class DoctorSerializer(serializers.ModelSerializer):
     specialities = SpecialitySearchSerializer(many=True)
+    categories = DoctorCategorySerializer(many=True)
     clinic = serializers.CharField()
     comments_number = serializers.SerializerMethodField()
     addresses = serializers.SerializerMethodField()
@@ -202,7 +209,7 @@ class DoctorSerializer(serializers.ModelSerializer):
                   'comments_number',
                   'addresses',
                   'achievements',
-                  'category'
+                  'categories',
                   ]
 
     def get_comments_number(self, obj):

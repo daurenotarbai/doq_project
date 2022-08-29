@@ -123,14 +123,13 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
-                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'achievements',
-                       'category', 'description')
+                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description')
         }),
 
     )
     readonly_fields = ('image_tag', 'clinic')
     inlines = [ProcedureInlineAdmin, SpecialityInlineAdmin]
-    filter_horizontal = ('procedures', "specialities")
+    filter_horizontal = ('procedures', "specialities", "categories")
     search_fields = ['first_name', "last_name", "clinic__name"]
     summernote_fields = ('description',)
 
