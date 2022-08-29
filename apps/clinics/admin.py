@@ -1,15 +1,17 @@
 from datetime import datetime, timedelta
-from django_summernote.admin import SummernoteModelAdmin
+
 from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from django_admin_geomap import ModelAdmin as GeOModelAdmin
+from django_summernote.admin import SummernoteModelAdmin
 from django_summernote.models import Attachment
 
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
-    AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage
+    AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage, DoctorCategory
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
-from django.utils.translation import gettext_lazy as _
+
 
 class MyDateTimeFilter(admin.DateFieldListFilter):
     def __init__(self, *args, **kwargs):
@@ -86,7 +88,7 @@ class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
     )
     readonly_fields = ['image_tag']
     inlines = [AddressClinicInline, DoctorsInline]
-    summernote_fields = ('description', )
+    summernote_fields = ('description',)
 
     def get_queryset(self, request):
         qs = super(ClinicAdmin, self).get_queryset(request)
@@ -123,7 +125,8 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
-                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description')
+                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description',
+                       'categories')
         }),
 
     )
@@ -212,4 +215,10 @@ class ClinicApplicationAdmin(NoAddMixin, admin.ModelAdmin):
 class ClinicImageAdmin(admin.ModelAdmin):
     list_display = ('image', 'clinic', 'is_main')
 
+
 admin.site.unregister(Attachment)
+
+
+@admin.register(DoctorCategory)
+class DoctorCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
