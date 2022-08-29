@@ -233,7 +233,10 @@ class DoctorSerializer(serializers.ModelSerializer):
                 return procedure_price.new_price
         except AttributeError:
             pass
-        return obj.consultation_fee
+        if price:
+            return obj.consultation_fee
+        else:
+            return obj.new_price
 
     def get_new_price(self, obj):
         return self.get_consultation_fee(obj, price=False)

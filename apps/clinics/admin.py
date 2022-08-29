@@ -109,10 +109,12 @@ class ProcedureAdmin(admin.ModelAdmin):
 
 class ProcedureInlineAdmin(admin.TabularInline):
     model = Doctor.procedures.through
+    exclude = ['new_price']
 
 
 class SpecialityInlineAdmin(admin.TabularInline):
     model = Doctor.specialities.through
+    exclude = ['new_price']
 
 
 @admin.register(Doctor)
@@ -132,7 +134,7 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
     )
     readonly_fields = ('image_tag', 'clinic')
     inlines = [ProcedureInlineAdmin, SpecialityInlineAdmin]
-    filter_horizontal = ('procedures', "specialities", "categories")
+    filter_horizontal = ("categories",)
     search_fields = ['first_name', "last_name", "clinic__name"]
     summernote_fields = ('description',)
 

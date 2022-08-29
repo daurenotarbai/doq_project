@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core import exceptions
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.safestring import mark_safe
@@ -236,6 +237,9 @@ class DoctorCategory(models.Model):
         verbose_name = 'Категория доктора'
         verbose_name_plural = 'Категории доктора'
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Doctor(TimestampMixin):
     class Meta:
@@ -280,8 +284,18 @@ class Doctor(TimestampMixin):
     operates_from = models.DateField(
         "Работает с",
     )
+
     consultation_fee = models.DecimalField(
         'Цена за прием',
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal(0),
+    )
+    discount_consultation_fee = models.PositiveIntegerField(
+        'Скидка на стоимость приема',
+        default=0,
+    )
+    new_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
@@ -345,19 +359,24 @@ class DoctorProcedures(models.Model):
         Doctor,
         on_delete=models.CASCADE,
         related_name='doctor_procedures',
+        verbose_name="Доктор",
     )
     procedure = models.ForeignKey(
         Procedure,
         on_delete=models.CASCADE,
-        related_name='doctor_procedures'
+        related_name='doctor_procedures',
+        verbose_name="Процедура",
+
     )
     price = models.DecimalField(
+        verbose_name="Цена приема",
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
     )
     discount = models.PositiveIntegerField(
         default=0,
+        verbose_name="Скидка",
     )
     for_child = models.BooleanField(
         'Детский',
@@ -366,12 +385,14 @@ class DoctorProcedures(models.Model):
         null=True
     )
     child_price = models.DecimalField(
+        verbose_name="Цена приема (Детский)",
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
     )
     child_discount = models.PositiveIntegerField(
         default=0,
+        verbose_name="Скидка (Детский)",
     )
     new_price = models.DecimalField(
         max_digits=10,
@@ -379,10 +400,20 @@ class DoctorProcedures(models.Model):
         default=Decimal(0),
     )
     child_age_from = models.PositiveIntegerField(
+        verbose_name="Возраст детей от",
         default=0,
+        validators=[
+            MaxValueValidator(18),
+            MinValueValidator(0)
+        ]
     )
     child_age_to = models.PositiveIntegerField(
         default=0,
+        verbose_name="Возраст детей до",
+        validators=[
+            MaxValueValidator(18),
+            MinValueValidator(0)
+        ]
     )
 
 
@@ -391,19 +422,23 @@ class DoctorSpecialities(models.Model):
         Doctor,
         on_delete=models.CASCADE,
         related_name='doctor_specialities',
+        verbose_name="Доктор",
     )
     speciality = models.ForeignKey(
         Speciality,
         on_delete=models.CASCADE,
-        related_name='doctor_specialities'
+        related_name='doctor_specialities',
+        verbose_name="Специальность",
     )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
+        verbose_name="Цена приема",
     )
     discount = models.PositiveIntegerField(
         default=0,
+        verbose_name="Скидка",
     )
     for_child = models.BooleanField(
         'Детский',
@@ -412,12 +447,14 @@ class DoctorSpecialities(models.Model):
         null=True
     )
     child_price = models.DecimalField(
+        verbose_name="Цена приема (Детский)",
         max_digits=10,
         decimal_places=2,
         default=Decimal(0),
     )
     child_discount = models.PositiveIntegerField(
         default=0,
+        verbose_name="Скидка (Детский)",
     )
     new_price = models.DecimalField(
         max_digits=10,
@@ -426,9 +463,19 @@ class DoctorSpecialities(models.Model):
     )
     child_age_from = models.PositiveIntegerField(
         default=0,
+        verbose_name="Возраст детей от",
+        validators=[
+            MaxValueValidator(18),
+            MinValueValidator(0)
+        ]
     )
     child_age_to = models.PositiveIntegerField(
         default=0,
+        verbose_name="Возраст детей до",
+        validators=[
+            MaxValueValidator(18),
+            MinValueValidator(0)
+        ]
     )
 
 
