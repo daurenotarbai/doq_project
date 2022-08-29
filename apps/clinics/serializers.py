@@ -208,7 +208,6 @@ class DoctorSerializer(serializers.ModelSerializer):
                   'score',
                   'comments_number',
                   'addresses',
-                  'achievements',
                   'categories',
                   ]
 
@@ -272,8 +271,7 @@ class DoctorDetailSerializer(DoctorSerializer):
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
                   'consultation_fee',
                   'clinic', 'specialities', 'score', 'comments_number', 'addresses', 'description',
-                  'achievements',
-                  'category',
+                  'categories',
                   ]
 
 
