@@ -2,10 +2,9 @@ import datetime
 
 from django.db.models import Min
 from rest_framework import serializers
-
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime, DoctorProcedures, WeekDaysNumber, \
-    ClinicApplication, ClinicImage, DoctorCategory
+    ClinicApplication, ClinicImage, DoctorCategory, DoctorSpecialities
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -244,22 +243,29 @@ class DoctorSerializer(serializers.ModelSerializer):
         return self.get_consultation_fee(obj, price=False)
 
     def get_specialities(self, obj):
+        from apps.admins.serializers import ClientClinicDoctorSpecialitiesSerializer
         try:
-            speciality = Speciality.objects.filter(id=obj.speciality_id)
-            return SpecialitySearchSerializer(speciality, many=True).data
+            speciality = DoctorSpecialities.objects.filter(speciality_id=obj.speciality_id, doctor_id=obj.id)
+            return ClientClinicDoctorSpecialitiesSerializer(speciality, many=True).data
 
         except AttributeError:
-            pass
-        return SpecialitySearchSerializer(obj.specialities.all(), many=True).data
+            speciality_ids = obj.specialities.all().values_list('id', flat=True)
+            speciality = DoctorSpecialities.objects.filter(speciality_id__in=speciality_ids,
+                                                           doctor_id=obj.id)
+            return ClientClinicDoctorSpecialitiesSerializer(speciality, many=True).data
 
     def get_procedures(self, obj):
+        from apps.admins.serializers import ClientClinicDoctorProceduresSerializer
         try:
-            procedure = Procedure.objects.filter(id=obj.procedure_id)
-            return ProcedureSearchSerializer(procedure, many=True).data
+            procedure = DoctorProcedures.objects.filter(procedure_id=obj.speciality_id,
+                                                           doctor_id=obj.id)
+            return ClientClinicDoctorProceduresSerializer(procedure, many=True).data
 
         except AttributeError:
-            pass
-        return ProcedureSearchSerializer(obj.procedures.all(), many=True).data
+            procedure_ids = obj.procedures.all().values_list('id', flat=True)
+            procedure = DoctorProcedures.objects.filter(procedure_id__in=procedure_ids,
+                                                           doctor_id=obj.id)
+            return ClientClinicDoctorProceduresSerializer(procedure, many=True).data
 
     def get_addresses(self, obj):
         data = []

@@ -65,7 +65,7 @@ class ClinicDoctorsView(ListAPIView):
 
     def get_queryset(self):
         clinic_id = self.kwargs.get('clinic_id')
-        queryset = self.model.objects.filter(clinic=clinic_id)
+        queryset = self.model.objects.filter(clinic=clinic_id).order_by('-id')
         return queryset
 
 
