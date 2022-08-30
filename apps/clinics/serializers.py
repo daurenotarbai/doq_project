@@ -2,9 +2,11 @@ import datetime
 
 from django.db.models import Min
 from rest_framework import serializers
+
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime, DoctorProcedures, WeekDaysNumber, \
     ClinicApplication, ClinicImage, DoctorCategory, DoctorSpecialities
+from apps.core.models import City
 from apps.patients.models import Comment, Patient, Appointment
 
 
@@ -35,6 +37,12 @@ class DoctorSearchSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return ("%s %s %s" % (obj.first_name, obj.last_name, obj.middle_name)).strip()
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ['id', 'name']
 
 
 class SpecialitySerializer(serializers.ModelSerializer):
@@ -245,7 +253,8 @@ class DoctorSerializer(serializers.ModelSerializer):
     def get_specialities(self, obj):
         from apps.admins.serializers import ClientClinicDoctorSpecialitiesSerializer
         try:
-            speciality = DoctorSpecialities.objects.filter(speciality_id=obj.speciality_id, doctor_id=obj.id)
+            speciality = DoctorSpecialities.objects.filter(speciality_id=obj.speciality_id,
+                                                           doctor_id=obj.id)
             return ClientClinicDoctorSpecialitiesSerializer(speciality, many=True).data
 
         except AttributeError:
@@ -258,13 +267,13 @@ class DoctorSerializer(serializers.ModelSerializer):
         from apps.admins.serializers import ClientClinicDoctorProceduresSerializer
         try:
             procedure = DoctorProcedures.objects.filter(procedure_id=obj.speciality_id,
-                                                           doctor_id=obj.id)
+                                                        doctor_id=obj.id)
             return ClientClinicDoctorProceduresSerializer(procedure, many=True).data
 
         except AttributeError:
             procedure_ids = obj.procedures.all().values_list('id', flat=True)
             procedure = DoctorProcedures.objects.filter(procedure_id__in=procedure_ids,
-                                                           doctor_id=obj.id)
+                                                        doctor_id=obj.id)
             return ClientClinicDoctorProceduresSerializer(procedure, many=True).data
 
     def get_addresses(self, obj):
