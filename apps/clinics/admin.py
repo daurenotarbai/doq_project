@@ -127,7 +127,8 @@ class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModel
         ('', {'fields': (('image_tag', 'photo'),)}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
-                       ('operates_from', 'consultation_fee', 'for_child'), 'clinic', 'description',
+                       ('operates_from', 'consultation_fee', 'discount_consultation_fee',
+                        'for_child'), 'clinic', 'description',
                        'categories')
         }),
 
