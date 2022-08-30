@@ -1,7 +1,8 @@
 from django.core import exceptions
 from django.db import models
 
-from apps.clinics.models import AppointmentTime, Doctor, AppointmentDoctorTime
+from apps.clinics.models import AppointmentTime, Doctor, AppointmentDoctorTime, DoctorProcedures, \
+    DoctorSpecialities
 from apps.core.models import TimestampMixin
 
 
@@ -28,6 +29,11 @@ class Appointment(TimestampMixin):
                                 null=True, blank=True)
     appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
     appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
+    doctor_procedure = models.ForeignKey(DoctorProcedures, on_delete=models.SET_NULL, null=True,
+                                         blank=True)
+    doctor_speciality = models.ForeignKey(DoctorSpecialities, on_delete=models.SET_NULL, null=True,
+                                          blank=True)
+    is_child = models.BooleanField(default=False, null=True)
     is_visited = models.BooleanField('Посетил', blank=True, null=True)
 
     def __str__(self):

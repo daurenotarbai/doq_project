@@ -24,6 +24,7 @@ class ClientClinicAppointmentTimesView(ListAPIView):
     queryset = AppointmentTime.objects.all()
     serializer_class = ClientClinicAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = CustomPagination
 
 
 class ClientClinicAddressView(ListAPIView):
@@ -203,6 +204,7 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
     model = Doctor
     serializer_class = ClientClinicDoctorAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
