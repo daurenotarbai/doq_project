@@ -17,6 +17,39 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
+class AgeChoices(TextChoices):
+    ZERO = "0 мес.", "0 мес."
+    ONE_MONTH = "1 мес.", "1 мес."
+    TWO_MONTH = "2 мес.", "2 мес."
+    THREE_MONTH = "3 мес.", "3 мес."
+    FOUR_MONTH = "4 мес.", "4 мес."
+    FIVE_MONTH = "5 мес.", "5 мес."
+    SIX_MONTH = "6 мес.", "6 мес."
+    SEVEN_MONTH = "7 мес.", "7 мес."
+    EIGHT_MONTH = "8 мес.", "8 мес."
+    NINE_MONTH = "9 мес.", "9 мес."
+    TEN_MONTH = "10 мес.", "10 мес."
+    ELEVEN_MONTH = "11 мес.", "11 мес."
+    ONE = "1 год", "1 год"
+    TWO = "2 года", "2 года"
+    THREE = "3 года", "3 года"
+    FOUR = "4 года", "4 года"
+    FIVE = "5 лет", "5 лет"
+    SIX = "6 лет", "6 лет"
+    SEVEN = "7 лет", "7 лет"
+    EIGHT = "8 лет", "8 лет"
+    NINE = "9 лет", "9 лет"
+    TEN = "10 лет", "10 лет"
+    ELEVEN = "11 лет", "11 лет"
+    TWELVE = "12 лет", "12 лет"
+    THIRTEEN = "13 лет", "13 лет"
+    FOURTEEN = "14 лет", "14 лет"
+    FIFTEEN = "15 лет", "15 лет"
+    SIXTEEN = "16 лет", "16 лет"
+    SEVENTEEN = "17 лет", "17 лет"
+    EIGHTEEN = "18 лет", "18 лет"
+
+
 # class DoctorCategory(TextChoices):
 #     DOCTOR = "Врач"
 #     ACADEMIC = "Академик"
@@ -399,22 +432,14 @@ class DoctorProcedures(models.Model):
         decimal_places=2,
         default=Decimal(0),
     )
-    child_age_from = models.PositiveIntegerField(
-        verbose_name="Возраст детей от",
-        default=0,
-        validators=[
-            MaxValueValidator(18),
-            MinValueValidator(0)
-        ]
-    )
-    child_age_to = models.PositiveIntegerField(
-        default=0,
-        verbose_name="Возраст детей до",
-        validators=[
-            MaxValueValidator(18),
-            MinValueValidator(0)
-        ]
-    )
+    child_age_from = models.CharField('Возраст детей от', choices=AgeChoices.choices,
+                                      max_length=255,
+                                      null=True, blank=True,
+                                      )
+    child_age_to = models.CharField('Возраст детей до', choices=AgeChoices.choices,
+                                    max_length=255,
+                                    null=True, blank=True,
+                                    )
 
 
 class DoctorSpecialities(models.Model):
@@ -461,22 +486,14 @@ class DoctorSpecialities(models.Model):
         decimal_places=2,
         default=Decimal(0),
     )
-    child_age_from = models.PositiveIntegerField(
-        default=0,
-        verbose_name="Возраст детей от",
-        validators=[
-            MaxValueValidator(18),
-            MinValueValidator(0)
-        ]
-    )
-    child_age_to = models.PositiveIntegerField(
-        default=0,
-        verbose_name="Возраст детей до",
-        validators=[
-            MaxValueValidator(18),
-            MinValueValidator(0)
-        ]
-    )
+    child_age_from = models.CharField('Возраст детей от', choices=AgeChoices.choices,
+                                      max_length=255,
+                                      null=True, blank=True,
+                                      )
+    child_age_to = models.CharField('Возраст детей до', choices=AgeChoices.choices,
+                                    max_length=255,
+                                    null=True, blank=True,
+                                    )
 
 
 class AppointmentDoctorTime(models.Model):

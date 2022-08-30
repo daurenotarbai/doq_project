@@ -186,7 +186,8 @@ class DoctorCategorySerializer(serializers.ModelSerializer):
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    specialities = SpecialitySearchSerializer(many=True)
+    specialities = serializers.SerializerMethodField()
+    procedures = serializers.SerializerMethodField()
     categories = DoctorCategorySerializer(many=True)
     clinic = serializers.CharField()
     comments_number = serializers.SerializerMethodField()
@@ -205,6 +206,7 @@ class DoctorSerializer(serializers.ModelSerializer):
                   'new_price',
                   'clinic',
                   'specialities',
+                  'procedures',
                   'score',
                   'comments_number',
                   'addresses',
@@ -240,6 +242,24 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     def get_new_price(self, obj):
         return self.get_consultation_fee(obj, price=False)
+
+    def get_specialities(self, obj):
+        try:
+            speciality = Speciality.objects.filter(id=obj.speciality_id)
+            return SpecialitySearchSerializer(speciality, many=True).data
+
+        except AttributeError:
+            pass
+        return SpecialitySearchSerializer(obj.specialities.all(), many=True).data
+
+    def get_procedures(self, obj):
+        try:
+            procedure = Procedure.objects.filter(id=obj.procedure_id)
+            return ProcedureSearchSerializer(procedure, many=True).data
+
+        except AttributeError:
+            pass
+        return ProcedureSearchSerializer(obj.procedures.all(), many=True).data
 
     def get_addresses(self, obj):
         data = []
