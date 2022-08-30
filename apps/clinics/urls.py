@@ -3,19 +3,23 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
-from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsViewSet, \
+from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsView, \
     MainSearchClinicView, \
     DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
     DoctorCommentsView, \
     ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView, SpecialitiesDetailView, \
-    ProceduresDetailView, ClinicApplicationCreateView
+    ProceduresDetailView, ClinicApplicationCreateView, CityView, ClinicsDetailView
 
 router = routers.DefaultRouter()
-router.register(r'clinics', ClinicsViewSet, 'clinic_list')
+# router.register(r'^city/{city_id}/clinics', ClinicsViewSet, 'clinic_list')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('cities', CityView.as_view()),
+
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('city/<int:city_id>/clinics/', ClinicsView.as_view()),
+    path('city/<int:city_id>/clinics/<int:pk>', ClinicsDetailView.as_view()),
 
     path('create/application', ClinicApplicationCreateView.as_view()),
 
@@ -24,10 +28,10 @@ urlpatterns = [
     path('clinics/<int:clinic_id>/doctors', ClinicDoctorsView.as_view()),
     path('clinics/<int:clinic_id>/comments', ClinicCommentsView.as_view()),
 
-    path('procedures/', ProceduresView.as_view()),
+    path('city/<int:city_id>/procedures/', ProceduresView.as_view()),
     path('procedures/<int:pk>/', ProceduresDetailView.as_view()),
 
-    path('specialities/', SpecialitiesView.as_view()),
+    path('city/<int:city_id>/specialities/', SpecialitiesView.as_view()),
     path('specialities/<int:pk>/', SpecialitiesDetailView.as_view()),
 
     path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),

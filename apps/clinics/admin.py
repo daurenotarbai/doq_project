@@ -11,6 +11,7 @@ from django_summernote.models import Attachment
 from apps.clinics.models import Doctor, Clinic, Address, Speciality, Procedure, \
     AppointmentDoctorTime, Schedules, ClinicApplication, ClinicImage, DoctorCategory
 from apps.core.admin import OnlySuperUserMixin, NoAddMixin, NoDeleteMixin
+from apps.core.models import City
 
 
 class MyDateTimeFilter(admin.DateFieldListFilter):
@@ -79,11 +80,11 @@ class DoctorsAppointmentTimeAdmin(admin.ModelAdmin):
 
 @admin.register(Clinic)
 class ClinicAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
-    list_display = ("image_tag", "name", "phone", 'user',)
+    list_display = ("image_tag", "name", "phone", 'user', 'city')
     fieldsets = (
         ('', {'fields': (('image_tag', 'logo'),)}),
         ('Основная информация', {
-            'fields': (('name', 'phone', 'user'), 'short_description', 'description')
+            'fields': (('name', 'phone', 'user'), 'short_description', 'city', 'description')
         }),
     )
     readonly_fields = ['image_tag']
@@ -182,7 +183,7 @@ class ScheduleInlineAdmin(admin.TabularInline):
 
 
 class AddressAdmin(NoAddMixin, GeOModelAdmin):
-    list_display = ['city', 'address', 'is_24_hours', 'get_schedules']
+    list_display = ['address', 'is_24_hours', 'get_schedules']
     inlines = (ScheduleInlineAdmin,)
 
     def get_schedules(self, obj):
@@ -224,4 +225,9 @@ admin.site.unregister(Attachment)
 
 @admin.register(DoctorCategory)
 class DoctorCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
     list_display = ('name',)

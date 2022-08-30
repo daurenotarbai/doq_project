@@ -1,17 +1,16 @@
 import datetime
 from math import cos, asin, sqrt
 
-from django.db.models import Avg, Count, Min, Q, IntegerField
+from django.db.models import Avg, Count, IntegerField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
 from elasticsearch_dsl import Q as EQ
-from rest_framework import viewsets
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
     ProcedureParametrsDocument, \
@@ -24,8 +23,16 @@ from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, 
     ProcedureSearchSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
     DoctorDetailSerializer, DoctorCommentSerializer, \
-    ClinicApplicationCreateSerializer
+    ClinicApplicationCreateSerializer, CitySerializer
+from apps.core.models import City
 from apps.patients.models import Comment
+
+
+class CityView(APIView):
+    def get(self, obj):
+        queryset = City.objects.all()
+        serializer = CitySerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ClinicApplicationCreateView(CreateAPIView):
@@ -34,8 +41,9 @@ class ClinicApplicationCreateView(CreateAPIView):
 
 
 class SpecialitiesView(APIView):
-    def get(self, obj):
-        queryset = Speciality.objects.all().exclude(doctor_specialities=None)
+    def get(self, request, city_id):
+        queryset = Speciality.objects.filter(
+            doctor_specialities__doctor__clinic__city_id=city_id).exclude(doctor_specialities=None)
         serializer = SpecialitySerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -48,8 +56,9 @@ class SpecialitiesDetailView(RetrieveAPIView):
 class ProceduresView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, obj):
-        queryset = Procedure.objects.filter(parent=None)
+    def get(self, request, city_id):
+        queryset = Procedure.objects.filter(parent=None,
+                                            doctor_procedures__doctor__clinic__city_id=city_id)
         serializer = ProcedureSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -179,7 +188,7 @@ tempDataList = [
 ]
 
 
-class ClinicsViewSet(viewsets.ModelViewSet):
+class ClinicsView(ListAPIView):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
         comment_number=Count('doctors__comments', distinct=True)).order_by('avr_doctors_score')
@@ -187,6 +196,9 @@ class ClinicsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         points = []
+        city_id = self.kwargs.get('city_id')
+
+        self.queryset = self.queryset.filter(city_id=city_id)
         for clinic in self.queryset:
             for address in clinic.addresses.all():
                 point = {"lat": address.latitude, "lon": address.longitude}
@@ -217,19 +229,18 @@ class ClinicsViewSet(viewsets.ModelViewSet):
             return queryset
         return self.queryset
 
-    def retrieve(self, request, *args, **kwargs):
-        context = {
-            'request': request
-        }
-        instance = self.get_object()
-        serializer = ClinicDetailSerializer(instance, context=context)
-        return Response(serializer.data)
+
+class ClinicsDetailView(RetrieveAPIView):
+    queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
+        avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
+        comment_number=Count('doctors__comments', distinct=True)).order_by('avr_doctors_score')
+    serializer_class = ClinicDetailSerializer
 
 
 class MainSearchClinicView(APIView, LimitOffsetPagination):
     search_document = ClinicParametrsDocument
 
-    def get(self, request, query):
+    def get(self, request, city_id, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
                 EQ('query_string', query=query, fields=['name'])).execute()
