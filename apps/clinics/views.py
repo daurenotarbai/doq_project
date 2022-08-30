@@ -41,8 +41,9 @@ class ClinicApplicationCreateView(CreateAPIView):
 
 
 class SpecialitiesView(APIView):
-    def get(self, obj):
-        queryset = Speciality.objects.all().exclude(doctor_specialities=None)
+    def get(self, request, city_id):
+        queryset = Speciality.objects.filter(
+            doctor_specialities__doctor__clinic__city_id=city_id).exclude(doctor_specialities=None)
         serializer = SpecialitySerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -55,8 +56,9 @@ class SpecialitiesDetailView(RetrieveAPIView):
 class ProceduresView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, obj):
-        queryset = Procedure.objects.filter(parent=None)
+    def get(self, request, city_id):
+        queryset = Procedure.objects.filter(parent=None,
+                                            doctor_procedures__doctor__clinic__city_id=city_id)
         serializer = ProcedureSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -238,7 +240,7 @@ class ClinicsDetailView(RetrieveAPIView):
 class MainSearchClinicView(APIView, LimitOffsetPagination):
     search_document = ClinicParametrsDocument
 
-    def get(self, request, query):
+    def get(self, request, city_id, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
                 EQ('query_string', query=query, fields=['name'])).execute()
