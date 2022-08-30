@@ -42,7 +42,7 @@ class ClinicApplicationCreateView(CreateAPIView):
 
 class SpecialitiesView(APIView):
     def get(self, obj):
-        queryset = Speciality.objects.all()
+        queryset = Speciality.objects.all().exclude(doctor_specialities=None)
         serializer = SpecialitySerializer(queryset, many=True)
         return Response(serializer.data)
 

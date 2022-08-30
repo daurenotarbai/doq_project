@@ -16,7 +16,7 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
     DoctorSpecialities, DoctorProcedures
-from apps.core.paginations import CustomPagination
+from apps.core.paginations import ClientAdminPagination, HundredPagination
 from apps.patients.models import Comment, Appointment
 
 
@@ -24,13 +24,14 @@ class ClientClinicAppointmentTimesView(ListAPIView):
     queryset = AppointmentTime.objects.all()
     serializer_class = ClientClinicAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = CustomPagination
+    pagination_class = HundredPagination
 
 
 class ClientClinicAddressView(ListAPIView):
     model = Address
     serializer_class = ClientClinicAddressSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = HundredPagination
 
     def get_queryset(self):
         queryset = self.model.objects.filter(
@@ -42,7 +43,7 @@ class ClientClinicDoctorsView(ListAPIView):
     model = Doctor
     serializer_class = ClientClinicDoctorsSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = CustomPagination
+    pagination_class = ClientAdminPagination
 
     def get_queryset(self):
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
@@ -127,6 +128,7 @@ class ClientClinicFeedbacksView(ListAPIView):
     model = Comment
     serializer_class = ClientClinicFeedbacksSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = ClientAdminPagination
     lookup_field = 'id'
 
     def get_queryset(self):
@@ -181,6 +183,7 @@ class ClientClinicAppointmentsView(ListAPIView):
     model = Appointment
     serializer_class = ClientClinicAppointmentSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = ClientAdminPagination
 
     def get_queryset(self):
         queryset = Appointment.objects.filter(
@@ -204,7 +207,7 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
     model = Doctor
     serializer_class = ClientClinicDoctorAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = CustomPagination
+    pagination_class = ClientAdminPagination
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
@@ -236,6 +239,7 @@ class ClientClinicReconciliationsView(ListAPIView):
     model = Appointment
     serializer_class = ClientClinicAppointmentSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = ClientAdminPagination
 
     def get_queryset(self):
         queryset = Appointment.objects.filter(
@@ -279,6 +283,7 @@ class ClientClinicTotalReconciliationsView(ListAPIView):
     model = MonthReport
     serializer_class = ClientClinicTotalReconciliationsSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = ClientAdminPagination
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
