@@ -3,13 +3,12 @@ from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core import exceptions
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.safestring import mark_safe
 from django_admin_geomap import GeoItem
 
-from apps.core.models import TimestampMixin, ContactMixin
+from apps.core.models import TimestampMixin, ContactMixin, City
 
 
 class Gender(TextChoices):
@@ -144,15 +143,39 @@ class Clinic(TimestampMixin, ContactMixin):
         verbose_name = 'Клиника'
         verbose_name_plural = 'Клиники'
 
-    name = models.CharField('Название клиники', max_length=50, default='')
-    description = models.TextField("Описание", blank=True, default='',
-                                   help_text="Подробное описание")
-    short_description = models.CharField('Краткое описание', max_length=120, default='')
-    logo = models.ImageField("Лого клиники", upload_to=clinic_photo_path, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь",
-                             related_name='clinic',
-                             )
-    is_active = models.BooleanField('Актив', default=True, blank=True)
+    name = models.CharField(
+        'Название клиники',
+        max_length=50,
+        default='')
+    description = models.TextField(
+        "Описание",
+        blank=True,
+        default='',
+        help_text="Подробное описание")
+    short_description = models.CharField(
+        'Краткое описание',
+        max_length=120,
+        default='')
+    logo = models.ImageField(
+        "Лого клиники",
+        upload_to=clinic_photo_path,
+        blank=True)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name="Пользователь",
+        related_name='clinic',
+    )
+    city = models.ForeignKey(
+        City,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    is_active = models.BooleanField(
+        'Актив',
+        default=True,
+        blank=True)
 
     def image_tag(self):
         if self.logo:
@@ -194,12 +217,6 @@ class Address(models.Model, GeoItem):
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
 
-    city = models.CharField(
-        'Город',
-        max_length=255,
-        null=True,
-        blank=True,
-    )
     address = models.CharField(
         'Адресс',
         max_length=255,
