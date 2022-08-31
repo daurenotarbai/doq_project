@@ -19,7 +19,7 @@ urlpatterns = [
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('city/<int:city_id>/clinics/', ClinicsView.as_view()),
-    path('clinics/<int:pk>', ClinicsDetailView.as_view()),
+    path('city/<int:city_id>/clinics/<int:pk>', ClinicsDetailView.as_view()),
 
     path('create/application', ClinicApplicationCreateView.as_view()),
 
@@ -29,10 +29,10 @@ urlpatterns = [
     path('clinics/<int:clinic_id>/comments', ClinicCommentsView.as_view()),
 
     path('city/<int:city_id>/procedures/', ProceduresView.as_view()),
-    path('procedures/<int:pk>/', ProceduresDetailView.as_view()),
+    path('city/<int:city_id>/procedures/<int:pk>/', ProceduresDetailView.as_view()),
 
     path('city/<int:city_id>/specialities/', SpecialitiesView.as_view()),
-    path('specialities/<int:pk>/', SpecialitiesDetailView.as_view()),
+    path('city/<int:city_id>/specialities/<int:pk>/', SpecialitiesDetailView.as_view()),
 
     path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),
     path('specialities/<int:speciality_id>/doctors', SpecialityDoctorsView.as_view()),
