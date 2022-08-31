@@ -139,7 +139,7 @@ class AppointmentDoctorTimeSerializer(serializers.ModelSerializer):
             appointment.appointment_time.start_time for appointment in appointments if
             obj.date == appointment.appointment_doctor_time.date
         ]
-        ttimes = obj.times.all()
+        ttimes = obj.times.all().order_by('start_time')
         times_list = []
         for item in ttimes:
             test_dict = {
