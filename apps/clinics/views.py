@@ -241,7 +241,7 @@ class ClinicsDetailView(RetrieveAPIView):
 class MainSearchClinicView(APIView, LimitOffsetPagination):
     search_document = ClinicParametrsDocument
 
-    def get(self, request, city_id, query):
+    def get(self, request, query):
         try:
             clinic = ClinicParametrsDocument.search().query(
                 EQ('query_string', query=query, fields=['name'])).execute()
