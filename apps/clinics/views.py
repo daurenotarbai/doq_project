@@ -43,7 +43,8 @@ class ClinicApplicationCreateView(CreateAPIView):
 class SpecialitiesView(APIView):
     def get(self, request, city_id):
         queryset = Speciality.objects.filter(
-            doctor_specialities__doctor__clinic__city_id=city_id).exclude(doctor_specialities=None)
+            doctor_specialities__doctor__clinic__city_id=city_id).exclude(
+            doctor_specialities=None).distinct()
         serializer = SpecialitySerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -58,7 +59,7 @@ class ProceduresView(APIView):
 
     def get(self, request, city_id):
         queryset = Procedure.objects.filter(parent=None,
-                                            doctor_procedures__doctor__clinic__city_id=city_id)
+                                            doctor_procedures__doctor__clinic__city_id=city_id).distinct()
         serializer = ProcedureSerializer(queryset, many=True)
         return Response(serializer.data)
 
