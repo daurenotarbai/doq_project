@@ -64,6 +64,20 @@ class ProceduresView(APIView):
         return Response(serializer.data)
 
 
+class SpecialitiesListView(APIView):
+    def get(self, request):
+        queryset = Speciality.objects.all()
+        serializer = SpecialitySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class ProceduresListView(APIView):
+    def get(self, request):
+        queryset = Procedure.objects.all().exclude(parent=None)
+        serializer = ProcedureSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class ProceduresDetailView(RetrieveAPIView):
     queryset = Procedure.objects.all()
     serializer_class = ProcedureSerializer

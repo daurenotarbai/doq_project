@@ -8,7 +8,8 @@ from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsView, \
     DoctorAppointmentTimesView, ClinicDoctorsView, DoctorsDetailView, \
     DoctorCommentsView, \
     ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView, SpecialitiesDetailView, \
-    ProceduresDetailView, ClinicApplicationCreateView, CityView, ClinicsDetailView
+    ProceduresDetailView, ClinicApplicationCreateView, CityView, ClinicsDetailView, \
+    ProceduresListView, SpecialitiesListView
 
 router = routers.DefaultRouter()
 # router.register(r'^city/{city_id}/clinics', ClinicsViewSet, 'clinic_list')
@@ -33,6 +34,9 @@ urlpatterns = [
 
     path('city/<int:city_id>/specialities/', SpecialitiesView.as_view()),
     path('city/<int:city_id>/specialities/<int:pk>/', SpecialitiesDetailView.as_view()),
+
+    path('specialities/', SpecialitiesListView.as_view()),
+    path('procedures/', ProceduresListView.as_view()),
 
     path('procedures/<int:procedure_id>/doctors', ProcedureDoctorsView.as_view()),
     path('specialities/<int:speciality_id>/doctors', SpecialityDoctorsView.as_view()),
