@@ -187,7 +187,7 @@ class ClientClinicAppointmentsView(ListAPIView):
 
     def get_queryset(self):
         queryset = Appointment.objects.filter(
-            appointment_doctor_time__doctor__clinic__user=self.request.user)
+            appointment_doctor_time__doctor__clinic__user=self.request.user).order_by('-created_at')
         query = self.request.GET.get('query')
         visit_date = self.request.GET.get('visit_date')
         if query:
