@@ -100,7 +100,9 @@ class ClientClinicAppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ('id', 'patient', 'appointment_time', 'appointment_doctor_time', 'is_visited')
+        fields = (
+            'id', 'patient', 'appointment_time', 'appointment_doctor_time', 'note', 'is_visited',
+        )
 
 
 class FilterAppointmentDoctorTimeListSerializer(serializers.ListSerializer):
