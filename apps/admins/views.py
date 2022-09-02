@@ -293,9 +293,6 @@ class ClientClinicTotalReconciliationsView(ListAPIView):
         return queryset.order_by('-month')
 
 
-
-
-
 class ClientClinicTotalReconciliationsDetailView(ListAPIView):
     model = Appointment
     serializer_class = ClientClinicAppointmentSerializer
@@ -303,11 +300,14 @@ class ClientClinicTotalReconciliationsDetailView(ListAPIView):
     pagination_class = ClientAdminPagination
 
     def get_queryset(self):
-        month_report_id = self.kwargs.get('month_report_id')
-        month_report = MonthReport.objects.get(id=month_report_id)
-        date = month_report.month
+        date = self.kwargs.get('month')
+        address_id = self.kwargs.get('address_id')
         queryset = Appointment.objects.filter(
-            appointment_doctor_time__doctor__clinic__user=self.request.user).order_by('-created_at')
+            appointment_doctor_time__doctor__clinic__user=self.request.user,
+            appointment_doctor_time__date__month=date[:2],
+            appointment_doctor_time__date__year=date[3:8],
+            appointment_doctor_time__clinic_address_id=address_id,
+        ).order_by('-created_at')
         query = self.request.GET.get('query')
         visit_date = self.request.GET.get('visit_date')
         if query:
