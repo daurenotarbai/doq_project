@@ -35,6 +35,7 @@ class Appointment(TimestampMixin):
                                           blank=True)
     is_child = models.BooleanField(default=False, null=True)
     is_visited = models.BooleanField('Посетил', blank=True, null=True)
+    note = models.CharField("Примичание", max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f'{self.appointment_time.start_time}'

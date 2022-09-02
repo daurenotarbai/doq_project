@@ -291,3 +291,33 @@ class ClientClinicTotalReconciliationsView(ListAPIView):
             address__clinic__user=self.request.user,
             address_id=address_id)
         return queryset.order_by('-month')
+
+
+
+
+
+class ClientClinicTotalReconciliationsDetailView(ListAPIView):
+    model = Appointment
+    serializer_class = ClientClinicAppointmentSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = ClientAdminPagination
+
+    def get_queryset(self):
+        month_report_id = self.kwargs.get('month_report_id')
+        month_report = MonthReport.objects.get(id=month_report_id)
+        date = month_report.month
+        queryset = Appointment.objects.filter(
+            appointment_doctor_time__doctor__clinic__user=self.request.user).order_by('-created_at')
+        query = self.request.GET.get('query')
+        visit_date = self.request.GET.get('visit_date')
+        if query:
+            queryset = queryset.filter(
+                Q(appointment_doctor_time__doctor__first_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__last_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__middle_name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__specialities__name__icontains=query) | Q(
+                    appointment_doctor_time__doctor__procedures__name__icontains=query)).distinct()
+        if visit_date:
+            queryset = queryset.filter(appointment_doctor_time__date=visit_date)
+        return queryset
