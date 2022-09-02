@@ -270,10 +270,11 @@ class ClientClinicAppointmentsUpdateView(UpdateAPIView):
         appointment_id = kwargs['appointment_id']
         appointment = self.model.objects.get(id=appointment_id)
         visited = request.data.get('visited')
+        note = request.data.get('note')
         if visited:
             appointment.is_visited = True
-        else:
-            appointment.is_visited = False
+        if note:
+            appointment.note = note
         appointment.save()
 
         return Response(status=204)
