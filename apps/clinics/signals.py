@@ -6,7 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.utils import IntegrityError
 from apps.clinics.models import Doctor, Address, WeekDays, Schedules, DoctorSpecialities, \
-    DoctorProcedures
+    DoctorProcedures, DoctorClinicAddress
 from apps.patients.models import Comment
 
 
@@ -21,18 +21,48 @@ def update_score(sender, instance, *args, **kwargs):
 
 @receiver(post_save, sender=Address)
 def create_schedules(sender, instance, *args, **kwargs):
+    clinic_doctors_ids = instance.clinic.doctors.all().values_list('id', flat=True)
+    try:
+        doctor_addresses = []
+        for id in clinic_doctors_ids:
+            doctor_address = DoctorClinicAddress(doctor_id=id, address=instance)
+            doctor_addresses.append(doctor_address)
+        with transaction.atomic():
+            DoctorClinicAddress.objects.bulk_create(doctor_addresses)
+    except Exception as e:
+        print("R",e)
+    try:
+        with transaction.atomic():
+            for pk in clinic_doctors_ids:
+                obj = DoctorProcedures.objects.get(id=pk)
+                obj.pk = None
+                obj.address = instance
+                obj.save()
+    except IntegrityError as e:
+        print("RR",e)
+    try:
+        with transaction.atomic():
+            for id in clinic_doctors_ids:
+                obj = DoctorProcedures.objects.get(id=id)
+                obj.pk = None
+                obj.address = instance
+                obj.save()
+
+    except IntegrityError as e:
+        print("RRR",e)
+
     for day in WeekDays.values:
         try:
-            print("GsdGG", instance.is_24_hours)
-            with transaction.atomic():
-                if instance.is_24_hours:
+            if instance.is_24_hours:
+                with transaction.atomic():
                     Schedules.objects.update_or_create(day_in_week=day,
                                                        address=instance,
                                                        defaults={
                                                            'start_day': "00:00:00",
                                                            'end_day': "23:59:59",
                                                        })
-                else:
+            else:
+                with transaction.atomic():
                     Schedules.objects.create(day_in_week=day, address=instance)
         except IntegrityError:
             pass

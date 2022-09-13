@@ -182,8 +182,9 @@ class ScheduleInlineAdmin(admin.TabularInline):
     extra = 0
 
 
-class AddressAdmin(NoAddMixin, GeOModelAdmin):
-    list_display = ['address', 'is_24_hours', 'get_schedules']
+@admin.register(Address)
+class AddressAdmin(GeOModelAdmin):
+    list_display = ['address', 'is_24_hours', 'get_schedules', 'longitude', 'latitude']
     inlines = (ScheduleInlineAdmin,)
 
     def get_schedules(self, obj):
@@ -204,10 +205,9 @@ class AddressAdmin(NoAddMixin, GeOModelAdmin):
     geomap_field_latitude = "id_latitude"
     geomap_default_longitude = "76.8512"
     geomap_default_latitude = "43.223"
-    geomap_default_zoom = "10"
-
-
-admin.site.register(Address, AddressAdmin)
+    geomap_default_zoom = "6"
+    geomap_item_zoom = "10"
+    geomap_height = "500px"
 
 
 @admin.register(ClinicApplication)
@@ -230,4 +230,4 @@ class DoctorCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', )

@@ -16,6 +16,19 @@ class Gender(TextChoices):
     FEMALE = "FEMALE", "Женский"
 
 
+class DurationChoices(TextChoices):
+    TEN_MINUTES = "10", "10"
+    FIFTEEN_MINUTES = "15", "15"
+    TWENTY_MINUTES = "20", "20"
+    TWENTY_FIVE_MINUTES = "25", "25"
+    THIRTY_MINUTES = "30", "30"
+    FORTY_MINUTES = "40", "40"
+    FORTY_FIVE_MINUTES = "45", "45"
+    FIFTY_MINUTES = "50", "50"
+    SIXTY_MINUTES = "60", "60"
+    NINETY_MINUTES = "90", "90"
+
+
 class AgeChoices(TextChoices):
     ZERO = "0 мес.", "0 мес."
     ONE_MONTH = "1 мес.", "1 мес."
@@ -47,24 +60,6 @@ class AgeChoices(TextChoices):
     SIXTEEN = "16 лет", "16 лет"
     SEVENTEEN = "17 лет", "17 лет"
     EIGHTEEN = "18 лет", "18 лет"
-
-
-# class DoctorCategory(TextChoices):
-#     DOCTOR = "Врач"
-#     ACADEMIC = "Академик"
-#     PROFESSOR = "Провессор"
-#     MASTER = "Магистр"
-#     MASTER_DOC = "Магистр здравоохранения"
-#     RESIDENT = "Резидент"
-#     NURSE = "Медсестра (Медбрат)"
-#     CANDIDATE = "Кандидат медицинских наук"
-#     DOC_CANDIDATE = "Доктор медицинских наук"
-#     SPECIALIST = "Специалист"
-#     PHD = "PhD"
-#     FIRST = "Врач первый категории"
-#     SECOND = "Врач второй категории"
-#     HIGHER = "Врач высшей категории"
-
 
 class WeekDays(TextChoices):
     MONDAY = "MONDAY", "Понедельник"
@@ -246,7 +241,7 @@ class Address(models.Model, GeoItem):
 
     @property
     def geomap_longitude(self):
-        return str(self.longitude)
+        return '' if self.longitude is None else str(self.longitude)
 
     @property
     def geomap_icon(self):
@@ -254,7 +249,7 @@ class Address(models.Model, GeoItem):
 
     @property
     def geomap_latitude(self):
-        return str(self.latitude)
+        return '' if self.longitude is None else str(self.latitude)
 
     def __str__(self) -> str:
         return self.address
@@ -457,6 +452,17 @@ class DoctorProcedures(models.Model):
                                     max_length=255,
                                     null=True, blank=True,
                                     )
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
+    is_active = models.BooleanField(
+        'Активный',
+        default=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'Процедура доктора'
+        verbose_name_plural = 'Процедуры доктора'
+        unique_together = ('doctor', 'procedure', 'address',)
 
 
 class DoctorSpecialities(models.Model):
@@ -511,6 +517,17 @@ class DoctorSpecialities(models.Model):
                                     max_length=255,
                                     null=True, blank=True,
                                     )
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
+    is_active = models.BooleanField(
+        'Активный',
+        default=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'Специальность доктора'
+        verbose_name_plural = 'Специальности доктора'
+        unique_together = ('doctor', 'speciality', 'address',)
 
 
 class AppointmentDoctorTime(models.Model):
@@ -618,3 +635,37 @@ class ClinicApplication(TimestampMixin):
 
     def __str__(self):
         return f'{self.name_clinic} - {self.created_at}'
+
+
+class DoctorClinicAddress(models.Model):
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.CASCADE,
+        related_name='doctor_address',
+        verbose_name="Доктор",
+    )
+    address = models.ForeignKey(
+        Address,
+        on_delete=models.CASCADE,
+        related_name='doctor_address',
+        verbose_name="Адрес",
+
+    )
+    duration = models.CharField(
+        'Пол',
+        max_length=10,
+        choices=DurationChoices.choices,
+        blank=True,
+        default='30'
+    )
+
+    is_active = models.BooleanField(
+        'Активный',
+        default=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'Адрес доктора'
+        verbose_name_plural = 'Адрес доктора'
+        unique_together = ('doctor', 'address',)

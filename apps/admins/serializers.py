@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from apps.admins.models import MonthReport
 from apps.clinics.models import Doctor, AppointmentDoctorTime, AppointmentTime, DoctorProcedures, \
-    Address, DoctorSpecialities
+    Address, DoctorSpecialities, DoctorClinicAddress
 from apps.clinics.serializers import SpecialitySearchSerializer, DoctorSerializer, \
     ProcedureSearchSerializer
 from apps.patients.models import Appointment, Comment, Patient
@@ -219,11 +219,34 @@ class ClientClinicDoctorSpecialitiesUpdateSerializer(ClientClinicDoctorSpecialit
         exclude = ['doctor']
 
 
+class DoctorAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorClinicAddress
+        fields = ['doctor', 'address', 'duration', 'is_active']
+
+
 class ClientClinicDoctorDetailSerializer(DoctorSerializer):
-    doctor_procedures = ClientClinicDoctorProceduresSerializer(many=True)
-    doctor_specialities = ClientClinicDoctorSpecialitiesSerializer(many=True)
+    doctor_procedures = serializers.SerializerMethodField()
+    doctor_specialities = serializers.SerializerMethodField()
+    doctor_address = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
-                  'consultation_fee', 'clinic', 'doctor_specialities', 'doctor_procedures']
+                  'consultation_fee', 'clinic', 'doctor_specialities', 'doctor_procedures',
+                  'doctor_address']
+
+    def get_doctor_procedures(self, obj):
+        doctor_procedures = ClientClinicDoctorProceduresSerializer(
+            obj.doctor_procedures.filter(address=obj.address), many=True)
+        return doctor_procedures.data
+
+    def get_doctor_specialities(self, obj):
+        doctor_specialities = ClientClinicDoctorProceduresSerializer(
+            obj.doctor_specialities.filter(address=obj.address), many=True)
+        return doctor_specialities.data
+
+    def get_doctor_address(self, obj):
+        doctor_address = DoctorAddressSerializer(
+            obj.doctor_address.filter(address=obj.address), many=True)
+        return doctor_address.data

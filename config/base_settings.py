@@ -33,19 +33,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl',
 
     'apps.core',
     'apps.clinics',
     'apps.patients',
     'apps.admins',
 
+    'django_summernote',
+    'django_admin_geomap',
 ]
-INSTALLED_APPS += ('django_summernote', )
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,7 +63,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.getenv("TEMPLATES_DIRS", os.path.join(BASE_DIR, 'venv/lib/python3.9/site-packages/django_admin_geomap/templates'))],
+        'DIRS': [
+            os.getenv( "TEMPLATES_DIRS", os.path.join(
+                    BASE_DIR, 'venv/lib/python3.9/site-packages/django_admin_geomap/templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -171,7 +173,6 @@ STATIC_URL = os.getenv("STATIC_URL", '/static/')
 STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 MEDIA_URL = os.getenv("MEDIA_URL", '/media/')
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
-
 
 CSRF_TRUSTED_ORIGINS = ['https://api.docfinder.kz']
 USE_X_FORWARDED_HOST = True

@@ -5,6 +5,7 @@ from django.db.models.functions import Cast
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.admins.models import MonthReport
 from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicFeedbacksSerializer, \
@@ -65,11 +66,13 @@ class ClientClinicDoctorsView(ListAPIView):
         return queryset
 
 
-class ClientClinicDoctorsDetailView(RetrieveAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = ClientClinicDoctorDetailSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    lookup_field = 'id'
+class ClientClinicDoctorsDetailView(APIView):
+
+    def get(self, request, doctor_id, address_id):
+        queryset = Doctor.objects.get(id=doctor_id)
+        queryset.address = address_id
+        serializer = ClientClinicDoctorDetailSerializer(queryset)
+        return Response(serializer.data)
 
 
 class ClientClinicDoctorsSpecialityView(CreateAPIView):

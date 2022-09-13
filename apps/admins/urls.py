@@ -29,7 +29,7 @@ urlpatterns = [
     path('feedbacks', ClientClinicFeedbacksView.as_view()),
     path('feedbacks/<int:id>', ClientClinicFeedbacksDetailView.as_view()),
     path('doctors', ClientClinicDoctorsView.as_view()),
-    path('doctors/<int:id>', ClientClinicDoctorsDetailView.as_view()),
+    path('doctors/<int:doctor_id>/address/<int:address_id>', ClientClinicDoctorsDetailView.as_view()),
     path('doctors/specialities', ClientClinicDoctorsSpecialityView.as_view()),
     path('doctors/specialities/<int:id>', ClientClinicDoctorsSpecialitiesUpdateView.as_view()),
     path('doctors/procedures', ClientClinicDoctorsProcedureView.as_view()),
