@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Avg
 from django.db.models.signals import post_save
@@ -38,7 +39,7 @@ def create_schedules(sender, instance, *args, **kwargs):
                 obj.pk = None
                 obj.address = instance
                 obj.save()
-    except IntegrityError as e:
+    except (IntegrityError, ObjectDoesNotExist):
         print("RR",e)
     try:
         with transaction.atomic():
@@ -48,8 +49,8 @@ def create_schedules(sender, instance, *args, **kwargs):
                 obj.address = instance
                 obj.save()
 
-    except IntegrityError as e:
-        print("RRR",e)
+    except (IntegrityError, ObjectDoesNotExist):
+        print("RRR", e)
 
     for day in WeekDays.values:
         try:
