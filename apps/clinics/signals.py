@@ -31,26 +31,7 @@ def create_schedules(sender, instance, *args, **kwargs):
         with transaction.atomic():
             DoctorClinicAddress.objects.bulk_create(doctor_addresses)
     except Exception as e:
-        print("R",e)
-    try:
-        with transaction.atomic():
-            for pk in clinic_doctors_ids:
-                obj = DoctorProcedures.objects.get(id=pk)
-                obj.pk = None
-                obj.address = instance
-                obj.save()
-    except (IntegrityError, ObjectDoesNotExist) as e:
-        print("RR", e)
-    try:
-        with transaction.atomic():
-            for id in clinic_doctors_ids:
-                obj = DoctorProcedures.objects.get(id=id)
-                obj.pk = None
-                obj.address = instance
-                obj.save()
-
-    except (IntegrityError, ObjectDoesNotExist) as e:
-        print("RRR", e)
+        print("R", e)
 
     for day in WeekDays.values:
         try:
