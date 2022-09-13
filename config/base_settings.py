@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    # 'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl',
 
     'apps.core',
     'apps.clinics',
