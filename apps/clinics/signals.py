@@ -35,19 +35,21 @@ def create_schedules(sender, instance, *args, **kwargs):
     try:
         with transaction.atomic():
             for pk in clinic_doctors_ids:
-                obj = DoctorProcedures.objects.get(doctor_id=pk)
-                obj.pk = None
-                obj.address = instance
-                obj.save()
+                objs = DoctorProcedures.objects.get(doctor_id=pk)
+                for obj in objs:
+                    obj.pk = None
+                    obj.address = instance
+                    obj.save()
     except (IntegrityError, ObjectDoesNotExist) as e:
         print("RR", e)
     try:
         with transaction.atomic():
             for id in clinic_doctors_ids:
-                obj = DoctorSpecialities.objects.get(doctor_id=id)
-                obj.pk = None
-                obj.address = instance
-                obj.save()
+                objs = DoctorSpecialities.objects.filter(doctor_id=id)
+                for obj in objs:
+                    obj.pk = None
+                    obj.address = instance
+                    obj.save()
 
     except (IntegrityError, ObjectDoesNotExist) as e:
         print("RRR", e)
