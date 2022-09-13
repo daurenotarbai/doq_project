@@ -39,8 +39,8 @@ def create_schedules(sender, instance, *args, **kwargs):
                 obj.pk = None
                 obj.address = instance
                 obj.save()
-    except (IntegrityError, ObjectDoesNotExist):
-        print("RR",e)
+    except (IntegrityError, ObjectDoesNotExist) as e:
+        print("RR", e)
     try:
         with transaction.atomic():
             for id in clinic_doctors_ids:
@@ -49,7 +49,7 @@ def create_schedules(sender, instance, *args, **kwargs):
                 obj.address = instance
                 obj.save()
 
-    except (IntegrityError, ObjectDoesNotExist):
+    except (IntegrityError, ObjectDoesNotExist) as e:
         print("RRR", e)
 
     for day in WeekDays.values:
