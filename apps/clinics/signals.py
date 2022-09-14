@@ -1,6 +1,4 @@
 from decimal import Decimal
-
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Avg
 from django.db.models.signals import post_save
