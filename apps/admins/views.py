@@ -2,7 +2,7 @@ import datetime
 
 from django.db.models import Q, IntegerField
 from django.db.models.functions import Cast
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,9 +14,10 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicAppointmentTimeSerializer, ClientClinicTotalReconciliationsSerializer, \
     ClientClinicDoctorDetailSerializer, ClientClinicAddressSerializer, \
     ClientClinicDoctorSpecialitiesSerializer, ClientClinicDoctorProceduresSerializer, \
-    ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer
+    ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer, \
+    DoctorAddressSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
-    DoctorSpecialities, DoctorProcedures
+    DoctorSpecialities, DoctorProcedures, DoctorClinicAddress
 from apps.core.paginations import ClientAdminPagination, HundredPagination
 from apps.patients.models import Comment, Appointment
 
@@ -73,6 +74,26 @@ class ClientClinicDoctorsDetailView(APIView):
         queryset.address = address_id
         serializer = ClientClinicDoctorDetailSerializer(queryset)
         return Response(serializer.data)
+
+    def patch(self, request, doctor_id, address_id, format=None):
+        doctor_address = DoctorClinicAddress.objects.get(doctor_id=doctor_id, address_id=address_id)
+        serializer = DoctorAddressSerializer(doctor_address, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClientClinicDoctorsAddressInfoCreateView(UpdateAPIView):
+    model = DoctorClinicAddress
+    serializer_class = DoctorAddressSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.serializer_class(data=request.data)
+    #     serializer.is_valid()
+    #     serializer.save()
+    #     return Response(serializer.data, status=201)
 
 
 class ClientClinicDoctorsSpecialityView(CreateAPIView):
