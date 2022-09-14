@@ -13,7 +13,7 @@ from apps.admins.views import ClientClinicDoctorsView, ClientClinicFeedbacksView
     ClientClinicDoctorsAddressInfoCreateView
 
 urlpatterns = [
-    path('appointment-times', ClientClinicAppointmentTimesView.as_view()),
+    path('appointment-times/doctor/<int:doctor_id>/address/<int:address_id>', ClientClinicAppointmentTimesView.as_view()),
     path('addresses', ClientClinicAddressView.as_view()),
 
     path('doctor-appointment-times/address/<int:address_id>',
