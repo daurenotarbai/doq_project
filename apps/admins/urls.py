@@ -9,8 +9,7 @@ from apps.admins.views import ClientClinicDoctorsView, ClientClinicFeedbacksView
     ClientClinicTotalReconciliationsView, ClientClinicDoctorsDetailView, ClientClinicAddressView, \
     ClientClinicDoctorsSpecialityView, ClientClinicDoctorsProcedureView, \
     ClientClinicDoctorsSpecialitiesUpdateView, ClientClinicDoctorsProceduresUpdateView, \
-    ClientClinicFeedbacksDetailView, ClientClinicTotalReconciliationsDetailView, \
-    ClientClinicDoctorsAddressInfoCreateView
+    ClientClinicFeedbacksDetailView, ClientClinicTotalReconciliationsDetailView
 
 urlpatterns = [
     path('appointment-times/doctor/<int:doctor_id>/address/<int:address_id>', ClientClinicAppointmentTimesView.as_view()),
@@ -32,8 +31,6 @@ urlpatterns = [
     path('doctors', ClientClinicDoctorsView.as_view()),
     path('doctors/<int:doctor_id>/address/<int:address_id>',
          ClientClinicDoctorsDetailView.as_view()),
-    path('doctors/<int:doctor_id>/address/<int:address_id>/',
-         ClientClinicDoctorsAddressInfoCreateView.as_view()),
     path('doctors/specialities', ClientClinicDoctorsSpecialityView.as_view()),
     path('doctors/specialities/<int:id>', ClientClinicDoctorsSpecialitiesUpdateView.as_view()),
     path('doctors/procedures', ClientClinicDoctorsProcedureView.as_view()),

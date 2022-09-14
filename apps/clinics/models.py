@@ -61,6 +61,7 @@ class AgeChoices(TextChoices):
     SEVENTEEN = "17 лет", "17 лет"
     EIGHTEEN = "18 лет", "18 лет"
 
+
 class WeekDays(TextChoices):
     MONDAY = "MONDAY", "Понедельник"
     TUESDAY = "TUESDAY", "Вторник"
@@ -100,6 +101,8 @@ class AppointmentTime(models.Model):
         verbose_name_plural = 'Интервалы времени'
 
     start_time = models.TimeField(verbose_name='Время начало приема')
+    code = models.CharField(max_length=30, choices=DurationChoices.choices,
+                            default=DurationChoices.THIRTY_MINUTES.value)
 
     def __str__(self):
         start_time = self.start_time.strftime('%H:%M')
