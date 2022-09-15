@@ -28,6 +28,14 @@ class ClientClinicAppointmentTimesView(ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = HundredPagination
 
+    def get_queryset(self):
+        address_id = self.kwargs.get('address_id')
+        doctor_id = self.kwargs.get('doctor_id')
+        doctor_address = DoctorClinicAddress.objects.get(address_id=address_id, doctor_id=doctor_id)
+        queryset = self.model.objects.filter(
+            code=doctor_address.duration)
+        return queryset
+
 
 class ClientClinicAddressView(ListAPIView):
     model = Address
