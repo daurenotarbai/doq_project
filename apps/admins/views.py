@@ -84,18 +84,6 @@ class ClientClinicDoctorsDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ClientClinicDoctorsAddressInfoCreateView(UpdateAPIView):
-    model = DoctorClinicAddress
-    serializer_class = DoctorAddressSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.serializer_class(data=request.data)
-    #     serializer.is_valid()
-    #     serializer.save()
-    #     return Response(serializer.data, status=201)
-
-
 class ClientClinicDoctorsSpecialityView(CreateAPIView):
     model = DoctorSpecialities
     serializer_class = ClientClinicDoctorSpecialitiesSerializer
