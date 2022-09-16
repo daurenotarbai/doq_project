@@ -23,7 +23,7 @@ from apps.patients.models import Comment, Appointment
 
 
 class ClientClinicAppointmentTimesView(ListAPIView):
-    queryset = AppointmentTime.objects.all()
+    model = AppointmentTime
     serializer_class = ClientClinicAppointmentTimeSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = HundredPagination
