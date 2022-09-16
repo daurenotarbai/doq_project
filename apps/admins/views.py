@@ -83,7 +83,7 @@ class ClientClinicDoctorsDetailView(APIView):
         serializer = ClientClinicDoctorDetailSerializer(queryset)
         return Response(serializer.data)
 
-    def put(self, request, doctor_id, address_id, format=None):
+    def patch(self, request, doctor_id, address_id, format=None):
         doctor_address = DoctorClinicAddress.objects.get(doctor_id=doctor_id, address_id=address_id)
         serializer = DoctorAddressSerializer(doctor_address, data=request.data, partial=True)
         if serializer.is_valid():
