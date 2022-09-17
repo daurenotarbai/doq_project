@@ -83,6 +83,14 @@ WeekDaysNumber = {
 }
 
 
+def terms_of_use_path(instance, filename):
+    return "terms-of-use".format(instance.id, filename)
+
+
+def privacy_policy_path(instance, filename):
+    return "privacy-policy"
+
+
 def clinic_photo_path(instance, filename):
     return "photos/clinic/{0}/{1}".format(instance.id, filename)
 
