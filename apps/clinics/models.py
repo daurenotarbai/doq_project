@@ -83,6 +83,14 @@ WeekDaysNumber = {
 }
 
 
+def terms_of_use_path(instance, filename):
+    return "terms-of-use".format(instance.id, filename)
+
+
+def privacy_policy_path(instance, filename):
+    return "privacy-policy"
+
+
 def clinic_photo_path(instance, filename):
     return "photos/clinic/{0}/{1}".format(instance.id, filename)
 
@@ -672,3 +680,25 @@ class DoctorClinicAddress(models.Model):
         verbose_name = 'Адрес доктора'
         verbose_name_plural = 'Адрес доктора'
         unique_together = ('doctor', 'address',)
+
+
+class TermsOfUse(models.Model):
+    text = models.TextField(
+        verbose_name="Пользовательское соглашение",
+    )
+    file = models.FileField(upload_to='terms-of-use', max_length=254)
+
+    class Meta:
+        verbose_name = 'Пользовательское соглашение'
+        verbose_name_plural = 'Пользовательские соглашении'
+
+
+class PrivacyPolicy(models.Model):
+    text = models.TextField(
+        verbose_name="Политика конфиденциальности",
+    )
+    file = models.FileField(upload_to='privacy-policy', max_length=254)
+
+    class Meta:
+        verbose_name = 'Политика конфиденциальности'
+        verbose_name_plural = 'Политика конфиденциальности'
