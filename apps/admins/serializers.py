@@ -242,7 +242,7 @@ class ClientClinicDoctorDetailSerializer(DoctorSerializer):
         return doctor_procedures.data
 
     def get_doctor_specialities(self, obj):
-        doctor_specialities = ClientClinicDoctorProceduresSerializer(
+        doctor_specialities = ClientClinicDoctorSpecialitiesSerializer(
             obj.doctor_specialities.filter(address=obj.address), many=True)
         return doctor_specialities.data
 
