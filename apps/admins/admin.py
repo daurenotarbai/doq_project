@@ -19,6 +19,7 @@ class MonthReportAdmin(NoAddMixin, DjangoObjectActions, admin.ModelAdmin):
     def check_current_month(modeladmin, request, queryset):
         addresses = Address.objects.all()
         today = datetime.datetime.today()
+        MonthReport.objects.filter(month__month=today.month).delete()
         for address in addresses:
             appointments = Appointment.objects.filter(appointment_doctor_time__clinic_address=address, appointment_doctor_time__date__month=today.month)
             verified = appointments.filter(is_visited=True)
@@ -35,6 +36,7 @@ class MonthReportAdmin(NoAddMixin, DjangoObjectActions, admin.ModelAdmin):
         today = datetime.datetime.today()
         first = today.replace(day=1)
         last_month = first - datetime.timedelta(days=1)
+        MonthReport.objects.filter(month__month=last_month.month).delete()
         for address in addresses:
             appointments = Appointment.objects.filter(appointment_doctor_time__clinic_address=address, appointment_doctor_time__date__month=last_month.month)
             verified = appointments.filter(is_visited=True)
