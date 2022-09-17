@@ -7,9 +7,10 @@ from apps.admins.views import ClientClinicDoctorsView, ClientClinicFeedbacksView
     ClientClinicDoctorsAppointmentTimesCreateView, ClientClinicAppointmentTimesView, \
     ClientClinicReconciliationsView, ClientClinicAppointmentsUpdateView, \
     ClientClinicTotalReconciliationsView, ClientClinicDoctorsDetailView, ClientClinicAddressView, \
-    ClientClinicDoctorsSpecialityView, ClientClinicDoctorsProcedureView, \
+    ClientClinicDoctorsSpecialityCreateView, ClientClinicDoctorsProcedureCreateView, \
     ClientClinicDoctorsSpecialitiesUpdateView, ClientClinicDoctorsProceduresUpdateView, \
-    ClientClinicFeedbacksDetailView, ClientClinicTotalReconciliationsDetailView
+    ClientClinicFeedbacksDetailView, ClientClinicTotalReconciliationsDetailView, \
+    ClientClinicTotalReconciliationsExportView
 
 urlpatterns = [
     path('appointment-times/doctor/<int:doctor_id>/address/<int:address_id>', ClientClinicAppointmentTimesView.as_view()),
@@ -26,14 +27,16 @@ urlpatterns = [
     path('total-reconciliations/<int:address_id>', ClientClinicTotalReconciliationsView.as_view()),
     path('total-reconciliations/<int:address_id>/month/<str:month>',
          ClientClinicTotalReconciliationsDetailView.as_view()),
+    path('total-reconciliations/<int:address_id>/month/<str:month>/export',
+         ClientClinicTotalReconciliationsExportView.as_view()),
     path('feedbacks', ClientClinicFeedbacksView.as_view()),
     path('feedbacks/<int:id>', ClientClinicFeedbacksDetailView.as_view()),
     path('doctors', ClientClinicDoctorsView.as_view()),
     path('doctors/<int:doctor_id>/address/<int:address_id>',
          ClientClinicDoctorsDetailView.as_view()),
-    path('doctors/specialities', ClientClinicDoctorsSpecialityView.as_view()),
+    path('doctors/specialities', ClientClinicDoctorsSpecialityCreateView.as_view()),
     path('doctors/specialities/<int:id>', ClientClinicDoctorsSpecialitiesUpdateView.as_view()),
-    path('doctors/procedures', ClientClinicDoctorsProcedureView.as_view()),
+    path('doctors/procedures', ClientClinicDoctorsProcedureCreateView.as_view()),
     path('doctors/procedures/<int:id>', ClientClinicDoctorsProceduresUpdateView.as_view()),
 
 ]
