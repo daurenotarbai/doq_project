@@ -18,10 +18,10 @@ class MonthReport(TimestampMixin):
         unique_together = ['month', 'address']
 
     month = models.DateField(verbose_name='Месяц')
-    verified = models.PositiveIntegerField(default=0)
-    total_appointments = models.PositiveIntegerField(default=0)
-    status = models.CharField("Номер телефона", max_length=12, choices=Status.choices)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    verified = models.PositiveIntegerField("Сверенных", default=0)
+    total_appointments = models.PositiveIntegerField("Всего заявок", default=0)
+    status = models.CharField("Статус", max_length=12, choices=Status.choices, default=Status.UNPAID.value)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, verbose_name="Адрес", null=True)
 
     def __str__(self):
         return f'{self.month}'
