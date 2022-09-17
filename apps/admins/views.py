@@ -1,7 +1,9 @@
+import csv
 import datetime
 
 from django.db.models import Q, IntegerField
 from django.db.models.functions import Cast
+from django.http import HttpResponse
 from rest_framework import permissions, status
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
@@ -92,7 +94,7 @@ class ClientClinicDoctorsDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ClientClinicDoctorsSpecialityView(CreateAPIView):
+class ClientClinicDoctorsSpecialityCreateView(CreateAPIView):
     model = DoctorSpecialities
     serializer_class = ClientClinicDoctorSpecialitiesSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -132,7 +134,7 @@ class ClientClinicDoctorsProceduresUpdateView(UpdateAPIView):
         return Response(serializer.data, status=201)
 
 
-class ClientClinicDoctorsProcedureView(CreateAPIView):
+class ClientClinicDoctorsProcedureCreateView(CreateAPIView):
     model = DoctorProcedures
     serializer_class = ClientClinicDoctorProceduresSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -342,3 +344,21 @@ class ClientClinicTotalReconciliationsDetailView(ListAPIView):
         if visit_date:
             queryset = queryset.filter(appointment_doctor_time__date=visit_date)
         return queryset
+
+
+class ClientClinicTotalReconciliationsExportView(APIView):
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="export.csv"'
+
+        writer = csv.writer(response)
+
+        for student in Appointment.objects.all():
+
+            row = ','.join([
+                str(student.is_visited),
+            ])
+
+            writer.writerow(row)
+
+        return response
