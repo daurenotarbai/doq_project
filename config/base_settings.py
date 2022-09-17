@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_elasticsearch_dsl',
+    'django_object_actions',
 
     'apps.core',
     'apps.clinics',

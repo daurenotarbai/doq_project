@@ -119,7 +119,7 @@ class SpecialityInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Doctor)
-class DoctorAdmin(OnlySuperUserMixin, NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
+class DoctorAdmin(NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
     list_display = (
         "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
         "get_todays_times",
