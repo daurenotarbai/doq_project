@@ -680,25 +680,3 @@ class DoctorClinicAddress(models.Model):
         verbose_name = 'Адрес доктора'
         verbose_name_plural = 'Адрес доктора'
         unique_together = ('doctor', 'address',)
-
-
-class TermsOfUse(models.Model):
-    text = models.TextField(
-        verbose_name="Пользовательское соглашение",
-    )
-    file = models.FileField(upload_to='terms-of-use', max_length=254)
-
-    class Meta:
-        verbose_name = 'Пользовательское соглашение'
-        verbose_name_plural = 'Пользовательские соглашении'
-
-
-class PrivacyPolicy(models.Model):
-    text = models.TextField(
-        verbose_name="Политика конфиденциальности",
-    )
-    file = models.FileField(upload_to='privacy-policy', max_length=254)
-
-    class Meta:
-        verbose_name = 'Политика конфиденциальности'
-        verbose_name_plural = 'Политика конфиденциальности'
