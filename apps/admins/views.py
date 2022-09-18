@@ -352,9 +352,10 @@ class ClientClinicTotalReconciliationsExportView(APIView):
         response['Content-Disposition'] = 'attachment; filename="export.csv"'
 
         writer = csv.writer(response)
+        writer.writerow(["Номер", "Клиент", "Телефон клиента", "Доктор", "Услуга", "Дата приема",
+                        "Доп. инф."])
 
         for student in Appointment.objects.all():
-
             row = ','.join([
                 str(student.is_visited),
             ])
