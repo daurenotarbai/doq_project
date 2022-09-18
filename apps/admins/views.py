@@ -351,8 +351,8 @@ class ClientClinicTotalReconciliationsExportView(APIView):
         print("sds", kwargs)
         address = kwargs['address_id']
         date = kwargs['month']
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="export.csv"'
+        response = HttpResponse(content_type='text/xlsx')
+        response['Content-Disposition'] = 'attachment; filename="export.xlsx"'
 
         writer = csv.writer(response)
         writer.writerow(
