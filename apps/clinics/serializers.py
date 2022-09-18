@@ -3,6 +3,7 @@ import datetime
 from django.db.models import Min
 from rest_framework import serializers
 
+from apps.admins.models import TermsOfUse
 from apps.clinics.models import Speciality, Procedure, Clinic, Address, Doctor, \
     AppointmentDoctorTime, AppointmentTime, DoctorProcedures, WeekDaysNumber, \
     ClinicApplication, ClinicImage, DoctorCategory, DoctorSpecialities
@@ -347,4 +348,16 @@ class ClinicDetailSerializer(ClinicSerializer):
 class ClinicApplicationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClinicApplication
+        fields = '__all__'
+
+
+class TermsOfUseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsOfUse
+        fields = '__all__'
+
+
+class PrivacyPolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsOfUse
         fields = '__all__'

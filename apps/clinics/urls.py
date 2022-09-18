@@ -9,7 +9,7 @@ from apps.clinics.views import SpecialitiesView, ProceduresView, ClinicsView, \
     DoctorCommentsView, \
     ProcedureDoctorsView, SpecialityDoctorsView, ClinicCommentsView, SpecialitiesDetailView, \
     ProceduresDetailView, ClinicApplicationCreateView, CityView, ClinicsDetailView, \
-    ProceduresListView, SpecialitiesListView
+    ProceduresListView, SpecialitiesListView, TermsOfUseView, PrivacyPolicyView
 
 router = routers.DefaultRouter()
 # router.register(r'^city/{city_id}/clinics', ClinicsViewSet, 'clinic_list')
@@ -45,6 +45,9 @@ urlpatterns = [
          DoctorAppointmentTimesView.as_view()),
     path('doctors/<int:pk>/', DoctorsDetailView.as_view()),
     path('doctors/<int:doctor_id>/comments', DoctorCommentsView.as_view()),
+
+    path('terms-of-use', TermsOfUseView.as_view()),
+    path('privacy-policy', PrivacyPolicyView.as_view()),
 
 ]
 if settings.DEBUG:

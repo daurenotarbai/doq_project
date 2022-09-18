@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.admins.models import TermsOfUse, PrivacyPolicy
 from apps.clinics.elesticsearch import ClinicParametrsDocument, DoctorParametrsDocument, \
     ProcedureParametrsDocument, \
     SpecialityParametrsDocument
@@ -23,7 +24,7 @@ from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, 
     ProcedureSearchSerializer, DoctorSerializer, \
     AppointmentDoctorTimeSerializer, \
     DoctorDetailSerializer, DoctorCommentSerializer, \
-    ClinicApplicationCreateSerializer, CitySerializer
+    ClinicApplicationCreateSerializer, CitySerializer, TermsOfUseSerializer, PrivacyPolicySerializer
 from apps.core.models import City
 from apps.patients.models import Comment
 
@@ -279,3 +280,17 @@ class MainSearchClinicView(APIView, LimitOffsetPagination):
 
         except Exception as e:
             return HttpResponse(e, status=500)
+
+
+class TermsOfUseView(APIView):
+    def get(self, request):
+        queryset = TermsOfUse.objects.all().first()
+        serializer = TermsOfUseSerializer(queryset)
+        return Response(serializer.data)
+
+
+class PrivacyPolicyView(APIView):
+    def get(self, request):
+        queryset = PrivacyPolicy.objects.all().first()
+        serializer = PrivacyPolicySerializer(queryset)
+        return Response(serializer.data)
