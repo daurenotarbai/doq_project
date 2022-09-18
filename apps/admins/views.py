@@ -368,8 +368,10 @@ class ClientClinicTotalReconciliationsExportView(APIView):
         for appointment in appointments:
             if appointment.doctor_speciality:
                 doctor_service_name = appointment.doctor_speciality.speciality.name
-            else:
+            elif appointment.doctor_procedure:
                 doctor_service_name = appointment.doctor_procedure.procedure.name
+            else:
+                doctor_service_name = ''
             counter += 1
             row = ([counter, appointment.patient.first_name, appointment.patient.phone,
                     appointment.patient.iin,
