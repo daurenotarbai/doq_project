@@ -348,17 +348,31 @@ class ClientClinicTotalReconciliationsDetailView(ListAPIView):
 
 class ClientClinicTotalReconciliationsExportView(APIView):
     def get(self, request, *args, **kwargs):
+        print("sds", kwargs)
+        address = kwargs['address_id']
+        date = kwargs['month']
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="export.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(["Номер", "Клиент", "Телефон клиента", "Доктор", "Услуга", "Дата приема",
-                        "Доп. инф."])
-
-        for student in Appointment.objects.all():
-            row = ','.join([
-                str(student.is_visited),
+        writer.writerow(
+            [
+                "Номер", "Пациент", "Телефон пациента", "ИИН пациента", "Доктор", "Услуга",
+                "Дата приема"
             ])
+        counter = 0
+        for appointment in Appointment.objects.filter(
+            appointment_doctor_time__clinic_address=address,
+            appointment_doctor_time__date__year=date[3:7],
+            appointment_doctor_time__date__month=date[0:2]):
+            counter += 1
+            row = ([counter, appointment.patient.first_name, appointment.patient.phone,
+                    appointment.patient.iin,
+                    '{} {} {}'.format(appointment.appointment_doctor_time.doctor.last_name,
+                                      appointment.appointment_doctor_time.doctor.first_name,
+                                      appointment.appointment_doctor_time.doctor.middle_name).strip(),
+                    appointment.doctor_procedure.procedure.name,
+                    appointment.appointment_doctor_time.date])
 
             writer.writerow(row)
 
