@@ -31,7 +31,7 @@ urlpatterns = [
          ClientClinicTotalReconciliationsExportView.as_view()),
     path('feedbacks', ClientClinicFeedbacksView.as_view()),
     path('feedbacks/<int:id>', ClientClinicFeedbacksDetailView.as_view()),
-    path('doctors', ClientClinicDoctorsView.as_view()),
+    path('doctors/address/<int:address_id>', ClientClinicDoctorsView.as_view()),
     path('doctors/<int:doctor_id>/address/<int:address_id>',
          ClientClinicDoctorsDetailView.as_view()),
     path('doctors/specialities', ClientClinicDoctorsSpecialityCreateView.as_view()),
