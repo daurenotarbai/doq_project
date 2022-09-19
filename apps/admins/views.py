@@ -351,11 +351,10 @@ class ClientClinicTotalReconciliationsDetailView(ListAPIView):
 
 class ClientClinicTotalReconciliationsExportView(APIView):
     def get(self, request, *args, **kwargs):
-        print("sds", kwargs)
         address = kwargs['address_id']
         date = kwargs['month']
         response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="export.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="export.xls"'
 
         wb = xlwt.Workbook(encoding='utf-8')
         ws = wb.add_sheet('Expenses')
