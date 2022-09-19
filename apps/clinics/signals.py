@@ -63,7 +63,7 @@ def update_procedure_new_price(sender, instance, *args, **kwargs):
         new_price = instance.price - Decimal(instance.discount)
         DoctorProcedures.objects.filter(id=instance.id).update(new_price=new_price)
     else:
-        DoctorProcedures.objects.filter(id=instance.id).update(new_price=0.00)
+        DoctorProcedures.objects.filter(id=instance.id).update(new_price=instance.price)
 
 
 @receiver(post_save, sender=Doctor)

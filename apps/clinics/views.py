@@ -114,7 +114,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         if sort_by_rating:
             queryset = queryset.order_by('-score')
         elif sort_by_price:
-            queryset = queryset.order_by('doctor_procedures__price')
+            queryset = queryset.order_by('doctor_procedures__new_price')
         elif sort_by_experience_years:
             queryset = queryset.order_by('operates_from')
 
@@ -141,7 +141,6 @@ class SpecialityDoctorsView(ClinicDoctorsView):
         if sort_by_rating:
             queryset = queryset.order_by('-score')
         elif sort_by_price:
-            queryset = queryset.filter(doctor_specialities__speciality=speciality_id)
             queryset = queryset.order_by('doctor_specialities__new_price')
         elif sort_by_experience_years:
             queryset = queryset.order_by('operates_from')
