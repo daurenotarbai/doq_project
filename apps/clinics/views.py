@@ -1,7 +1,7 @@
 import datetime
 from math import cos, asin, sqrt
 
-from django.db.models import Avg, Count, IntegerField
+from django.db.models import Avg, Count, IntegerField, FloatField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
@@ -141,7 +141,8 @@ class SpecialityDoctorsView(ClinicDoctorsView):
         if sort_by_rating:
             queryset = queryset.order_by('-score')
         elif sort_by_price:
-            queryset = queryset.order_by('consultation_fee')
+            queryset = queryset.filter(doctor_specialities__speciality=speciality_id)
+            queryset = queryset.order_by('doctor_specialities__new_price')
         elif sort_by_experience_years:
             queryset = queryset.order_by('operates_from')
         return queryset.annotate(speciality_id=Cast(speciality_id, IntegerField()))
