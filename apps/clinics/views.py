@@ -105,7 +105,8 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         sort_by_experience_years = req_get.get('by_experience_years')
         date = req_get.get('date')
         procedure = Procedure.objects.get(id=procedure_id)
-        queryset = self.model.objects.filter(procedures__exact=procedure)
+        queryset = self.model.objects.filter(doctor_procedures__is_active=True,
+                                             doctor_procedures__procedure=procedure)
         if sort_by_for_child:
             queryset = queryset.filter(for_child=True)
         if date:
@@ -131,7 +132,8 @@ class SpecialityDoctorsView(ClinicDoctorsView):
         sort_by_for_child = req_get.get('for_child')
         date = req_get.get('date')
         speciality = Speciality.objects.get(id=speciality_id)
-        queryset = self.model.objects.filter(specialities__exact=speciality)
+        queryset = self.model.objects.filter(doctor_specialities__speciality=speciality,
+                                             doctor_specialities__is_active=True)
         if sort_by_for_child:
             queryset = queryset.filter(for_child=True)
         if date:
