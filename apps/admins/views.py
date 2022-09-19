@@ -1,6 +1,6 @@
-import csv
 import datetime
 
+import xlwt
 from django.db.models import Q, IntegerField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
@@ -234,7 +234,8 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
-        queryset = self.model.objects.filter(clinic__user=self.request.user, doctor_address__address=address_id,
+        queryset = self.model.objects.filter(clinic__user=self.request.user,
+                                             doctor_address__address=address_id,
                                              doctor_address__is_active=True).annotate(
             address_id=Cast(address_id, IntegerField()))
 
@@ -353,21 +354,29 @@ class ClientClinicTotalReconciliationsExportView(APIView):
         print("sds", kwargs)
         address = kwargs['address_id']
         date = kwargs['month']
-        response = HttpResponse(content_type='text/xlsx')
+        response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; filename="export.xlsx"'
 
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                "Номер", "Пациент", "Телефон пациента", "ИИН пациента", "Доктор", "Услуга",
-                "Дата приема"
-            ])
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Expenses')
+        row_num = 0
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+        columns = [
+            "Номер", "Пациент", "Телефон пациента", "ИИН пациента", "Доктор", "Услуга",
+            "Дата приема"
+        ]
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
+        font_style = xlwt.XFStyle()
+
         counter = 0
         appointments = Appointment.objects.filter(
             appointment_doctor_time__clinic_address=address,
             appointment_doctor_time__date__year=date[3:7],
             appointment_doctor_time__date__month=date[0:2])
         for appointment in appointments:
+            row_num += 1
             if appointment.doctor_speciality:
                 doctor_service_name = appointment.doctor_speciality.speciality.name
             elif appointment.doctor_procedure:
@@ -375,14 +384,14 @@ class ClientClinicTotalReconciliationsExportView(APIView):
             else:
                 doctor_service_name = ''
             counter += 1
-            row = ([counter, appointment.patient.first_name, appointment.patient.phone,
-                    appointment.patient.iin,
-                    '{} {} {}'.format(appointment.appointment_doctor_time.doctor.last_name,
-                                      appointment.appointment_doctor_time.doctor.first_name,
-                                      appointment.appointment_doctor_time.doctor.middle_name).strip(),
-                    doctor_service_name,
-                    appointment.appointment_doctor_time.date])
-
-            writer.writerow(row)
-
+            row = [counter, appointment.patient.first_name, appointment.patient.phone,
+                   appointment.patient.iin,
+                   '{} {} {}'.format(appointment.appointment_doctor_time.doctor.last_name,
+                                     appointment.appointment_doctor_time.doctor.first_name,
+                                     appointment.appointment_doctor_time.doctor.middle_name).strip(),
+                   doctor_service_name,
+                   appointment.appointment_doctor_time.date]
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, str(row[col_num]), font_style)
+        wb.save(response)
         return response
