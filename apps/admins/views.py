@@ -58,10 +58,9 @@ class ClientClinicDoctorsView(ListAPIView):
     pagination_class = ClientAdminPagination
 
     def get_queryset(self):
-        address_id = self.kwargs.get('address_id')
+        # address_id = self.kwargs.get('address_id')
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
-        queryset = self.model.objects.filter(clinic=clinic_id, doctor_address__address=address_id,
-                                             doctor_address__is_active=True)
+        queryset = self.model.objects.filter(clinic=clinic_id)
         query = self.request.GET.get('query')
         filter_by_is_active = self.request.GET.get('is_active')
         if query:
@@ -235,7 +234,8 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
 
     def get_queryset(self):
         address_id = self.kwargs.get('address_id')
-        queryset = self.model.objects.filter(clinic__user=self.request.user).annotate(
+        queryset = self.model.objects.filter(clinic__user=self.request.user, doctor_address__address=address_id,
+                                             doctor_address__is_active=True).annotate(
             address_id=Cast(address_id, IntegerField()))
 
         return queryset
