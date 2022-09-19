@@ -1,7 +1,8 @@
 import datetime
 
 import xlwt
-from django.db.models import Q, IntegerField
+from django.db.utils import IntegrityError
+from django.db.models import Q, IntegerField, TimeField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from rest_framework import permissions, status
@@ -19,7 +20,7 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer, \
     DoctorAddressSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
-    DoctorSpecialities, DoctorProcedures, DoctorClinicAddress
+    DoctorSpecialities, DoctorProcedures, DoctorClinicAddress, DurationChoices
 from apps.core.paginations import ClientAdminPagination, HundredPagination
 from apps.patients.models import Comment, Appointment
 

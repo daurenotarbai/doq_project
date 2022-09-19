@@ -99,6 +99,7 @@ class AppointmentTime(models.Model):
     class Meta:
         verbose_name = 'Интервал времени'
         verbose_name_plural = 'Интервалы времени'
+        unique_together = ('start_time', 'code',)
 
     start_time = models.TimeField(verbose_name='Время начало приема')
     code = models.CharField(max_length=30, choices=DurationChoices.choices,
