@@ -123,9 +123,9 @@ class DoctorAdmin(NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
     list_display = (
         "image_tag", "first_name", "last_name", "clinic", "get_specialities", "get_procedures",
         "get_todays_times",
-        "get_tomorrows_times")
+        "get_tomorrows_times", 'is_top')
     fieldsets = (
-        ('', {'fields': (('image_tag', 'photo'),)}),
+        ('', {'fields': (('image_tag', 'photo'), 'is_top')}),
         ('Основная информация', {
             'fields': (('first_name', 'last_name'), ('middle_name', 'gender', 'is_active'),
                        ('operates_from', 'consultation_fee', 'discount_consultation_fee',
@@ -171,7 +171,7 @@ class DoctorAdmin(NoAddMixin, NoDeleteMixin, SummernoteModelAdmin):
     def get_queryset(self, request):
         qs = super(DoctorAdmin, self).get_queryset(request)
         if request.user.is_superuser:
-            self.list_filter = ['clinic', ]
+            self.list_filter = ['clinic', 'is_top']
             return qs
         self.list_filter = []
         return qs.filter(clinic__user=request.user)
@@ -230,4 +230,4 @@ class DoctorCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+    list_display = ('name',)

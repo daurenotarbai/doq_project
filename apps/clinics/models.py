@@ -294,6 +294,7 @@ class Doctor(TimestampMixin):
     class Meta:
         verbose_name = 'Доктор'
         verbose_name_plural = 'Докторы'
+        ordering = ['-is_top', '?']
 
     first_name = models.CharField(
         "Имя",
@@ -378,6 +379,11 @@ class Doctor(TimestampMixin):
     is_active = models.BooleanField(
         'Активный',
         default=True,
+        blank=True,
+    )
+    is_top = models.BooleanField(
+        'Топ',
+        default=False,
         blank=True,
     )
     categories = models.ManyToManyField(
