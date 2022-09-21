@@ -1,7 +1,7 @@
 import datetime
 from math import cos, asin, sqrt
 
-from django.db.models import Avg, Count, IntegerField, FloatField
+from django.db.models import Avg, Count, IntegerField, FloatField, Case, When
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
@@ -201,13 +201,6 @@ def closest(data, v):
     return sorted(data, key=lambda p: distance(v['lat'], v['lon'], p['lat'], p['lon']))
 
 
-tempDataList = [
-    {'lat': 39.7612992, 'lon': -86.1519681},
-    {'lat': 39.762241, 'lon': -86.158436},
-    {'lat': 39.7622292, 'lon': -86.1578917}
-]
-
-
 class ClinicsView(ListAPIView):
     queryset = Clinic.objects.filter(is_active=True).prefetch_related('addresses').annotate(
         avr_doctors_score=Avg('doctors__score', distinct=True, default=0.0),
@@ -215,17 +208,14 @@ class ClinicsView(ListAPIView):
     serializer_class = ClinicSerializer
 
     def get_queryset(self):
-        points = []
         city_id = self.kwargs.get('city_id')
+        lat = self.request.GET.get('latitude')
+        lon = self.request.GET.get('longitude')
+        sort_by_is_near = None
+        if lat and lon:
+            sort_by_is_near = True
 
         self.queryset = self.queryset.filter(city_id=city_id)
-        for clinic in self.queryset:
-            for address in clinic.addresses.all():
-                point = {"lat": address.latitude, "lon": address.longitude}
-                points.append(point)
-        v = {'lat': 39.7622290, 'lon': -86.1519750}
-        sorted_points = closest(tempDataList, v)
-        print("SSS", closest(tempDataList, v))
         sort_by_rating = self.request.GET.get('by_rating')
         filter_by_24_hours = self.request.GET.get('24_hours')
         filter_by_is_open = self.request.GET.get('is_open')
@@ -247,6 +237,19 @@ class ClinicsView(ListAPIView):
         if sort_by_rating:
             queryset = self.queryset.order_by('-avr_doctors_score')
             return queryset
+        if sort_by_is_near:
+            address_coordinates = []
+            for clinic in self.queryset:
+                for address in clinic.addresses.all():
+                    coordinate = {"lat": address.latitude, "lon": address.longitude,
+                             "clinic_id": address.clinic.id}
+                    address_coordinates.append(coordinate)
+            client_location = {'lat': float(lat), 'lon': float(lon)}
+            sorted_points = closest(address_coordinates, client_location)
+            sorted_clinic_ids = [item['clinic_id'] for item in sorted_points]
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(sorted_clinic_ids)])
+            self.queryset = self.queryset.filter(id__in=sorted_clinic_ids).order_by(preserved)
+
         return self.queryset
 
 
