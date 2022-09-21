@@ -7,5 +7,5 @@ class ClientAdminPagination(pagination.PageNumberPagination):
 
 
 class HundredPagination(pagination.PageNumberPagination):
-    page_size = 100
+    page_size = 200
     max_page_size = 100
