@@ -90,7 +90,7 @@ class ClinicDoctorsView(ListAPIView):
 
     def get_queryset(self):
         clinic_id = self.kwargs.get('clinic_id')
-        queryset = self.model.objects.filter(clinic=clinic_id).order_by('-id')
+        queryset = self.model.objects.filter(clinic=clinic_id).order_by('-is_top', '?')
         return queryset
 
 
@@ -106,7 +106,8 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         date = req_get.get('date')
         procedure = Procedure.objects.get(id=procedure_id)
         queryset = self.model.objects.filter(doctor_procedures__is_active=True,
-                                             doctor_procedures__procedure=procedure)
+                                             doctor_procedures__procedure=procedure).order_by(
+            '-is_top', '?')
         if sort_by_for_child:
             queryset = queryset.filter(for_child=True)
         if date:
@@ -133,7 +134,8 @@ class SpecialityDoctorsView(ClinicDoctorsView):
         date = req_get.get('date')
         speciality = Speciality.objects.get(id=speciality_id)
         queryset = self.model.objects.filter(doctor_specialities__speciality=speciality,
-                                             doctor_specialities__is_active=True)
+                                             doctor_specialities__is_active=True).order_by(
+            '-is_top', '?')
         if sort_by_for_child:
             queryset = queryset.filter(for_child=True)
         if date:

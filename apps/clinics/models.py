@@ -294,7 +294,6 @@ class Doctor(TimestampMixin):
     class Meta:
         verbose_name = 'Доктор'
         verbose_name_plural = 'Докторы'
-        ordering = ['-is_top', '?']
 
     first_name = models.CharField(
         "Имя",
