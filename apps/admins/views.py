@@ -76,7 +76,7 @@ class ClientClinicDoctorsView(ListAPIView):
             queryset = queryset.filter(is_active=True)
         elif filter_by_is_active == 'false':
             queryset = queryset.filter(is_active=False)
-        return queryset.annotate(address_id=Cast(address_id, IntegerField()))
+        return queryset.annotate(address=Cast(address_id, IntegerField()))
 
 
 class ClientClinicDoctorsDetailView(APIView):
