@@ -27,8 +27,8 @@ class Appointment(TimestampMixin):
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments",
                                 null=True, blank=True)
-    appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE)
-    appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE)
+    appointment_time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE, null=True)
+    appointment_doctor_time = models.ForeignKey(AppointmentDoctorTime, on_delete=models.CASCADE, null=True)
     doctor_procedure = models.ForeignKey(DoctorProcedures, on_delete=models.SET_NULL, null=True,
                                          blank=True)
     doctor_speciality = models.ForeignKey(DoctorSpecialities, on_delete=models.SET_NULL, null=True,
