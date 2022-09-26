@@ -45,11 +45,12 @@ class PatientBaseSerializer(serializers.ModelSerializer):
 class ClientClinicDoctorsSerializer(serializers.ModelSerializer):
     specialities = serializers.SerializerMethodField()
     procedures = serializers.SerializerMethodField()
+    doctor_address = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
         fields = ('id', 'first_name', 'last_name', 'middle_name', 'photo',
-                  'specialities', 'procedures', 'is_active')
+                  'specialities', 'procedures', 'is_active', 'doctor_address')
 
     def get_specialities(self, obj) -> str:
         specialities = ', '.join([speciality.name for speciality in obj.specialities.all()])
