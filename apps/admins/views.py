@@ -59,7 +59,7 @@ class ClientClinicDoctorsView(ListAPIView):
     pagination_class = ClientAdminPagination
 
     def get_queryset(self):
-        # address_id = self.kwargs.get('address_id')
+        address_id = self.kwargs.get('address_id')
         clinic_id = Clinic.objects.filter(user=self.request.user).first()
         queryset = self.model.objects.filter(clinic=clinic_id)
         query = self.request.GET.get('query')
@@ -76,7 +76,7 @@ class ClientClinicDoctorsView(ListAPIView):
             queryset = queryset.filter(is_active=True)
         elif filter_by_is_active == 'false':
             queryset = queryset.filter(is_active=False)
-        return queryset
+        return queryset.annotate(address_id=Cast(address_id, IntegerField()))
 
 
 class ClientClinicDoctorsDetailView(APIView):
