@@ -90,7 +90,7 @@ class ClinicDoctorsView(ListAPIView):
 
     def get_queryset(self):
         clinic_id = self.kwargs.get('clinic_id')
-        queryset = self.model.objects.filter(clinic=clinic_id).order_by('-is_top', '?')
+        queryset = self.model.objects.filter(clinic=clinic_id).order_by('-is_top', '?').distinct()
         return queryset
 
 
@@ -119,7 +119,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
         elif sort_by_experience_years:
             queryset = queryset.order_by('operates_from')
 
-        return queryset.annotate(procedure_id=Cast(procedure_id, IntegerField()))
+        return queryset.annotate(procedure_id=Cast(procedure_id, IntegerField())).distinct()
 
 
 class SpecialityDoctorsView(ClinicDoctorsView):
@@ -146,7 +146,7 @@ class SpecialityDoctorsView(ClinicDoctorsView):
             queryset = queryset.order_by('doctor_specialities__new_price')
         elif sort_by_experience_years:
             queryset = queryset.order_by('operates_from')
-        return queryset.annotate(speciality_id=Cast(speciality_id, IntegerField()))
+        return queryset.annotate(speciality_id=Cast(speciality_id, IntegerField())).distinct()
 
 
 class DoctorsDetailView(RetrieveAPIView):
