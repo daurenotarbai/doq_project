@@ -78,6 +78,7 @@ def update_consultation_new_price(sender, instance, *args, **kwargs):
         addresses = instance.clinic.addresses.all()
         for address in addresses:
             doctor_address = DoctorClinicAddress(doctor_id=instance.id, address=address)
-            doctor_address.save()
+            with transaction.atomic():
+                doctor_address.save()
     except Exception as e:
         print("R", e)
