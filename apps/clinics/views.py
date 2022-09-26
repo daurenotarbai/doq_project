@@ -26,6 +26,7 @@ from apps.clinics.serializers import SpecialitySerializer, ProcedureSerializer, 
     DoctorDetailSerializer, DoctorCommentSerializer, \
     ClinicApplicationCreateSerializer, CitySerializer, TermsOfUseSerializer, PrivacyPolicySerializer
 from apps.core.models import City
+from apps.core.paginations import HundredPagination
 from apps.patients.models import Comment
 
 
@@ -95,6 +96,7 @@ class ClinicDoctorsView(ListAPIView):
 
 
 class ProcedureDoctorsView(ClinicDoctorsView):
+    pagination_class = HundredPagination
 
     def get_queryset(self):
         req_get = self.request.GET
@@ -123,6 +125,7 @@ class ProcedureDoctorsView(ClinicDoctorsView):
 
 
 class SpecialityDoctorsView(ClinicDoctorsView):
+    pagination_class = HundredPagination
 
     def get_queryset(self):
         req_get = self.request.GET
