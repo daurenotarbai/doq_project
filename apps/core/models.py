@@ -19,6 +19,7 @@ class ContactMixin(models.Model):
 
 class City(models.Model):
     name = models.CharField("Город", max_length=50, default='')
+    slug = models.CharField("slug", max_length=50, default='')
 
     class Meta:
         verbose_name = 'Город'

@@ -43,7 +43,7 @@ class DoctorSearchSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'slug']
 
 
 class SpecialitySerializer(serializers.ModelSerializer):
