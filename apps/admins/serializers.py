@@ -60,6 +60,11 @@ class ClientClinicDoctorsSerializer(serializers.ModelSerializer):
         procedures = ', '.join([procedures.name for procedures in obj.procedures.all()])
         return procedures
 
+    def get_doctor_address(self, obj):
+        doctor_address = DoctorAddressSerializer(
+            obj.doctor_address.filter(address=obj.address), many=True)
+        return doctor_address.data
+
 
 class ClientClinicFeedbacksAnswerSerializer(serializers.ModelSerializer):
     class Meta:
