@@ -73,3 +73,9 @@ def update_consultation_new_price(sender, instance, *args, **kwargs):
         Doctor.objects.filter(id=instance.id).update(new_price=new_price)
     else:
         Doctor.objects.filter(id=instance.id).update(new_price=0.00)
+
+    try:
+        doctor_address = DoctorClinicAddress(doctor_id=instance.id, address=instance)
+        doctor_address.save()
+    except Exception as e:
+        print("R", e)
