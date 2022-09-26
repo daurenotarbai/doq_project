@@ -16,12 +16,14 @@ class CreatePatientAppointmentView(CreateAPIView):
         iin = request.data.pop('iin')
         phone = request.data.pop('phone')
         appointment_time = request.data.get('appointment_time')
-        appointment_doctor_times = AppointmentDoctorTime.objects.get(
-            id=request.data.get('appointment_doctor_time'))
-        time_ids = [time.id for time in appointment_doctor_times.times.all()]
-        if appointment_time not in time_ids:
-            raise exceptions.NotAcceptable(
-                "doctor has no 'appointment_time' with id {}".format(appointment_time))
+        if request.data.get('appointment_doctor_time'):
+            appointment_doctor_times = AppointmentDoctorTime.objects.get(
+                id=request.data.get('appointment_doctor_time'))
+            time_ids = [time.id for time in appointment_doctor_times.times.all()]
+            if appointment_time not in time_ids:
+                raise exceptions.NotAcceptable(
+                    "doctor has no 'appointment_time' with id {}".format(appointment_time))
+
         patient, _ = Patient.objects.update_or_create(iin=iin, defaults={
             'phone': phone,
             'first_name': first_name,
