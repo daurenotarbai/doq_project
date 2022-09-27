@@ -95,6 +95,18 @@ class ClinicDoctorsView(ListAPIView):
         return queryset
 
 
+class TopDoctorsView(ListAPIView):
+    serializer_class = DoctorSerializer
+
+    def get_queryset(self):
+        city_id = self.kwargs.get('city_id')
+        queryset = self.model.objects.filter(
+            clinic__city_id=city_id,
+            is_top=True
+        ).order_by('?').distinct()
+        return queryset
+
+
 class ProcedureDoctorsView(ClinicDoctorsView):
     pagination_class = HundredPagination
 
@@ -245,7 +257,7 @@ class ClinicsView(ListAPIView):
             for clinic in self.queryset:
                 for address in clinic.addresses.all():
                     coordinate = {"lat": address.latitude, "lon": address.longitude,
-                             "clinic_id": address.clinic.id}
+                                  "clinic_id": address.clinic.id}
                     address_coordinates.append(coordinate)
             client_location = {'lat': float(lat), 'lon': float(lon)}
             sorted_points = closest(address_coordinates, client_location)
