@@ -20,7 +20,10 @@ class AppointmentAdmin(admin.ModelAdmin):
                                                                 **kwargs)
 
     def get_doctor(self, obj):
-        return obj.appointment_doctor_time.doctor
+        if obj.doctor_procedure:
+            return obj.doctor_procedure.doctor
+        elif obj.doctor_specialities:
+            return obj.doctor_speciality.doctor
 
     def get_date(self, obj):
         if not obj.appointment_doctor_time:
