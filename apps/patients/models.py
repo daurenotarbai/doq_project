@@ -38,7 +38,8 @@ class Appointment(TimestampMixin):
     note = models.CharField("Примичание", max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.appointment_time.start_time}'
+        if self.appointment_time:
+            return f'{self.appointment_time.start_time}'
 
 
 class Comment(TimestampMixin):
