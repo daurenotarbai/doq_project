@@ -434,7 +434,7 @@ class DoctorProcedures(models.Model):
     )
     for_child = models.BooleanField(
         'Детский',
-        default=True,
+        default=None,
         blank=True,
         null=True
     )
@@ -499,7 +499,7 @@ class DoctorSpecialities(models.Model):
     )
     for_child = models.BooleanField(
         'Детский',
-        default=True,
+        default=None,
         blank=True,
         null=True
     )
