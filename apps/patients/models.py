@@ -40,6 +40,7 @@ class Appointment(TimestampMixin):
     def __str__(self):
         if self.appointment_time:
             return f'{self.appointment_time.start_time}'
+        return 'Время не уаказаны'
 
 
 class Comment(TimestampMixin):
