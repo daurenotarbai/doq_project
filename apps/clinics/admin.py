@@ -41,7 +41,7 @@ class AddressClinicInline(admin.TabularInline):
 
 class DoctorsInline(admin.TabularInline):
     model = Doctor
-    fields = ['last_name', 'first_name', 'middle_name', 'operates_from', 'consultation_fee']
+    fields = ['last_name', 'first_name', 'middle_name', 'operates_from', 'consultation_fee', 'discount_consultation_fee']
     extra = 1
 
 
