@@ -22,7 +22,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     def get_doctor(self, obj):
         if obj.doctor_procedure:
             return obj.doctor_procedure.doctor
-        elif obj.doctor_specialities:
+        elif obj.doctor_speciality:
             return obj.doctor_speciality.doctor
 
     def get_date(self, obj):
