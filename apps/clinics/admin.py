@@ -228,6 +228,6 @@ class DoctorCategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-@admin.register(City)
-class CityAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+# @admin.register(City)
+# class CityAdmin(admin.ModelAdmin):
+#     list_display = ('name',)
