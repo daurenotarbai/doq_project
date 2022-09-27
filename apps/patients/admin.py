@@ -23,6 +23,8 @@ class AppointmentAdmin(admin.ModelAdmin):
         return obj.appointment_doctor_time.doctor
 
     def get_date(self, obj):
+        if not obj.appointment_doctor_time:
+            return 'Будет согласованы с клиникой'
         return obj.appointment_doctor_time.date
 
     get_doctor.short_description = 'Доктор'
