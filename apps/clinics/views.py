@@ -96,6 +96,7 @@ class ClinicDoctorsView(ListAPIView):
 
 
 class TopDoctorsView(ListAPIView):
+    model = Doctor
     serializer_class = DoctorSerializer
 
     def get_queryset(self):
