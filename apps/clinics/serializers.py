@@ -309,7 +309,7 @@ class DoctorDetailSerializer(DoctorSerializer):
     class Meta:
         model = Doctor
         fields = ['id', 'first_name', 'last_name', 'middle_name', 'photo', 'experience_years',
-                  'consultation_fee',
+                  'consultation_fee', 'new_price',
                   'clinic', 'specialities', 'procedures', 'score', 'comments_number', 'addresses', 'description',
                   'categories', 'is_top'
                   ]
