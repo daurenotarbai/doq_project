@@ -259,7 +259,8 @@ class ClinicsView(ListAPIView):
                 for address in clinic.addresses.all():
                     coordinate = {"lat": address.latitude, "lon": address.longitude,
                                   "clinic_id": address.clinic.id}
-                    address_coordinates.append(coordinate)
+                    if address.latitude and address.longitude:
+                        address_coordinates.append(coordinate)
             client_location = {'lat': float(lat), 'lon': float(lon)}
             sorted_points = closest(address_coordinates, client_location)
             sorted_clinic_ids = [item['clinic_id'] for item in sorted_points]
