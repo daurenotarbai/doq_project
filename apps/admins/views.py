@@ -73,9 +73,9 @@ class ClientClinicDoctorsView(ListAPIView):
                     specialities__name__icontains=query) | Q(
                     procedures__name__icontains=query)).distinct()
         if filter_by_is_active == 'true':
-            queryset = queryset.filter(is_active=True)
+            queryset = queryset.filter(doctor_address__is_active=True)
         elif filter_by_is_active == 'false':
-            queryset = queryset.filter(is_active=False)
+            queryset = queryset.filter(doctor_address__is_active=False)
         return queryset.annotate(address=Cast(address_id, IntegerField()))
 
 
