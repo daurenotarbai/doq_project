@@ -239,7 +239,12 @@ class ClientClinicDoctorsAppointmentTimesView(ListAPIView):
                                              doctor_address__address=address_id,
                                              doctor_address__is_active=True).annotate(
             address_id=Cast(address_id, IntegerField()))
-
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(
+                    middle_name__icontains=query) | Q(specialities__name__icontains=query) | Q(
+                    procedures__name__icontains=query)).distinct()
         return queryset
 
 
