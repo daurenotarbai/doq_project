@@ -7,6 +7,7 @@ from django.db.models.functions import Cast
 from django.http import HttpResponse
 from rest_framework import permissions, status
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,7 +21,8 @@ from apps.admins.serializers import ClientClinicDoctorsSerializer, ClientClinicF
     ClientClinicDoctorSpecialitiesUpdateSerializer, ClientClinicDoctorProceduresUpdateSerializer, \
     DoctorAddressSerializer
 from apps.clinics.models import Doctor, Clinic, AppointmentDoctorTime, AppointmentTime, Address, \
-    DoctorSpecialities, DoctorProcedures, DoctorClinicAddress, DurationChoices
+    DoctorSpecialities, DoctorProcedures, DoctorClinicAddress, DurationChoices, Procedure
+from apps.clinics.serializers import ProcedureSerializer
 from apps.core.paginations import ClientAdminPagination, HundredPagination
 from apps.patients.models import Comment, Appointment
 
@@ -400,3 +402,11 @@ class ClientClinicTotalReconciliationsExportView(APIView):
                 ws.write(row_num, col_num, str(row[col_num]), font_style)
         wb.save(response)
         return response
+
+class ClientClinicProceduresView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        queryset = Procedure.objects.all().exclude(parent=None)
+        serializer = ProcedureSerializer(queryset, many=True)
+        return Response(serializer.data)
