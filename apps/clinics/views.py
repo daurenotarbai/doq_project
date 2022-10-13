@@ -60,8 +60,7 @@ class ProceduresView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, city_id):
-        queryset = Procedure.objects.filter(parent=None,
-                                            doctor_procedures__doctor__clinic__city_id=city_id).distinct()
+        queryset = Procedure.objects.filter(parent=None).distinct()
         serializer = ProcedureSerializer(queryset, many=True)
         return Response(serializer.data)
 
